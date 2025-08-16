@@ -13,12 +13,12 @@
 *.gz
 *.tex
 *.toc
+*.vrb
 
 # Ignorar carpetas específicas
-clase-01/pic/
-clase-02/pic/
+week-01/pic/
+week-02/pic/
 
 # Ignorar .Rproj.user en cualquier nivel
 **/.Rproj.user
-
 .Rproj.user
