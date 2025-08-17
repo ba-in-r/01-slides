@@ -11,7 +11,7 @@ require(pacman)
 p_load(dplyr , ggplot2 , skimr , rio)
 
 ## Leer base de datos
-clientes <- import("")
+clientes <- import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-04/data/datos_clientes.rds")
 
 ## exploracion inicial de datos: skim()
 

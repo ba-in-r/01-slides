@@ -13,7 +13,7 @@ require(janitor)
 require(rio)
 
 ## Leer base de datos: creemos un objeto llamado db (ustedes pueden asignar otro nombre)
-db = import("https://raw.githubusercontent.com/eduard-martinez/datasets/main/week-04/output/empresas_cali.rds")
+db = import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-03/data/empresas_cali.rds")
 
 ####== 2. Exploracion inicial de datos
 

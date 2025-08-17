@@ -14,7 +14,7 @@ p_load(dplyr , ggplot2 , skimr , rio)
 set.seed(123)  
 
 ## n
-n <- 2000
+n <- 2104
 
 clientes <- tibble(
   id_cliente   = 1:n,
