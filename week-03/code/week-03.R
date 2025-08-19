@@ -1,7 +1,7 @@
 ## Eduard Martinez
 ## R version 4.5.0
 
-####== 1. Configuracion Inicial
+####==: 1. Configuracion Inicial
 
 ## limpiar entorno
 rm(list=ls())
@@ -15,9 +15,9 @@ require(rio)
 ## Leer base de datos: creemos un objeto llamado db (ustedes pueden asignar otro nombre)
 db = import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-03/data/empresas_cali.rds")
 
-####== 2. Exploracion inicial de datos
+####==: 2. Exploracion inicial de datos
 
-### 2.1. Inspeccion general
+### 2.1 Inspeccion general
 
 ## glimpse()
 
@@ -34,7 +34,7 @@ db = import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-03/da
 ## acceder a una variable: $ ; ejemp. table()
 
 
-### 2.2. Revisar nombres de variables
+### 2.2 Revisar nombres de variables
 
 ## chequear nombres: names()
 
@@ -45,9 +45,9 @@ db = import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-03/da
 ## renombrar una variable: rename() ; ejemp: nombre_mpio=mpio_name
 
 
-####== 3. Seleccion y filtrado de datos
+####==: 3. Seleccion y filtrado de datos
 
-### 3.1. Mantener variables por nombre, rango o patron 
+### 3.1 Mantener variables por nombre, rango o patron 
 
 ## mantener determinadas variables: select() ; ejemp: razon_social, ciuu1 y year_matricula
 
@@ -61,18 +61,18 @@ db = import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-03/da
 ## starts_with(): ejemp: razon_social y variables que terminan en _m
 
 
-### 3.2. Segun condiciones (==, !=, <, >, %in%, between()).
+### 3.2 Segun condiciones (==, !=, <, >, %in%, between()).
 
 ## filter()
 quantile(db$activos_m , seq(0,1,0.01))
 quantile(db$patrimonio_m , seq(0,1,0.01))
 quantile(db$pasivos_m , seq(0,1,0.01))
 
-### 3.3. Combinar condiciones con & y |.
+### 3.3 Combinar condiciones con & y |.
 empresas = filter(.data=db , activos_m <= 20000)
 empresas = filter(.data=db , activos_m>=1000 & activos_m <= 20000)
 
-####== 4. Ordenamiento
+####==: 4. Ordenamiento
 
 ## arrange() ascendente y descendente (desc()).
 empresas = arrange(empresas , activos_m)
@@ -82,7 +82,7 @@ View(empresas).
 
 ## Ordenar por multiples columnas.
 
-####== 5. Creacion y modificacion de variables
+####==: 5. Creacion y modificacion de variables
 
 ## mutate() para nuevas columnas o transformar existentes.
 empresas = mutate(empresas , positivo = ingresos_m > 0)

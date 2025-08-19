@@ -1,20 +1,26 @@
 ## Eduard Martinez
-## Update: 05-04-2024
+## R version 4.5.0
 
-## limpiar entonro
+####==: 1. Configuracion Inicial
+
+## limpiar entorno
 rm(list=ls())
 
-## instalar/llamar pacman
+## llamar/instalar librerias
 require(pacman)
+p_load(tidyverse , skimr , rio)
 
-## usar la función p_load de pacman para instalar/llamar las librerías de la clase
-p_load(tidyverse, ## manipular/limpiar conjuntos de datos.
-       rio, ## para leer/escribir archivos desde diferentes formatos. 
-       skimr, ## skim: describir un conjunto de datos
-       janitor) ##  tabyl: frecuencias relativas
+## Leer base de datos
+clientes <- import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-04/data/datos_clientes.rds")
+
+## exploracion inicial de datos: skim()
 
 
-## **[1.] Operador pipe (%>%)**
+####==: 2. Fundamentos de ggplot
+
+### 1.1 ¿Que es ggplot2?
+
+##==: 1. Operador pipe (%>%)
 
 ### Veamos un ejemplo:
 df = as_tibble(x = women)
