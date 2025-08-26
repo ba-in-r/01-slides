@@ -8,7 +8,7 @@ rm(list=ls())
 
 ## llamar/instalar librerias
 require(pacman)
-p_load(tidyverse , skimr , rio)
+p_load(dplyr , skimr , rio)
 
 ## Leer base de datos
 clientes <- import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-04/data/datos_clientes.rds")
