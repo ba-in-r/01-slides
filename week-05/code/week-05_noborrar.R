@@ -8,10 +8,15 @@ rm(list=ls())
 
 ## llamar/instalar librerias
 require(pacman)
-p_load(dplyr , skimr , rio)
+p_load(dplyr , ggplot2 , skimr , rio)
+
+## Chequear files
+list.files(recursive = T)
+
+####==: 2. Leer y explorar los datos
 
 ## Leer base de datos
-clientes <- import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-04/data/datos_clientes.rds")
+
 
 ## exploracion inicial de datos: skim()
 

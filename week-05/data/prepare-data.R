@@ -10,32 +10,18 @@ rm(list=ls())
 require(pacman)
 p_load(dplyr , ggplot2 , skimr , rio)
 
-## reproducibilidad
-set.seed(123)  
-
-## n
-n <- 2000
-
-clientes <- tibble(
-  id_cliente   = 1:n,
-  edad         = sample(18:65, n, replace=TRUE),
-  genero       = sample(c("Hombre","Mujer"), n, replace=TRUE, prob=c(0.45,0.55)),
-  ciudad       = sample(c("Bogotá","Medellín","Cali","Barranquilla","Cartagena"),
-                        n, replace=TRUE, prob=c(0.3,0.25,0.2,0.15,0.1)),
-  segmento     = sample(c("Estudiantes","Profesionales","Pensionados"),
-                        n, replace=TRUE, prob=c(0.3,0.5,0.2)),
-  tratamiento  = sample(c(0,1), n, replace=TRUE, prob=c(0.5,0.5))
-) %>%
-  mutate(
-    ## número de compras depende de edad, tratamiento y segmento
-    compras     = rpois(n, lambda = ifelse(tratamiento==1, 3, 2)) +
-      ifelse(segmento=="Empresario", 2, 0),
-    ## gasto total depende de compras y segmento
-    gasto_total = round(compras * runif(n, 20000, 100000), -3),
-    ## satisfacción depende de tratamiento y variabilidad aleatoria
-    satisfaccion = pmin(5, pmax(1, round(rnorm(n, mean=3 + 0.5*tratamiento, sd=1))))
-  )
-
-## export data
-export(clientes , "week-04/data/datos_clientes.rds")
-
+## load data
+db <- import("03_combine_data/output/data_long.rds")
+df <- db %>%
+  subset(time==1) %>%
+  mutate(win_v1=ifelse(order_pdte_v1==1 , name_pdte , name_other_v1) , 
+         win_v2=ifelse(order_pdte_v2==1 , name_pdte , name_other_v2) ,
+         votos_win_v1=ifelse(order_pdte_v1==1 , v_pdte_v1 , v_other_v1) , 
+         votos_win_v2=ifelse(order_pdte_v2==1 , v_pdte_v2 , v_other_v2) ,
+         votos_v1=v_total_v1 , 
+         votos_v2=v_total_v2 ,
+         votos_diff_v1=abs(v_diff_v1),
+         votos_diff_v2=abs(v_diff_v2),
+         conteo=1) %>% 
+  select(area_m,mpio_name,place_id,year_e,votos_v1,votos_v2,win_v1,win_v2,votos_win_v1,votos_win_v2,votos_diff_v1,votos_diff_v2)
+export(df,"../../../OneDrive-Universidaddelosandes/BA3 - Introducción a Business Analitycs/02_github/01-slides/week-05/data/Votaciones.rds")
