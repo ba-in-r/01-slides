@@ -16,7 +16,7 @@ list.files(recursive = T)
 ####==: 2. Leer y explorar los datos
 
 ### Leer base de datos
-rues <- import("")
+rues <- import("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-05/week-05/input/empresas.rds")
 
 ### exploracion inicial de datos: skim()
 
