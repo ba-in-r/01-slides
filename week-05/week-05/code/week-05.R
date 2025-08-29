@@ -16,7 +16,7 @@ list.files(recursive = T)
 ####==: 2. Leer y explorar los datos
 
 ### Leer base de datos
-
+rues <- import("")
 
 ### exploracion inicial de datos: skim()
 
@@ -27,6 +27,7 @@ list.files(recursive = T)
 ####==: 3. Descriptivas de un conjunto de datos
 
 ### 3.1 Generales
+# sum()
 # mean()
 # sd()
 # summary()
