@@ -94,9 +94,15 @@ db <- datos_vivienda
 El propósito de este bloque es obtener un diagnóstico general de la base de datos, revisando los tipos de variables, la presencia de valores faltantes y las distribuciones principales. De esta manera, es posible identificar rápidamente las variables que requieren limpieza o transformación antes de avanzar con el análisis.
 
 ```{webr-r}
+## nombres 
+names(db)
+```
+
+```{webr-r}
 ## Resumen compacto
 skim(db)
 ```
+
 ```{webr-r}
 ## Primeras filas (muestra)
 head(db, 10)
