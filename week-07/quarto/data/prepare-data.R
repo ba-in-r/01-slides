@@ -1,5 +1,6 @@
 # semilla
-require(tidyverse)
+rm(list=ls())
+require(dplyr)
 set.seed(123)
 n <- 1500
 
@@ -66,7 +67,8 @@ for (col in c("precio_cop","area_m2","habitaciones","banos","barrio","direccion"
 dups <- df %>% slice(sample(1:n, size = round(0.04*n)))
 
 # datos final
-datos_vivienda <- bind_rows(df, dups) %>% arrange(fecha_publicacion)
+rm(list = setdiff(ls(), "data_viv"))
+data_viv <- bind_rows(df, dups) %>% arrange(fecha_publicacion)
 
 
 
