@@ -76,10 +76,8 @@ El propósito de este bloque es definir la fuente de datos, ya sea una ruta loca
 
 ```{webr-r}
 ## intentar cargar desde URL
-data <- import("https://eduard-martinez.github.io/data/datos.rds")
+data <- billboard
 ```
-Error: Timeout was reached [eduard-martinez.github.io]:
-Connection timed out after 10000 milliseconds
 
 ## Inspección rápida (EDA mínimo)
 

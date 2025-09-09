@@ -64,8 +64,9 @@ for (col in c("precio_cop","area_m2","habitaciones","banos","barrio","direccion"
 
 # crear duplicados intencionales (~4%)
 dups <- df %>% slice(sample(1:n, size = round(0.04*n)))
+
+# datos final
 datos_vivienda <- bind_rows(df, dups) %>% arrange(fecha_publicacion)
 
-## export 
-export(datos_vivienda,"week-07/quarto/data/datos.csv")
+
 
