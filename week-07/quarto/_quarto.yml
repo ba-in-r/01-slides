@@ -16,4 +16,4 @@ filters:
   - webr
 
 webr:
-  packages: [dplyr, ggplot2, stringr, janitor, rio, skimr]
+  packages: [dplyr, ggplot2, stringr, janitor, skimr]

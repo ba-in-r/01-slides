@@ -66,7 +66,6 @@ require(dplyr)    # Manipulación de datos
 require(ggplot2)  # Visualización de datos
 require(stringr)  # Manejo eficiente de cadenas de texto
 require(janitor)  # Limpieza de nombres de variables
-require(rio)      # Importar y exportar datos
 require(skimr)    # Resúmenes rápidos y completos
 ```
 
@@ -75,9 +74,19 @@ require(skimr)    # Resúmenes rápidos y completos
 El propósito de este bloque es definir la fuente de datos, ya sea una ruta local o una URL, y cargar la base de forma segura con manejo de errores en caso de que la importación falle. Además, incluye un fallback con datos de ejemplo, lo que permite continuar con la práctica o el análisis incluso si no se dispone de un archivo real en ese momento.
 
 ```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
 source("https://cdn.jsdelivr.net/gh/ba-in-r/01-slides@main/week-07/quarto/data/prepare-data.R")
-## intentar cargar desde URL
-data <- data_viv
+
+## chuequear objetos en la memoria
+ls()
+```
+
+```{webr-r}
+## asignar objeto
+db <- datos_vivienda
 ```
 
 ## Inspección rápida (EDA mínimo)
@@ -86,11 +95,11 @@ El propósito de este bloque es obtener un diagnóstico general de la base de da
 
 ```{webr-r}
 ## Resumen compacto
-skim(data)
+skim(db)
 ```
 ```{webr-r}
 ## Primeras filas (muestra)
-head(data, 10)
+head(db, 10)
 ```
 
 ## Limpieza mínima reproducible

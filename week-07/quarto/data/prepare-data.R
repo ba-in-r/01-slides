@@ -67,7 +67,12 @@ for (col in c("precio_cop","area_m2","habitaciones","banos","barrio","direccion"
 dups <- df %>% slice(sample(1:n, size = round(0.04*n)))
 
 # datos final
-data_viv <- bind_rows(df, dups) %>% arrange(fecha_publicacion)
-rm(list = setdiff(ls(), "data_viv"))
+datos_vivivienda <- bind_rows(df, dups) %>% arrange(fecha_publicacion)
+names(datos_vivivienda)[2] <- "Fecha Publicacion"
+names(datos_vivivienda)[4] <- "Area M2"
+names(datos_vivivienda)[12] <- "Tipo Propiedad"
+
+# eliminar objeto
+rm(list = setdiff(ls(), "datos_vivivienda"))
 
 
