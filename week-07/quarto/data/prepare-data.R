@@ -73,6 +73,6 @@ names(datos_vivienda)[4] <- "Area M2"
 names(datos_vivienda)[12] <- "Tipo Propiedad"
 
 # eliminar objeto
-rm(list = setdiff(ls(), "datos_vivivienda"))
+rm(list = setdiff(ls(), "datos_vivienda"))
 
 
