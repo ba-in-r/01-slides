@@ -75,8 +75,9 @@ require(skimr)    # Resúmenes rápidos y completos
 El propósito de este bloque es definir la fuente de datos, ya sea una ruta local o una URL, y cargar la base de forma segura con manejo de errores en caso de que la importación falle. Además, incluye un fallback con datos de ejemplo, lo que permite continuar con la práctica o el análisis incluso si no se dispone de un archivo real en ese momento.
 
 ```{webr-r}
+source("https://cdn.jsdelivr.net/gh/ba-in-r/01-slides@main/week-07/quarto/data/prepare-data.R")
 ## intentar cargar desde URL
-data <- billboard
+data <- data_viv
 ```
 
 ## Inspección rápida (EDA mínimo)
