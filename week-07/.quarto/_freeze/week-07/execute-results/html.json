@@ -1,0 +1,17 @@
+{
+  "hash": "082944e77426021a62cea14a0b6cfb2d",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Unidad 4 — Sobre los datos, su limpieza y exploración\"\nsubtitle: \"Introducción al Business Analytics\"\nauthor: \"Eduard F. Martínez González\"\ndate: today\n---\n\n\n  \n## Objetivos de aprendizaje\n\n- Identificar y clasificar **fuentes de datos** relevantes para BA.  \n- Explicar `base de datos`, `data warehouse`, `data lake`, `ETL` y `metadata`.  \n- Ejecutar una **limpieza inicial en R** y documentar decisiones.  \n- Reconocer y tratar problemas comunes (NA, duplicados, tipado, inconsistencias).\n\n::: callout-tip\n**Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.\n:::\n\n## Fuentes de datos\n\n- **Organización:** clientes, logística, transacciones.  \n- **Datos abiertos/públicos.**  \n- **Eventos web:** logs, CTR, rutas de navegación.  \n- **Solicitados:** encuestas, cuestionarios, grupos focales.  \n- **APIs:** Twitter, Wikipedia, Yahoo! Finance, Google Maps.\n\n### APIs (Application Programming Interface)\n\n- Intercambio de datos entre sistemas (autenticación, _rate limits_, trazabilidad).  \n- Útiles para monitoreo, enriquecimiento y automatización.\n\n## Tipos de datos\n\n- **Cuantitativos** vs. **Cualitativos**.  \n- **Texto**, **Imagen**, **Geoespacial**, **Redes** (y otros).\n\n### Tipos de datos en R\n\n- `numeric`, `integer`, `character`, `logical`, `factor`.  \n- **Buenas prácticas:** tipa correctamente al importar; evita coerciones silenciosas.\n\n\n\n::: {.cell}\n\n```{.r .cell-code}\nx_num <- as.numeric(c(\"1\",\"2\",\"3.5\"))\nx_int <- as.integer(c(1, 2, 3))\nx_chr <- c(\"A\",\"B\",\"C\")\nx_lgl <- c(TRUE, FALSE, TRUE)\nx_fac <- factor(c(\"Soltero\",\"Casado\",\"Viudo\"))\n\nstr(list(x_num=x_num, x_int=x_int, x_chr=x_chr, x_lgl=x_lgl, x_fac=x_fac))\n```\n\n::: {.cell-output .cell-output-stdout}\n\n```\nList of 5\n $ x_num: num [1:3] 1 2 3.5\n $ x_int: int [1:3] 1 2 3\n $ x_chr: chr [1:3] \"A\" \"B\" \"C\"\n $ x_lgl: logi [1:3] TRUE FALSE TRUE\n $ x_fac: Factor w/ 3 levels \"Casado\",\"Soltero\",..: 2 1 3\n```\n\n\n:::\n:::",
+    "supporting": [
+      "week-07_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

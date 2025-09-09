@@ -1,0 +1,20 @@
+project:
+  type: default
+
+format:
+  html:
+    webr:
+      show-code: false
+    theme: journal
+    toc: true
+    toc-location: right
+    toc-expand: 1
+    number-sections: true
+    css: styles.css
+
+filters:
+  - webr
+
+webr:
+  packages: [dplyr, ggplot2, stringr, janitor, rio, skimr]
+   

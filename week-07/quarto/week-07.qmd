@@ -1,0 +1,127 @@
+---
+title: "Unidad 4 — Sobre los datos, su limpieza y exploración"
+subtitle: "Introducción al Business Analytics"
+author: "Eduard F. Martínez González"
+---
+  
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
+<img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
+</a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
+
+---
+
+# Limpieza y exploración de datos
+
+El proceso de limpieza de datos es una de las fases más críticas de cualquier proyecto de Business Analytics. Antes de aplicar modelos o generar reportes, necesitamos asegurarnos de que los datos estén completos, consistentes y preparados para responder nuestras preguntas de negocio.
+
+## Fases de limpieza
+
+La primera etapa corresponde al **análisis exploratorio (EDA)**. Aquí revisamos el esquema de la base, los tipos de variables, la existencia de valores atípicos y la presencia de valores perdidos. Este paso nos permite detectar de manera temprana posibles problemas de calidad.
+
+En segundo lugar, es fundamental **planear y documentar los pasos de limpieza**. La reproducibilidad es clave: si otra persona toma el mismo dataset y sigue tu pipeline, debería obtener el mismo resultado. Esto evita decisiones ad-hoc y mejora la transparencia.
+
+La siguiente fase es la **transformación**, que incluye asignar el tipo de dato correcto (numérico, categórico, fecha), recodificar variables cuando es necesario y normalizar formatos. Por ejemplo, convertir todas las fechas a `YYYY-MM-DD` o estandarizar categorías con diferencias ortográficas.
+
+Luego pasamos a la **verificación**, donde aplicamos conteos, reglas de negocio y pruebas simples para asegurarnos de que los cambios fueron exitosos. Este paso puede revelar errores ocultos o inconsistencias que no se habían detectado al inicio.
+
+Finalmente, se realiza la **sustitución**, reemplazando datos “sucios” por datos “limpios”. La clave aquí es mantener trazabilidad: todo reemplazo debe quedar documentado para que sea posible auditar qué se hizo y por qué.
+
+## Problemas frecuentes y tratamiento
+
+Algunos problemas son comunes en casi cualquier dataset. Uno de ellos es la **incompatibilidad entre tipo y formato**. Es típico encontrar números almacenados como texto o fechas en distintos estilos. La solución en R suele ser usar funciones como `as.integer()`, `as.numeric()` o `as.Date()` para realizar la coerción correcta.
+
+Otro problema frecuente son los **duplicados**. Estos deben identificarse a partir de claves únicas y revisarse cuidadosamente: no siempre es correcto eliminarlos de inmediato, ya que pueden reflejar procesos de carga duplicada o registros que tienen sentido en el negocio.
+
+Los **valores perdidos (NA)** requieren una decisión informada. Es importante entender el mecanismo de ausencia: si los datos faltan completamente al azar (MCAR), de manera dependiente de otras variables (MAR) o de forma no aleatoria (MNAR). Dependiendo del caso, podemos optar por eliminar, imputar con media/mediana/moda o modelar explícitamente los valores ausentes.
+
+Finalmente, encontramos las **inconsistencias y errores tipográficos**, como “NYC” vs. “New York”, o categorías con tildes distintas (“Sí” vs. “Si”). Para tratarlos, es útil contar con un diccionario de referencia y aplicar funciones de normalización y reglas de negocio.
+
+---
+
+# Aplicación en R
+
+::: callout-tip
+**Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
+:::
+
+## Preparación del entorno
+
+El propósito de este bloque es asegurar un entorno limpio y reproducible, eliminando objetos previos que puedan interferir con el análisis. Además, permite cargar los paquetes necesarios para la exploración de datos (EDA) y la ingestión de información, garantizando que todas las herramientas básicas estén disponibles desde el inicio del trabajo.
+
+```{webr-r}
+## Author:
+## Date: 
+
+## limpiar entorno
+rm(list=ls())
+
+## cargar paquetes
+require(dplyr)    # Manipulación de datos 
+require(ggplot2)  # Visualización de datos
+require(stringr)  # Manejo eficiente de cadenas de texto
+require(janitor)  # Limpieza de nombres de variables
+require(rio)      # Importar y exportar datos
+require(skimr)    # Resúmenes rápidos y completos
+```
+
+## Ingesta de datos (carga desde archivo o URL)
+
+El propósito de este bloque es definir la fuente de datos, ya sea una ruta local o una URL, y cargar la base de forma segura con manejo de errores en caso de que la importación falle. Además, incluye un fallback con datos de ejemplo, lo que permite continuar con la práctica o el análisis incluso si no se dispone de un archivo real en ese momento.
+
+```{webr-r}
+## intentar cargar desde URL
+data <- import("https://eduard-martinez.github.io/data/datos.rds")
+```
+Error: Timeout was reached [eduard-martinez.github.io]:
+Connection timed out after 10000 milliseconds
+
+## Inspección rápida (EDA mínimo)
+
+El propósito de este bloque es obtener un diagnóstico general de la base de datos, revisando los tipos de variables, la presencia de valores faltantes y las distribuciones principales. De esta manera, es posible identificar rápidamente las variables que requieren limpieza o transformación antes de avanzar con el análisis.
+
+```{webr-r}
+## Resumen compacto
+skim(data)
+```
+```{webr-r}
+## Primeras filas (muestra)
+head(data, 10)
+```
+
+## Limpieza mínima reproducible
+
+El propósito de este bloque es aplicar las transformaciones típicas de limpieza de datos. Entre ellas se incluyen la normalización de los nombres de las columnas, la asignación correcta de tipos de variables (como fechas, enteros o factores), la corrección de espacios en blanco, tildes y mayúsculas/minúsculas, la marcación de valores vacíos como NA y la eliminación de duplicados. Además, busca documentar cada decisión tomada, garantizando trazabilidad y reproducibilidad en el proceso de preparación de los datos.
+
+```{webr-r}
+##
+```
+
+## Verificación y reglas de negocio
+
+El propósito de este bloque es comprobar que el proceso de limpieza efectivamente alcanzó los objetivos propuestos. Para ello, se aplican reglas simples de validación, como verificar que los valores se encuentren dentro de rangos plausibles, que las claves sean únicas y que las variables mantengan consistencia lógica entre sí.
+
+```{webr-r}
+##
+```
+
+## Guardado y bitácora mínima
+
+El propósito de este bloque es guardar de forma permanente los resultados de la limpieza y documentar lo realizado. En un flujo de trabajo real, esto significa exportar la base procesada a un formato estándar como CSV o Parquet y registrar un changelog que deje evidencia de cada modificación aplicada, garantizando trazabilidad y reproducibilidad en etapas posteriores del análisis.
+
+```{webr-r}
+## Guardar versión limpia
+export(clean, "datos_limpios.csv")
+
+## Bitácora mínima en consola
+cat("\n[LOG] Limpieza completada:",
+    "\n - Archivo de salida: datos_limpios.csv",
+    "\n - Filas finales:", nrow(clean),
+    "\n - Columnas:", ncol(clean), "\n")
+```
+
