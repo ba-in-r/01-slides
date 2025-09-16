@@ -1,0 +1,234 @@
+---
+title: "Unidad 5 — Agrupando Observaciones"
+subtitle: "Introducción al Business Analytics"
+author: "Eduard F. Martínez González"
+---
+  
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
+<img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
+</a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
+
+---
+
+# Limpieza y exploración de datos
+
+El proceso de limpieza de datos es una de las fases más críticas de cualquier proyecto de Business Analytics. Antes de aplicar modelos o generar reportes, necesitamos asegurarnos de que los datos estén completos, consistentes y preparados para responder nuestras preguntas de negocio.
+
+## Fases de limpieza
+
+La primera etapa corresponde al **análisis exploratorio (EDA)**. Aquí revisamos el esquema de la base, los tipos de variables, la existencia de valores atípicos y la presencia de valores perdidos. Este paso nos permite detectar de manera temprana posibles problemas de calidad.
+
+En segundo lugar, es fundamental **planear y documentar los pasos de limpieza**. La reproducibilidad es clave: si otra persona toma el mismo dataset y sigue tu pipeline, debería obtener el mismo resultado. Esto evita decisiones ad-hoc y mejora la transparencia.
+
+La siguiente fase es la **transformación**, que incluye asignar el tipo de dato correcto (numérico, categórico, fecha), recodificar variables cuando es necesario y normalizar formatos. Por ejemplo, convertir todas las fechas a `YYYY-MM-DD` o estandarizar categorías con diferencias ortográficas.
+
+Luego pasamos a la **verificación**, donde aplicamos conteos, reglas de negocio y pruebas simples para asegurarnos de que los cambios fueron exitosos. Este paso puede revelar errores ocultos o inconsistencias que no se habían detectado al inicio.
+
+Finalmente, se realiza la **sustitución**, reemplazando datos “sucios” por datos “limpios”. La clave aquí es mantener trazabilidad: todo reemplazo debe quedar documentado para que sea posible auditar qué se hizo y por qué.
+
+## Problemas frecuentes y tratamiento
+
+Algunos problemas son comunes en casi cualquier dataset. Uno de ellos es la **incompatibilidad entre tipo y formato**. Es típico encontrar números almacenados como texto o fechas en distintos estilos. La solución en R suele ser usar funciones como `as.integer()`, `as.numeric()` o `as.Date()` para realizar la coerción correcta.
+
+Otro problema frecuente son los **duplicados**. Estos deben identificarse a partir de claves únicas y revisarse cuidadosamente: no siempre es correcto eliminarlos de inmediato, ya que pueden reflejar procesos de carga duplicada o registros que tienen sentido en el negocio.
+
+Los **valores perdidos (NA)** requieren una decisión informada. Es importante entender el mecanismo de ausencia: si los datos faltan completamente al azar (MCAR), de manera dependiente de otras variables (MAR) o de forma no aleatoria (MNAR). Dependiendo del caso, podemos optar por eliminar, imputar con media/mediana/moda o modelar explícitamente los valores ausentes.
+
+Finalmente, encontramos las **inconsistencias y errores tipográficos**, como “NYC” vs. “New York”, o categorías con tildes distintas (“Sí” vs. “Si”). Para tratarlos, es útil contar con un diccionario de referencia y aplicar funciones de normalización y reglas de negocio.
+
+---
+
+# Aplicación en R
+
+::: callout-tip
+**Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
+:::
+
+## Preparación del entorno
+
+El propósito de este bloque es asegurar un entorno limpio y reproducible, eliminando objetos previos que puedan interferir con el análisis. Además, permite cargar los paquetes necesarios para la exploración de datos (EDA) y la ingestión de información, garantizando que todas las herramientas básicas estén disponibles desde el inicio del trabajo.
+
+```{webr-r}
+## Author:
+## Date: 
+
+## limpiar entorno
+rm(list=ls())
+
+## cargar paquetes
+require(dplyr)    # Manipulación de datos 
+require(ggplot2)  # Visualización de datos
+require(stringr)  # Manejo eficiente de cadenas de texto
+require(janitor)  # Limpieza de nombres de variables
+require(skimr)    # Resúmenes rápidos y completos
+```
+
+## Ingesta de datos (carga desde archivo o URL)
+
+En esta sección se lleva a cabo la ingesta de datos, es decir, el proceso de carga inicial de la base con la que se trabajará. Se define una fuente externa mediante la función `source()`, que en este caso ejecuta un script alojado en un repositorio de `GitHub`. Dicho script genera automáticamente un conjunto de datos de ejemplo con características intencionalmente “sucias” para poner en práctica las técnicas de limpieza.
+
+El uso de un archivo en línea asegura que cualquier persona pueda reproducir el ejercicio sin necesidad de contar con un archivo local. Además, si la fuente real no está disponible, este mecanismo actúa como un fallback seguro, garantizando que el flujo de trabajo continúe sin interrupciones.
+
+Finalmente, con la función `ls()` se listan los objetos en la memoria de `R`, lo que permite comprobar que el dataset esperado (en este caso, `house_data`) se cargó correctamente y está disponible para los siguientes pasos de exploración y depuración.
+
+```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-07/quarto/data/prepare-data.R")
+
+## chuequear objetos en la memoria
+ls()
+```
+
+```{webr-r}
+## asignar objeto
+db <- house_data
+```
+
+## Inspección rápida (EDA mínimo)
+
+El propósito de este bloque es obtener un diagnóstico general de la base de datos, revisando los tipos de variables, la presencia de valores faltantes y las distribuciones principales. De esta manera, es posible identificar rápidamente las variables que requieren limpieza o transformación antes de avanzar con el análisis.
+
+```{webr-r}
+## nombres 
+names(db)
+```
+
+```{webr-r}
+## Resumen compacto
+skim(db)
+```
+
+```{webr-r}
+## Primeras filas (muestra)
+head(db, 10)
+```
+
+## Limpieza mínima reproducible
+
+El propósito de este bloque es aplicar las transformaciones típicas de limpieza de datos. Entre ellas se incluyen la normalización de los nombres de las columnas, la asignación correcta de tipos de variables (como fechas, enteros o factores), la corrección de espacios en blanco, tildes y mayúsculas/minúsculas, la marcación de valores vacíos como `NA` y la eliminación de duplicados. Además, busca documentar cada decisión tomada, garantizando trazabilidad y reproducibilidad en el proceso de preparación de los datos.
+
+Primero se procede a normalizar los nombres de las columnas con la función `clean_names()` del paquete `janitor.` Esta función transforma los nombres en un formato estandarizado (`snake_case`, sin acentos ni caracteres especiales), lo que facilita el manejo posterior de las variables. 
+
+```{webr-r}
+## Normalizar nombres de columnas
+db_clean <- clean_names(db)
+
+## chequear nombres
+names(db_clean)
+```
+
+En este paso se realiza una revisión rápida del contenido textual de la base. Con glimpse(db_clean) se obtienen los tipos de variables y ejemplos de valores, lo que ayuda a detectar posibles inconsistencias en los datos de texto. Finalmente, se genera una tabla de frecuencias de la variable ciudad usando `table(db_clean$ciudad)`. Este paso es útil para identificar valores repetidos con pequeñas diferencias de escritura (por ejemplo, “Cali”, “  Cali ” o “Santiago de Cali”), lo que anticipa la necesidad de homologación en etapas posteriores de la limpieza.
+
+```{webr-r}
+## chequear espacios en textos
+glimpse(db_clean)
+
+## tabla de frecuencias
+table(db_clean$ciudad)
+```
+
+En este paso se eliminan los espacios en blanco innecesarios de las columnas de texto más relevantes (`ciudad`, `barrio`, `tipo_propiedad` y `direccion`). Para ello se utiliza la función `str_squish()` del paquete `stringr`, que remueve los espacios al inicio y al final de cada cadena, además de reducir los espacios múltiples a uno solo. Con `glimpse(db_clean)` se valida que los cambios se hayan aplicado correctamente y que las variables de texto ahora estén normalizadas en su estructura.
+
+```{webr-r}
+##  Quitar espacios de más en TODAS las columnas de texto
+db_clean <- mutate(db_clean, 
+                   ciudad=str_squish(ciudad) , 
+                   barrio=str_squish(barrio),
+                   tipo_propiedad=str_squish(tipo_propiedad) , 
+                   direccion=str_squish(direccion))
+glimpse(db_clean)
+```
+
+Ahora se realiza la conversión de tipos de variables según el diccionario esperado. La variable `fecha_publicacion` se transforma a formato `Date`, los campos numéricos (`precio_cop`, `area_m2`, `habitaciones`, `banos`, `lat`, `lon`) se convierten a sus tipos apropiados (`numeric` o `integer`), mientras que las variables categóricas (`tipo_propiedad`, `barrio`, `ciudad`) se aseguran como character para una posterior recodificación o conversión a factores. Finalmente, un nuevo glimpse(`db_clean`) permite comprobar que las coerciones fueron exitosas y que cada variable está en el formato adecuado para análisis posteriores.
+ 
+```{webr-r}
+## Conversión de tipos (ajusta si tu diccionario cambia)
+db_clean <- mutate(db_clean,
+                   fecha_publicacion = as.Date(fecha_publicacion),
+                   precio_cop        = as.numeric(precio_cop),
+                   area_m2           = as.numeric(area_m2),
+                   habitaciones      = as.integer(habitaciones),
+                   banos             = as.integer(banos),
+                   lat               = as.numeric(lat),
+                   lon               = as.numeric(lon),
+                   tipo_propiedad    = as.character(tipo_propiedad),
+                   barrio            = as.character(barrio),
+                   ciudad            = as.character(ciudad)
+                   )
+glimpse(db_clean)
+```
+
+En este punto se procede a la homologación de categorías en la variable `tipo_propiedad.` La transformación a factor permite trabajar con un conjunto cerrado de valores únicos y facilita posteriores análisis descriptivos o modelados que requieran variables categóricas. Al aplicar `table(db_clean$tipo_propiedad)` se obtiene la distribución de frecuencias de cada categoría, lo que permite detectar valores poco comunes, inconsistencias o errores de escritura que deben ser corregidos.
+
+```{webr-r}
+## Homologar categorías y texto: Tipo de propiedad
+db_clean <- mutate(db_clean, 
+                   tipo_propiedad = factor(tipo_propiedad))
+table(db_clean$tipo_propiedad)
+```
+
+A continuación, se realiza la eliminación de duplicados exactos con la función `distinct()`. Este paso asegura que no existan filas idénticas que puedan sesgar los resultados del análisis. Para verificar el impacto de esta operación, se comparan las dimensiones de la base de datos antes y después (`nrow(db)` vs. `nrow(db_clean)`), lo que evidencia cuántos registros duplicados fueron eliminados y confirma que la base de trabajo ahora contiene únicamente observaciones únicas.
+
+```{webr-r}
+## Eliminar duplicados exactos
+db_clean <- distinct(db_clean)
+
+## chequear numero de filas
+nrow(db)
+nrow(db_clean)
+```
+
+## Verificación y reglas de negocio
+
+El propósito de este bloque es comprobar que el proceso de limpieza efectivamente alcanzó los objetivos propuestos. Para ello, se aplican reglas simples de validación, como verificar que los valores se encuentren dentro de rangos plausibles, que las claves sean únicas y que las variables mantengan consistencia lógica entre sí.
+
+```{webr-r}
+## Comprobaciones rápidas
+tamanos <- data.frame(filas_antes   = nrow(db),
+                      filas_despues = nrow(db_clean),
+                      columnas      = ncol(db_clean))
+tamanos
+```
+
+En esta etapa se revisan los rangos de variables clave mediante `summary()`. En este caso se inspeccionan `precio_cop` y `area_m2`, ya que constituyen indicadores centrales en un análisis de vivienda. Este resumen estadístico muestra valores mínimos, máximos y cuartiles, lo que permite detectar rápidamente posibles outliers o inconsistencias (por ejemplo, precios extremadamente bajos o áreas irreales).
+
+```{webr-r}
+## Comprobaciones rápidas
+rangos <- list(precio = summary(db_clean$precio_cop),
+               area   = summary(db_clean$area_m2)
+               )
+rangos
+```
+
+Estas comprobaciones sirven como un control de calidad para asegurar que los datos resultantes son plausibles y consistentes con el contexto del negocio antes de continuar con el análisis exploratorio o la construcción de modelos.
+
+```{webr-r}
+## Otras comprobaciones
+# histogramas?
+# skim?
+```
+
+## Guardado y bitácora mínima
+
+El propósito de este bloque es guardar de forma permanente los resultados de la limpieza y documentar lo realizado. En un flujo de trabajo real, esto significa exportar la base procesada a un formato estándar como CSV o Parquet y registrar un changelog que deje evidencia de cada modificación aplicada, garantizando trazabilidad y reproducibilidad en etapas posteriores del análisis.
+
+```{webr-r}
+## Guardar versión limpia
+write.csv(db_clean, "datos_limpios.csv")
+
+## Bitácora mínima en consola
+cat("\n[LOG] Limpieza completada:",
+    "\n - Archivo de salida: datos_limpios.csv",
+    "\n - Filas finales:", nrow(db_clean),
+    "\n - Columnas:", ncol(db_clean), "\n")
+```
+
