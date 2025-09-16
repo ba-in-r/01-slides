@@ -16,35 +16,39 @@ author: "Eduard F. Martínez González"
 
 ---
 
-# Limpieza y exploración de datos
+# Introducción al Clustering
 
-El proceso de limpieza de datos es una de las fases más críticas de cualquier proyecto de Business Analytics. Antes de aplicar modelos o generar reportes, necesitamos asegurarnos de que los datos estén completos, consistentes y preparados para responder nuestras preguntas de negocio.
+El clustering es una técnica fundamental dentro del aprendizaje no supervisado. A diferencia de otros métodos, en clustering no contamos con una variable objetivo o etiqueta que nos diga cuál es la “respuesta correcta”. En su lugar, el algoritmo busca organizar los datos en grupos de tal manera que las observaciones dentro de un mismo grupo sean lo más parecidas posible, y a la vez, que las diferencias entre grupos sean lo más marcadas que se pueda.
 
-## Fases de limpieza
+En contraste, en el aprendizaje supervisado —como en los casos de regresión o clasificación— el modelo aprende a partir de ejemplos en los que sí conocemos la respuesta. Por ejemplo, podemos tener un conjunto de datos con las ventas históricas de una empresa y usar esas observaciones para entrenar un modelo que prediga las ventas futuras. La clave está en que existe una etiqueta o variable dependiente a la cual el modelo ajusta sus parámetros.
 
-La primera etapa corresponde al **análisis exploratorio (EDA)**. Aquí revisamos el esquema de la base, los tipos de variables, la existencia de valores atípicos y la presencia de valores perdidos. Este paso nos permite detectar de manera temprana posibles problemas de calidad.
-
-En segundo lugar, es fundamental **planear y documentar los pasos de limpieza**. La reproducibilidad es clave: si otra persona toma el mismo dataset y sigue tu pipeline, debería obtener el mismo resultado. Esto evita decisiones ad-hoc y mejora la transparencia.
-
-La siguiente fase es la **transformación**, que incluye asignar el tipo de dato correcto (numérico, categórico, fecha), recodificar variables cuando es necesario y normalizar formatos. Por ejemplo, convertir todas las fechas a `YYYY-MM-DD` o estandarizar categorías con diferencias ortográficas.
-
-Luego pasamos a la **verificación**, donde aplicamos conteos, reglas de negocio y pruebas simples para asegurarnos de que los cambios fueron exitosos. Este paso puede revelar errores ocultos o inconsistencias que no se habían detectado al inicio.
-
-Finalmente, se realiza la **sustitución**, reemplazando datos “sucios” por datos “limpios”. La clave aquí es mantener trazabilidad: todo reemplazo debe quedar documentado para que sea posible auditar qué se hizo y por qué.
-
-## Problemas frecuentes y tratamiento
-
-Algunos problemas son comunes en casi cualquier dataset. Uno de ellos es la **incompatibilidad entre tipo y formato**. Es típico encontrar números almacenados como texto o fechas en distintos estilos. La solución en R suele ser usar funciones como `as.integer()`, `as.numeric()` o `as.Date()` para realizar la coerción correcta.
-
-Otro problema frecuente son los **duplicados**. Estos deben identificarse a partir de claves únicas y revisarse cuidadosamente: no siempre es correcto eliminarlos de inmediato, ya que pueden reflejar procesos de carga duplicada o registros que tienen sentido en el negocio.
-
-Los **valores perdidos (NA)** requieren una decisión informada. Es importante entender el mecanismo de ausencia: si los datos faltan completamente al azar (MCAR), de manera dependiente de otras variables (MAR) o de forma no aleatoria (MNAR). Dependiendo del caso, podemos optar por eliminar, imputar con media/mediana/moda o modelar explícitamente los valores ausentes.
-
-Finalmente, encontramos las **inconsistencias y errores tipográficos**, como “NYC” vs. “New York”, o categorías con tildes distintas (“Sí” vs. “Si”). Para tratarlos, es útil contar con un diccionario de referencia y aplicar funciones de normalización y reglas de negocio.
+El clustering, en cambio, persigue un objetivo exploratorio: descubrir patrones ocultos en los datos. Al agrupar observaciones con base en sus características, permite identificar segmentos de clientes, canciones, productos o mercados, incluso cuando no tenemos categorías predefinidas. Por esta razón, se convierte en una herramienta poderosa para la toma de decisiones, ya que revela estructuras y perfiles que no son evidentes a simple vista.
 
 ---
 
+## Intuición de K-means
+
+El algoritmo K-means parte de una idea sencilla pero poderosa: agrupar observaciones en función de su cercanía en el espacio de variables. Lo primero que se hace es elegir un número de grupos k, que representa cuántos clusters queremos identificar en los datos. Ese número no lo calcula automáticamente el algoritmo; depende de nuestra decisión, aunque existen criterios como el método del codo o la silueta que ayudan a definirlo.
+
+Una vez fijado k, el algoritmo inicializa k centroides en posiciones aleatorias. Estos centroides son puntos que actúan como el “corazón” de cada cluster. En la siguiente etapa, cada observación se asigna al centroide más cercano según una medida de distancia (usualmente, la distancia euclidiana). De esta manera, se crean grupos iniciales basados únicamente en la proximidad.
+
+Luego, se recalculan los centroides tomando el promedio de todas las observaciones asignadas a cada cluster. Con los nuevos centroides actualizados, el proceso de asignación se repite: cada observación puede cambiar de grupo si encuentra un centroide más cercano. Esta rutina se ejecuta de manera iterativa hasta que los centroides dejan de moverse significativamente o se alcanza un número máximo de iteraciones.
+
+Al final, el resultado es una partición de los datos en clusters de observaciones similares, donde cada grupo está representado por su centroide. La simplicidad del algoritmo y su interpretación intuitiva lo convierten en uno de los métodos de clustering más populares en analítica y ciencia de datos.
+
+### Algorimto de implementación:
+
+1. Elegir un número de grupos \(k\).
+2. Inicializar \(k\) puntos llamados **centroides**.
+3. Asignar cada observación al centroide más cercano.
+4. Recalcular centroides como el promedio de cada grupo.
+5. Repetir el proceso hasta que los grupos se estabilicen.
+
 # Aplicación en R
+
+Para ilustrar el funcionamiento de `K-means` utilizaremos la base de datos `spotify`, que contiene información sobre canciones, artistas, duración y número de reproducciones, entre otras variables musicales y de negocio. A modo de ejemplo, podemos imaginar un gráfico de dispersión donde en el eje X representamos la duración de la canción y en el eje Y el número de reproducciones. Al aplicar K-means con k=3, el algoritmo podría identificar patrones como: Cluster 1, compuesto por canciones cortas con un alto nivel de reproducciones; Cluster 2, formado por canciones más largas pero con menor popularidad; y Cluster 3, que agrupa canciones con valores intermedios en ambas dimensiones.
+
+Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos naturales a partir de los datos, sin necesidad de categorías predefinidas, mostrando el poder del aprendizaje no supervisado en la exploración de patrones y perfiles.
 
 ::: callout-tip
 **Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
@@ -52,183 +56,199 @@ Finalmente, encontramos las **inconsistencias y errores tipográficos**, como �
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno limpio y reproducible, eliminando objetos previos que puedan interferir con el análisis. Además, permite cargar los paquetes necesarios para la exploración de datos (EDA) y la ingestión de información, garantizando que todas las herramientas básicas estén disponibles desde el inicio del trabajo.
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
 
 ```{webr-r}
 ## Author:
 ## Date: 
 
 ## limpiar entorno
-rm(list=ls())
+rm(list = ls())
 
 ## cargar paquetes
-require(dplyr)    # Manipulación de datos 
-require(ggplot2)  # Visualización de datos
-require(stringr)  # Manejo eficiente de cadenas de texto
-require(janitor)  # Limpieza de nombres de variables
-require(skimr)    # Resúmenes rápidos y completos
+require(dplyr)      # Manipulación de datos 
+require(ggplot2)    # Visualización de datos
+require(skimr)      # Resúmenes rápidos y completos
+require(ggfortify)  # autoplot para PCA
+require(purrr)      # map_dbl, map, etc.
+require(factoextra) # funciones adicionales para K-means y PCA
 ```
 
 ## Ingesta de datos (carga desde archivo o URL)
 
-En esta sección se lleva a cabo la ingesta de datos, es decir, el proceso de carga inicial de la base con la que se trabajará. Se define una fuente externa mediante la función `source()`, que en este caso ejecuta un script alojado en un repositorio de `GitHub`. Dicho script genera automáticamente un conjunto de datos de ejemplo con características intencionalmente “sucias” para poner en práctica las técnicas de limpieza.
+En esta sección realizamos la **ingesta de datos**, es decir, el proceso de cargar la base que usaremos en los ejercicios de clustering. La base contiene información de canciones en Spotify, incluyendo variables como **artista, álbum, duración, número de reproducciones, género** y otras características relevantes. Estos atributos nos permitirán más adelante aplicar K-means para identificar patrones y segmentar canciones en grupos con perfiles similares.
 
-El uso de un archivo en línea asegura que cualquier persona pueda reproducir el ejercicio sin necesidad de contar con un archivo local. Además, si la fuente real no está disponible, este mecanismo actúa como un fallback seguro, garantizando que el flujo de trabajo continúe sin interrupciones.
+Para garantizar reproducibilidad, podemos trabajar de dos maneras:  
 
-Finalmente, con la función `ls()` se listan los objetos en la memoria de `R`, lo que permite comprobar que el dataset esperado (en este caso, `house_data`) se cargó correctamente y está disponible para los siguientes pasos de exploración y depuración.
+1. **Archivo local**: leer directamente el archivo `data.csv` que acompaña a este material.  
+2. **Fuente externa (opcional)**: usar una URL (por ejemplo, un repositorio en GitHub) para que cualquier estudiante pueda replicar el ejercicio sin necesidad del archivo local.
+
+Una vez cargados los datos, listamos los objetos en memoria para confirmar que el dataset esperado (`spotify`) está disponible y listo para la exploración inicial.
 
 ```{webr-r}
 #| warning: false
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-07/quarto/data/prepare-data.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/quarto/data/prepare-data.R")
 
 ## chuequear objetos en la memoria
 ls()
+
+## Inspecciona nombres del dataset (colnames)
+
+## Inspeccionar los datos con skim?
 ```
+## Selección de variables
+
+En este paso se seleccionan únicamente las variables numéricas asociadas a las características de audio de cada canción: danceability, energy, valence, acousticness, liveness, speechiness y tempo. Estas son las más adecuadas para aplicar un algoritmo de clustering, ya que describen propiedades musicales cuantitativas y comparables entre canciones.
+
+Al reducir la base a este subconjunto, garantizamos que el análisis con `K-means` se centre en los atributos musicales relevantes, eliminando información categórica o identificadores que no aportan al agrupamiento.
 
 ```{webr-r}
-## asignar objeto
-db <- house_data
+## filtrar variables
+features <- select(.data=spotify , 
+                   danceability, energy, valence, acousticness, liveness, speechiness, tempo)
+
+## check data (head)
+
 ```
 
-## Inspección rápida (EDA mínimo)
+## Escalado
 
-El propósito de este bloque es obtener un diagnóstico general de la base de datos, revisando los tipos de variables, la presencia de valores faltantes y las distribuciones principales. De esta manera, es posible identificar rápidamente las variables que requieren limpieza o transformación antes de avanzar con el análisis.
+Antes de aplicar K-means es fundamental escalar las variables: transformarlas para que todas queden en la misma escala (media 0 y desviación estándar 1). Esto evita que una variable con valores naturalmente más grandes (como tempo) domine el cálculo de distancias frente a otras en rangos más pequeños (como danceability).
+
+Con la función scale() se obtiene una matriz estandarizada lista para el análisis. Posteriormente, se utiliza skim() para verificar de manera rápida la estructura de los datos escalados y confirmar que la transformación se realizó correctamente.
 
 ```{webr-r}
-## nombres 
-names(db)
+## escalar
+x <- scale(features)
+
+## check data (skim)
+skim(x)
 ```
+
+## Heurística del codo
+
+El método del codo es una técnica práctica para determinar el número apropiado de clusters k. Consiste en calcular la suma de cuadrados intra-cluster (WSS, within-cluster sum of squares) para distintos valores de k. A medida que aumenta el número de clusters, el WSS disminuye (ya que los grupos se vuelven más homogéneos). Sin embargo, llega un punto en que la mejora se vuelve marginal: ese punto de inflexión, con forma de “codo” en la curva, sugiere el número óptimo de clusters.
 
 ```{webr-r}
-## Resumen compacto
-skim(db)
+## fijar semilla
+set.seed(2024)
+
+## numero de codos
+ks <- 1:8
 ```
+
+Aquí se calcula el WSS (suma de cuadrados intra-cluster) para cada valor de k definido anteriormente. Se utiliza un map_dbl() que ejecuta la función kmeans() repetidamente, y para cada solución obtiene el valor de tot.withinss. El argumento nstart = 20 indica que el algoritmo se ejecutará varias veces con diferentes inicializaciones para mejorar la estabilidad del resultado.
 
 ```{webr-r}
-## Primeras filas (muestra)
-head(db, 10)
+## wss
+wss <- map_dbl(ks, ~ kmeans(x, centers = .x, nstart = 20)$tot.withinss)
+
+## inspeccionar el objeto
+head(wss)
 ```
 
-## Limpieza mínima reproducible
-
-El propósito de este bloque es aplicar las transformaciones típicas de limpieza de datos. Entre ellas se incluyen la normalización de los nombres de las columnas, la asignación correcta de tipos de variables (como fechas, enteros o factores), la corrección de espacios en blanco, tildes y mayúsculas/minúsculas, la marcación de valores vacíos como `NA` y la eliminación de duplicados. Además, busca documentar cada decisión tomada, garantizando trazabilidad y reproducibilidad en el proceso de preparación de los datos.
-
-Primero se procede a normalizar los nombres de las columnas con la función `clean_names()` del paquete `janitor.` Esta función transforma los nombres en un formato estandarizado (`snake_case`, sin acentos ni caracteres especiales), lo que facilita el manejo posterior de las variables. 
+Finalmente, se organiza la información en un tibble llamado elbow_df, que contiene dos columnas: el número de clusters (k) y el valor correspondiente de WSS (wss). Esta tabla servirá como insumo para construir el gráfico del codo y tomar una decisión sobre el número óptimo de clusters.
 
 ```{webr-r}
-## Normalizar nombres de columnas
-db_clean <- clean_names(db)
+## elbow_df
+elbow_df <- tibble(k = ks, wss = wss)
 
-## chequear nombres
-names(db_clean)
+## inspeccionar el objeto
+head(elbow_df)
 ```
 
-En este paso se realiza una revisión rápida del contenido textual de la base. Con glimpse(db_clean) se obtienen los tipos de variables y ejemplos de valores, lo que ayuda a detectar posibles inconsistencias en los datos de texto. Finalmente, se genera una tabla de frecuencias de la variable ciudad usando `table(db_clean$ciudad)`. Este paso es útil para identificar valores repetidos con pequeñas diferencias de escritura (por ejemplo, “Cali”, “  Cali ” o “Santiago de Cali”), lo que anticipa la necesidad de homologación en etapas posteriores de la limpieza.
+En este bloque se construye el gráfico del codo, que permite visualizar cómo varía la suma de cuadrados intra-cluster (WSS) a medida que aumenta el número de clusters k. Primero, se utiliza ggplot() para graficar el objeto elbow_df, que contiene los pares (k, wss) obtenidos en pasos anteriores. La función geom_line() dibuja la línea que conecta los puntos, mientras que geom_point() resalta cada valor de k con un marcador. Los parámetros de color (#0ea5e9) y grosor de línea (linewidth = 1) sirven para mejorar la estética del gráfico.
+
+Finalmente, se aplica theme_minimal() para una visualización limpia y labs() para asignar título y etiquetas a los ejes. El resultado es una curva decreciente donde se espera identificar un punto de inflexión: allí se encuentra el “codo”, que sugiere un número razonable de clusters para aplicar el algoritmo de K-means.
 
 ```{webr-r}
-## chequear espacios en textos
-glimpse(db_clean)
-
-## tabla de frecuencias
-table(db_clean$ciudad)
+## plot data 
+ggplot(elbow_df, aes(k, wss)) +
+geom_line(color = "#0ea5e9", linewidth = 1) +
+geom_point(color = "#0ea5e9", size = 2) +
+theme_minimal(base_size = 12) +
+labs(title = "Heurística del codo para elegir K",
+     x = "N. de clusters (K)", y = "Suma intra-cluster (WSS)")
 ```
 
-En este paso se eliminan los espacios en blanco innecesarios de las columnas de texto más relevantes (`ciudad`, `barrio`, `tipo_propiedad` y `direccion`). Para ello se utiliza la función `str_squish()` del paquete `stringr`, que remueve los espacios al inicio y al final de cada cadena, además de reducir los espacios múltiples a uno solo. Con `glimpse(db_clean)` se valida que los cambios se hayan aplicado correctamente y que las variables de texto ahora estén normalizadas en su estructura.
+## Ajuste de K-means con K = 4
+
+En este bloque se realiza el entrenamiento del modelo K-means fijando el número de clusters en k = 4. Primero, se establece una semilla aleatoria (set.seed(2024)) para asegurar que los resultados sean reproducibles, ya que K-means depende de inicializaciones aleatorias de los centroides.
+
+Después, con la función kmeans() se ajusta el modelo sobre la matriz estandarizada X, indicando centers = 4 para formar cuatro grupos. El argumento nstart = 30 hace que el algoritmo se ejecute 30 veces con diferentes inicializaciones y escoja la mejor solución encontrada, reduciendo la posibilidad de caer en mínimos locales.
+
+El objeto resultante km contiene la información clave del modelo: asignación de observaciones a clusters, coordenadas de los centroides y medidas de ajuste como la suma de cuadrados intra e inter-cluster.
 
 ```{webr-r}
-##  Quitar espacios de más en TODAS las columnas de texto
-db_clean <- mutate(db_clean, 
-                   ciudad=str_squish(ciudad) , 
-                   barrio=str_squish(barrio),
-                   tipo_propiedad=str_squish(tipo_propiedad) , 
-                   direccion=str_squish(direccion))
-glimpse(db_clean)
+## fijar semilla
+set.seed(2024)
+
+## ajustar modelo
+km <- kmeans(x, centers = 4, nstart = 30)
 ```
 
-Ahora se realiza la conversión de tipos de variables según el diccionario esperado. La variable `fecha_publicacion` se transforma a formato `Date`, los campos numéricos (`precio_cop`, `area_m2`, `habitaciones`, `banos`, `lat`, `lon`) se convierten a sus tipos apropiados (`numeric` o `integer`), mientras que las variables categóricas (`tipo_propiedad`, `barrio`, `ciudad`) se aseguran como character para una posterior recodificación o conversión a factores. Finalmente, un nuevo glimpse(`db_clean`) permite comprobar que las coerciones fueron exitosas y que cada variable está en el formato adecuado para análisis posteriores.
- 
-```{webr-r}
-## Conversión de tipos (ajusta si tu diccionario cambia)
-db_clean <- mutate(db_clean,
-                   fecha_publicacion = as.Date(fecha_publicacion),
-                   precio_cop        = as.numeric(precio_cop),
-                   area_m2           = as.numeric(area_m2),
-                   habitaciones      = as.integer(habitaciones),
-                   banos             = as.integer(banos),
-                   lat               = as.numeric(lat),
-                   lon               = as.numeric(lon),
-                   tipo_propiedad    = as.character(tipo_propiedad),
-                   barrio            = as.character(barrio),
-                   ciudad            = as.character(ciudad)
-                   )
-glimpse(db_clean)
-```
-
-En este punto se procede a la homologación de categorías en la variable `tipo_propiedad.` La transformación a factor permite trabajar con un conjunto cerrado de valores únicos y facilita posteriores análisis descriptivos o modelados que requieran variables categóricas. Al aplicar `table(db_clean$tipo_propiedad)` se obtiene la distribución de frecuencias de cada categoría, lo que permite detectar valores poco comunes, inconsistencias o errores de escritura que deben ser corregidos.
+En este bloque se realiza el ajuste final de K-means y el resumen de los clusters obtenidos. Primero, se crea un nuevo objeto spotify_c que añade una columna llamada cluster, donde se almacena el resultado de la asignación de cada observación al grupo correspondiente (km$cluster). Esta columna se convierte en un factor para facilitar la interpretación y las operaciones posteriores.
 
 ```{webr-r}
-## Homologar categorías y texto: Tipo de propiedad
-db_clean <- mutate(db_clean, 
-                   tipo_propiedad = factor(tipo_propiedad))
-table(db_clean$tipo_propiedad)
+## Agregar variable de cluster
+spotify_c <- spotify %>% 
+             mutate(cluster = factor(km$cluster))
+
+## head(spotify_c)
+head(spotify_c)
+
+## inspeccionar con tabla de frecuencias
+table(spotify_c$cluster)
 ```
 
-A continuación, se realiza la eliminación de duplicados exactos con la función `distinct()`. Este paso asegura que no existan filas idénticas que puedan sesgar los resultados del análisis. Para verificar el impacto de esta operación, se comparan las dimensiones de la base de datos antes y después (`nrow(db)` vs. `nrow(db_clean)`), lo que evidencia cuántos registros duplicados fueron eliminados y confirma que la base de trabajo ahora contiene únicamente observaciones únicas.
+## Inspeccionar los clusters
 
 ```{webr-r}
-## Eliminar duplicados exactos
-db_clean <- distinct(db_clean)
-
-## chequear numero de filas
-nrow(db)
-nrow(db_clean)
+## plot
+ggplot(spotify_c, aes(x = popularity, y = streams, color = cluster)) +
+geom_point(alpha = 0.6) +
+theme_minimal(base_size = 12)
 ```
 
-## Verificación y reglas de negocio
 
-El propósito de este bloque es comprobar que el proceso de limpieza efectivamente alcanzó los objetivos propuestos. Para ello, se aplican reglas simples de validación, como verificar que los valores se encuentren dentro de rangos plausibles, que las claves sean únicas y que las variables mantengan consistencia lógica entre sí.
+## Actividad en Clase
+
+Instrucciones:
+
+	1.	Ejecute los chunks de código proporcionados en R.
+	
+	2.	Observe los resultados obtenidos (tablas resumen por clúster).
+	
+	3.	Genere un documento en Word donde:
+	•	Copie las preguntas que aparecen a continuación.
+	•	Escriba sus interpretaciones y conclusiones con base en los resultados (no debe copiar el código ni las tablas, solo redactar sus respuestas).
+	
+	4.	Suba su documento a la plataforma Intu.
 
 ```{webr-r}
-## Comprobaciones rápidas
-tamanos <- data.frame(filas_antes   = nrow(db),
-                      filas_despues = nrow(db_clean),
-                      columnas      = ncol(db_clean))
-tamanos
+## Streams (Reproducciones)
+summarise(.data = spotify_c , mean(streams) , min(streams) , max(streams) , .by=cluster)
+
+## Duración
+summarise(.data = spotify_c , median(duration_ms) , .by=cluster)
+
+## Tempo y Danceability:
+summarise(.data = spotify_c , mean(tempo) , mean(danceability) , .by=cluster)
 ```
 
-En esta etapa se revisan los rangos de variables clave mediante `summary()`. En este caso se inspeccionan `precio_cop` y `area_m2`, ya que constituyen indicadores centrales en un análisis de vivienda. Este resumen estadístico muestra valores mínimos, máximos y cuartiles, lo que permite detectar rápidamente posibles outliers o inconsistencias (por ejemplo, precios extremadamente bajos o áreas irreales).
+Preguntas de interpretación:
 
-```{webr-r}
-## Comprobaciones rápidas
-rangos <- list(precio = summary(db_clean$precio_cop),
-               area   = summary(db_clean$area_m2)
-               )
-rangos
-```
+	1.	Streams (Reproducciones):
+	•	Según los promedios, mínimos y máximos de streams en cada clúster:
+	•	¿Qué cluster concentra las canciones más escuchadas?
 
-Estas comprobaciones sirven como un control de calidad para asegurar que los datos resultantes son plausibles y consistentes con el contexto del negocio antes de continuar con el análisis exploratorio o la construcción de modelos.
+	2.	Duración: A partir de la mediana de duration_ms por clúster:
+	•	¿Qué cluster tiende a tener canciones más largas?
+	•	¿Cuál parece tener canciones más cortas?
 
-```{webr-r}
-## Otras comprobaciones
-# histogramas?
-# skim?
-```
-
-## Guardado y bitácora mínima
-
-El propósito de este bloque es guardar de forma permanente los resultados de la limpieza y documentar lo realizado. En un flujo de trabajo real, esto significa exportar la base procesada a un formato estándar como CSV o Parquet y registrar un changelog que deje evidencia de cada modificación aplicada, garantizando trazabilidad y reproducibilidad en etapas posteriores del análisis.
-
-```{webr-r}
-## Guardar versión limpia
-write.csv(db_clean, "datos_limpios.csv")
-
-## Bitácora mínima en consola
-cat("\n[LOG] Limpieza completada:",
-    "\n - Archivo de salida: datos_limpios.csv",
-    "\n - Filas finales:", nrow(db_clean),
-    "\n - Columnas:", ncol(db_clean), "\n")
-```
-
+	3.	Tempo y Danceability: Considerando el promedio de tempo y danceability por clúster:
+	•	¿Qué cluster tiende a tener canciones con mayor energía rítmica?
+	•	¿Cuál agrupa canciones con menor “bailabilidad”?

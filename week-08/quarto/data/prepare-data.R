@@ -7,10 +7,9 @@
 # ------------------------------------------------------------
 
 # Paquetes
-suppressPackageStartupMessages({
-  library(tidyverse)
-  library(stringi)
-})
+
+  require(tidyverse)
+  require(stringi)
 
 set.seed(1234)
 
