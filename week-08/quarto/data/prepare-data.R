@@ -210,12 +210,12 @@ songs <- albums %>%
   map_df(~ make_songs_for_album(.x[1,]))
 
 # Reordenamos columnas
-songs <- songs %>% select(
+spotify <- songs %>% select(
   track_id, track_name, artist, album, genre, release_year,
   duration_ms, explicit, key, mode,
   danceability, energy, valence, acousticness, instrumentalness, liveness, speechiness,
   tempo, popularity, streams
 )
 
-rm("albums","artist_popularity","genres","make_albums","make_songs_for_album","r01","sample_cluster","traits_from_cluster","artists")
+rm("albums","artist_popularity","genres","make_albums","make_songs_for_album","r01","sample_cluster","traits_from_cluster","artists","songs")
 
