@@ -1,0 +1,317 @@
+---
+title: "Unidad 5 — Agrupando Observaciones"
+subtitle: "Semana 09: Agrupando Textos"
+author: "Eduard F. Martínez González"
+---
+
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;"> <img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez\@icesi.edu.co </a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
+
+---
+
+# Introducción a Wordclouds
+
+Un **Wordcloud** (o nube de palabras) es una representación visual de texto en la que el tamaño de cada palabra refleja su frecuencia o importancia en un conjunto de documentos. Cuanto más veces aparezca una palabra, más grande se mostrará en la nube.
+
+Esta técnica es especialmente útil en análisis exploratorio de datos de texto, ya que permite identificar rápidamente los términos más comunes y patrones de vocabulario dentro de un corpus. A diferencia del análisis cuantitativo tradicional, donde trabajamos con números y métricas, el análisis de texto nos permite extraer insights de información no estructurada como comentarios, reseñas, encuestas abiertas y redes sociales.
+
+El procesamiento de texto involucra varias etapas clave: tokenización (dividir el texto en palabras individuales), limpieza (remover signos de puntuación y caracteres especiales), filtrado de stopwords (eliminar palabras comunes sin valor analítico) y conteo de frecuencias. Una vez completadas estas etapas, podemos visualizar los resultados mediante wordclouds que revelan patrones que no son evidentes a simple vista.
+
+Algunas aplicaciones comunes incluyen: - Análisis de comentarios de clientes y feedback de productos - Descubrimiento de temas en encuestas abiertas - Exploración de discursos, artículos de prensa o contenido de redes sociales - Identificación de tendencias en investigación de mercados - Monitoreo de reputación de marca y análisis de sentimientos
+
+---
+
+## Intuición del procesamiento de texto
+
+El procesamiento de texto para wordclouds sigue un flujo lógico pero poderoso: transformar información textual no estructurada en visualizaciones interpretables. El proceso comienza con la **tokenización**, donde dividimos el texto corrido en unidades individuales (palabras). Esto nos permite tratar cada término de manera independiente y contar su frecuencia.
+
+Posteriormente, realizamos una **limpieza profunda** del texto, eliminando signos de puntuación, números, caracteres especiales y convirtiendo todo a minúsculas. Esta normalización asegura que palabras como "Calidad", "calidad" y "CALIDAD" se cuenten como la misma entidad.
+
+El siguiente paso crítico es la **eliminación de stopwords**: palabras muy frecuentes pero con poco valor analítico (como "el", "la", "de", "que", "y"). Sin este filtrado, estas palabras dominarían el wordcloud y ocultarían términos realmente significativos.
+
+Finalmente, calculamos las **frecuencias** de cada palabra limpia y las visualizamos proporcionalmente en el wordcloud. El tamaño de cada palabra refleja su importancia relativa, creando una representación visual intuitiva de los temas principales del corpus.
+
+### Algoritmo de implementación:
+
+1.  **Tokenización**: Dividir el texto en palabras individuales.
+
+2.  **Normalización**: Convertir a minúsculas y limpiar caracteres especiales.
+
+3.  **Filtrado**: Eliminar stopwords y palabras muy cortas.
+
+4.  **Conteo**: Calcular frecuencias de cada término único.
+
+5.  **Visualización**: Generar wordcloud proporcional a las frecuencias.
+
+---
+
+# Aplicación en R
+
+Para ilustrar el funcionamiento de los **Wordclouds** utilizaremos un conjunto de comentarios de clientes sobre productos tecnológicos. Este dataset contiene reseñas reales que incluyen opiniones sobre calidad, servicio, entrega y experiencia general. A modo de ejemplo, podemos anticipar que términos como "excelente", "calidad", "producto", "servicio" y "recomiendo" aparecerán con mayor frecuencia, mientras que palabras como "defectuoso", "lento" o "malo" podrían indicar aspectos negativos.
+
+Este ejercicio nos permitirá observar cómo el procesamiento sistemático del texto revela patrones de opinión y temas recurrentes, sin necesidad de leer manualmente cada comentario. Así demostramos el poder del análisis de texto en la exploración automática de feedback de clientes.
+
+::: callout-tip
+**Cómo usar este material:** Puedes ejecutar los *chunks* de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
+:::
+
+## Preparación del entorno
+
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para procesamiento de texto, manipulación de datos, conteo de frecuencias y generación de wordclouds. Con esto, dejamos el entorno preparado para comenzar.
+
+```{webr-r}
+## Author:
+## Date:
+
+## limpiar entorno
+rm(list = ls())
+
+## cargar paquetes
+require(wordcloud)    # Generación de wordclouds
+require(RColorBrewer) # Paletas de colores
+require(dplyr)        # Manipulación de datos
+require(stringr)      # Procesamiento de strings
+```
+
+## Ingesta de datos (creación de corpus de ejemplo)
+
+En esta sección realizamos la **ingesta de datos**, es decir, creamos el corpus de texto que usaremos en los ejercicios de wordclouds. El corpus contiene **comentarios reales de clientes sobre productos**, incluyendo opiniones sobre **calidad, servicio, entrega, precio** y experiencia general. Estos comentarios representan el tipo de feedback que las empresas reciben frecuentemente y necesitan analizar para identificar patrones de satisfacción.
+
+Para garantizar reproducibilidad y facilidad de replicación, trabajamos con un dataset sintético pero realista que simula comentarios auténticos. Una vez creados los datos, inspeccionamos la estructura para confirmar que el corpus está listo para el procesamiento de texto.
+
+```{webr-r}
+## generar corpus de comentarios
+comentarios <- c(
+  "El producto es excelente, muy buena calidad y llegó rápido a mi casa",
+  "Servicio al cliente excepcional, recomiendo totalmente esta tienda online",  
+  "La entrega fue un poco lenta pero el producto cumple todas las expectativas",
+  "Excelente relación calidad precio, muy satisfecho con esta compra",
+  "El producto llegó defectuoso, tuve que hacer la devolución inmediatamente",
+  "Buena calidad en general pero el precio me parece un poco elevado",
+  "Servicio rápido y muy eficiente, el producto es exactamente como se describe",
+  "No recomiendo para nada este producto, la calidad es muy mala",
+  "Excelente atención al cliente y producto de muy alta calidad",
+  "La entrega fue perfecta y el producto supera las expectativas iniciales",
+  "Precio competitivo y buena calidad, definitivamente volvería a comprar aquí",
+  "El servicio postventa es excelente, resolvieron mi problema rápidamente"
+)
+
+## crear dataframe
+corpus_df <- data.frame(
+  id = 1:length(comentarios),
+  texto = comentarios,
+  stringsAsFactors = FALSE
+)
+
+## inspeccionar estructura
+str(corpus_df)
+head(corpus_df, 3)
+```
+
+## Tokenización y normalización
+
+En este paso realizamos la **tokenización**: el proceso de dividir cada comentario en palabras individuales (tokens). Primero, combinamos todo el texto en una sola cadena para procesarlo globalmente. Después, aplicamos transformaciones de **normalización**: convertimos a minúsculas, eliminamos signos de puntuación, números y caracteres especiales, y normalizamos los espacios.
+
+Esta etapa es fundamental porque asegura que variaciones como "Excelente", "EXCELENTE" y "excelente" se traten como la misma palabra. Al final, dividimos el texto limpio en palabras individuales listas para el análisis de frecuencias.
+
+```{webr-r}
+## combinar todo el texto
+texto_completo <- paste(corpus_df$texto, collapse = " ")
+
+## normalización: minúsculas y limpieza
+texto_limpio <- tolower(texto_completo)
+texto_limpio <- gsub("[[:punct:]]", " ", texto_limpio)  # remover puntuación
+texto_limpio <- gsub("[[:digit:]]", " ", texto_limpio)  # remover números
+texto_limpio <- gsub("\\s+", " ", texto_limpio)        # normalizar espacios
+texto_limpio <- trimws(texto_limpio)                   # limpiar bordes
+
+## tokenización: dividir en palabras
+tokens <- unlist(strsplit(texto_limpio, " "))
+tokens <- tokens[tokens != ""]  # remover strings vacíos
+
+## inspeccionar resultados
+length(tokens)
+head(tokens, 20)
+```
+
+## Filtrado de stopwords
+
+Antes de calcular frecuencias es fundamental eliminar las **stopwords**: palabras muy comunes pero con poco valor analítico como artículos, preposiciones y conectores. Sin este filtrado, palabras como "el", "de", "que" dominarían el wordcloud y ocultarían términos realmente significativos para el análisis.
+
+Definimos una lista comprehensiva de stopwords en español y filtramos también palabras muy cortas (menos de 3 caracteres) que suelen ser poco informativas. El resultado son tokens limpios listos para el análisis de frecuencias.
+
+```{webr-r}
+## definir stopwords en español
+stopwords_es <- c(
+  "el", "la", "de", "que", "y", "a", "en", "un", "es", "se", "no", "te", 
+  "lo", "le", "da", "su", "por", "son", "con", "para", "al", "del", "los",
+  "las", "una", "pero", "fue", "está", "muy", "como", "más", "o", "todo", 
+  "ha", "ser", "si", "ya", "vez", "tan", "este", "esta", "donde", "cual",
+  "sin", "sobre", "entre", "cuando", "quien", "desde", "hasta", "todas",
+  "todos", "algo", "aquí", "así", "cada", "hacer", "había", "han", "hay",
+  "me", "mi", "nos", "nuestro", "sus", "tu", "tus", "yo"
+)
+
+## filtrar stopwords y palabras cortas
+tokens_limpios <- tokens[!tokens %in% stopwords_es]
+tokens_limpios <- tokens_limpios[nchar(tokens_limpios) >= 3]
+
+## inspeccionar resultados  
+length(tokens_limpios)
+head(tokens_limpios, 15)
+```
+
+## Cálculo de frecuencias
+
+En este bloque calculamos las **frecuencias** de cada palabra única en nuestro corpus limpio. Utilizamos la función `table()` para contar cuántas veces aparece cada término, luego convertimos los resultados a un dataframe ordenado por frecuencia descendente.
+
+Esta tabla de frecuencias es el insumo clave para generar el wordcloud: las palabras más frecuentes aparecerán más grandes, mientras que las menos comunes serán más pequeñas o podrían no aparecer si establecemos un umbral mínimo.
+
+```{webr-r}
+## calcular tabla de frecuencias
+freq_tabla <- table(tokens_limpios)
+
+## convertir a dataframe ordenado
+freq_df <- data.frame(
+  palabra = names(freq_tabla),
+  frecuencia = as.numeric(freq_tabla),
+  stringsAsFactors = FALSE
+)
+
+## ordenar por frecuencia descendente
+freq_df <- freq_df[order(freq_df$frecuencia, decreasing = TRUE), ]
+rownames(freq_df) <- NULL
+
+## inspeccionar top palabras
+print("Top 15 palabras más frecuentes:")
+head(freq_df, 15)
+```
+
+## Generación del Wordcloud
+
+En este bloque generamos el **wordcloud principal** utilizando las frecuencias calculadas. Configuramos una semilla aleatoria para reproducibilidad y establecemos parámetros estéticos: colores de la paleta "Set2", rotación del 30% de las palabras, y escalado proporcional al tamaño.
+
+El resultado es una visualización donde cada palabra aparece con un tamaño proporcional a su frecuencia, revelando visualmente los temas y términos más importantes en nuestro corpus de comentarios.
+
+```{webr-r}
+## configurar reproducibilidad
+set.seed(2024)
+
+## generar wordcloud principal
+par(mar = c(1, 1, 3, 1))
+wordcloud(
+  words = freq_df$palabra,
+  freq = freq_df$frecuencia,
+  min.freq = 1,              # frecuencia mínima para aparecer
+  max.words = 30,            # máximo número de palabras
+  random.order = FALSE,      # ordenar por frecuencia
+  rot.per = 0.3,            # proporción de palabras rotadas
+  colors = brewer.pal(8, "Set2"),  # paleta de colores
+  scale = c(3, 0.5)         # rango de tamaños
+)
+
+## añadir título
+title("Wordcloud: Comentarios de Clientes", 
+      cex.main = 1.5, col.main = "darkblue", line = 1)
+```
+
+## Análisis complementario con gráfico de barras
+
+Para complementar el wordcloud, generamos un **gráfico de barras** que muestra las frecuencias exactas de las palabras más importantes. Esta visualización tradicional permite una lectura más precisa de los valores numéricos y facilita la comparación entre términos.
+
+El gráfico de barras es especialmente útil para presentar resultados a stakeholders que prefieren visualizaciones más familiares que los wordclouds.
+
+```{webr-r}
+## seleccionar top 10 palabras
+top_palabras <- head(freq_df, 10)
+
+## configurar márgenes para etiquetas largas
+par(mar = c(8, 4, 4, 2))
+
+## generar gráfico de barras
+barplot(
+  height = top_palabras$frecuencia,
+  names.arg = top_palabras$palabra,
+  main = "Top 10 Palabras Más Frecuentes",
+  ylab = "Frecuencia",
+  col = "steelblue",
+  las = 2,  # rotar etiquetas 90 grados
+  cex.names = 0.9
+)
+
+## añadir valores sobre las barras
+text(x = seq_along(top_palabras$frecuencia), 
+     y = top_palabras$frecuencia + 0.1,
+     labels = top_palabras$frecuencia,
+     pos = 3, cex = 0.8, font = 2)
+```
+
+## Inspeccionar patrones temáticos
+
+```{webr-r}
+## Palabras relacionadas con calidad
+palabras_calidad <- freq_df[grepl("calidad|excelente|buena|bueno|alta", freq_df$palabra), ]
+print("Términos de calidad:")
+print(palabras_calidad)
+
+## Palabras relacionadas con servicio
+palabras_servicio <- freq_df[grepl("servicio|atención|cliente|rápido|eficiente", freq_df$palabra), ]
+print("Términos de servicio:")
+print(palabras_servicio)
+
+## Palabras relacionadas con problemas
+palabras_problemas <- freq_df[grepl("defectuoso|malo|mala|lento|problema", freq_df$palabra), ]
+print("Términos de problemas:")
+print(palabras_problemas)
+```
+
+## Actividad en Clase
+
+Instrucciones:
+
+1.  Ejecute los chunks de código proporcionados en R.
+
+2.  Observe los resultados obtenidos (wordcloud, gráfico de barras y análisis temático).
+
+3.  Genere un documento en Word donde: • Copie las preguntas que aparecen a continuación. • Escriba sus interpretaciones y conclusiones con base en los resultados (no debe copiar el código ni las tablas, solo redactar sus respuestas).
+
+4.  Suba su documento a la plataforma Intu.
+
+```{webr-r}
+## Análisis de sentimiento general
+palabras_positivas <- freq_df[grepl("excelente|buena|bueno|satisfecho|recomiendo|perfecto|competitivo", freq_df$palabra), ]
+palabras_negativas <- freq_df[grepl("defectuoso|malo|mala|lento|problema|elevado", freq_df$palabra), ]
+
+print("=== RESUMEN PARA ANÁLISIS ===")
+print("Palabras positivas y sus frecuencias:")
+print(palabras_positivas)
+
+print("Palabras negativas y sus frecuencias:")
+print(palabras_negativas)
+
+print("Proporción de palabras por tema:")
+total_calidad <- sum(palabras_calidad$frecuencia)
+total_servicio <- sum(palabras_servicio$frecuencia) 
+total_positivas <- sum(palabras_positivas$frecuencia)
+total_negativas <- sum(palabras_negativas$frecuencia)
+
+print(paste("Calidad:", total_calidad, "menciones"))
+print(paste("Servicio:", total_servicio, "menciones"))
+print(paste("Sentimiento positivo:", total_positivas, "menciones"))
+print(paste("Sentimiento negativo:", total_negativas, "menciones"))
+```
+
+Preguntas de interpretación:
+
+1.  **Análisis del Wordcloud:** • Según el tamaño de las palabras en el wordcloud: • ¿Cuáles son los 3 términos más importantes para los clientes? • ¿Qué nos dice esto sobre las prioridades de los consumidores?
+
+2.  **Análisis de Sentimiento:** A partir de las palabras positivas y negativas identificadas: • ¿El sentimiento general de los comentarios es más positivo o negativo? • ¿Cuál es la proporción aproximada entre menciones positivas y negativas?
+
+3.  **Temas Principales:** Considerando los términos de calidad y servicio: • ¿Qué aspecto parece ser más importante para los clientes: la calidad del producto o la calidad del servicio? • ¿Qué estrategias de negocio recomendaría basándose en estos hallazgos?
+
+4.  **Limitaciones del Análisis:** • ¿Qué información importante podríamos estar perdiendo al usar solo wordclouds? • ¿Cómo podríamos mejorar este análisis para obtener insights más profundos?

@@ -16,7 +16,7 @@ filters:
   - webr
 
 webr:
-  packages: [dplyr, ggplot2 , skimr, purrr]
+  packages: [dplyr, ggplot2, ggfortify, stringi , skimr, factoextra , purrr]
 
 
 

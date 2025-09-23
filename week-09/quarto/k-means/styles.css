@@ -1,0 +1,35 @@
+/* styles.css */
+  body {
+    text-align: justify;                     /* justifica todo el texto */
+      color: #000000;                          /* letra negra */
+      font-size: 18px;                          
+      font-family: "Arial Narrow", Arial,      /* fuente principal */
+      Helvetica, sans-serif;      /* fuentes de respaldo */
+  }
+
+p,
+li {
+  text-align: justify;                     /* mantiene la justificación en párrafos y listas */
+}
+
+/* Titulos y subtitulos */
+h1, h2, h3 {
+  color: #003366;   /* azul corporativo */
+}
+a {
+  color: #0055a5;
+}
+
+/* Parrafos */
+p { line-height: 1.6; margin-bottom: 1em; }
+li { margin-bottom: 0.5em; }
+
+table {
+  border-collapse: collapse;
+  margin: 1em auto;
+  font-size: 0.95em;
+}
+th, td {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+}

@@ -16,6 +16,8 @@ author: "Eduard F. Martínez González"
 
 ---
 
+
+
 # Introducción al Clustering
 
 El clustering es una técnica fundamental dentro del aprendizaje no supervisado. A diferencia de otros métodos, en clustering no contamos con una variable objetivo o etiqueta que nos diga cuál es la “respuesta correcta”. En su lugar, el algoritmo busca organizar los datos en grupos de tal manera que las observaciones dentro de un mismo grupo sean lo más parecidas posible, y a la vez, que las diferencias entre grupos sean lo más marcadas que se pueda.
@@ -88,7 +90,7 @@ Una vez cargados los datos, listamos los objetos en memoria para confirmar que e
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/data/prepare-data.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/quarto/data/prepare-data.R")
 
 ## chuequear objetos en la memoria
 ls()
@@ -267,3 +269,5 @@ Preguntas de interpretación:
 	3.	Tempo y Danceability: Considerando el promedio de tempo y danceability por clúster:
 	•	¿Qué cluster tiende a tener canciones con mayor energía rítmica?
 	•	¿Cuál agrupa canciones con menor “bailabilidad”?
+
+

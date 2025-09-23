@@ -24,17 +24,17 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="week-08_files/libs/clipboard/clipboard.min.js"></script>
-<script src="week-08_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="week-08_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="week-08_files/libs/quarto-html/popper.min.js"></script>
-<script src="week-08_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="week-08_files/libs/quarto-html/anchor.min.js"></script>
-<link href="week-08_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="week-08_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="week-08_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="week-08_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="week-08_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="dendrogram_files/libs/clipboard/clipboard.min.js"></script>
+<script src="dendrogram_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="dendrogram_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="dendrogram_files/libs/quarto-html/popper.min.js"></script>
+<script src="dendrogram_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="dendrogram_files/libs/quarto-html/anchor.min.js"></script>
+<link href="dendrogram_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="dendrogram_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="dendrogram_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="dendrogram_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="dendrogram_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/editor/editor.main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"## Author:\n## Date: \n\n## limpiar entorno\nrm(list = ls())\n\n## cargar paquetes\nrequire(dplyr)      # Manipulación de datos \nrequire(ggplot2)    # Visualización de datos\nrequire(skimr)      # Resúmenes rápidos y completos\nrequire(purrr)      # map_dbl, map, etc.","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/data/prepare-data.R\")\n\n## chuequear objetos en la memoria\nls()\n\n## atributos de sotify\nclass(spotify)\nnrow(spotify)\nncol(spotify)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## Inspecciona nombres del dataset (colnames)\n\n## Inspeccionar los datos con skim?\n\n## visualicemos los datos (ggplot)\nggplot(data=spotify , aes(x=tempo , y=danceability)) +\ngeom_point()","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## filtrar variables\nfeatures <- select(.data=spotify , danceability,  tempo)\n\n## check los objetos en la memoria\nls()\n\n## \nhead(features)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## escalar\nx <- scale(features)\n\n## check data (skim)\nskim(x)\n\n## visualicemos las variables danceability y tempo\nggplot(data=x , aes(x=tempo , y=danceability)) +\ngeom_point()","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## fijar semilla\nset.seed(2024)\n\n## ajustar modelo\nkm <- kmeans(x, centers = 4, nstart = 30)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Agregar variable de cluster\nspotify_c <- spotify %>% \n             mutate(cluster = factor(km$cluster))\n\n## head(spotify_c)\nhead(spotify_c)\n\n## inspeccionar con tabla de frecuencias\ntable(spotify_c$cluster)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## plot\nggplot(spotify_c, aes(x=tempo , y=danceability , color=cluster)) +\ngeom_point(alpha = 0.6) +\ntheme_minimal(base_size = 12)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## fijar semilla\nset.seed(2024)\n\n## numero de codos\nks <- 1:8","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## wss\nwss <- map_dbl(ks, ~ kmeans(x, centers = .x, nstart = 20)$tot.withinss)\n\n## inspeccionar el objeto\nhead(wss)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## elbow_df\nelbow_df <- tibble(k = ks, wss = wss)\n\n## inspeccionar el objeto\nhead(elbow_df)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## plot data \nggplot(elbow_df, aes(k, wss)) +\ngeom_line(color = \"#0ea5e9\", linewidth = 1) +\ngeom_point(color = \"#0ea5e9\", size = 2) +\ntheme_minimal(base_size = 12) +\nlabs(title = \"Heurística del codo para elegir K\",\n     x = \"N. de clusters (K)\", y = \"Suma intra-cluster (WSS)\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Streams (Reproducciones)\nsummarise(.data = spotify_c , mean(streams) , min(streams) , max(streams) , .by=cluster)\n\n## Duración\nsummarise(.data = spotify_c , median(duration_ms) , .by=cluster)\n\n## Tempo y Danceability:\nsummarise(.data = spotify_c , mean(tempo) , mean(danceability) , .by=cluster)","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Author:\n## Date: \n\n## limpiar entorno\nrm(list = ls())\n\n## cargar paquetes\nrequire(dplyr)      # Manipulación de datos \nrequire(ggplot2)    # Visualización de datos\nrequire(skimr)      # Resúmenes rápidos y completos\nrequire(purrr)      # map_dbl, map, etc.","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/quarto/data/prepare-data.R\")\n\n## chuequear objetos en la memoria\nls()\n\n## atributos de sotify\nclass(spotify)\nnrow(spotify)\nncol(spotify)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## Inspecciona nombres del dataset (colnames)\n\n## Inspeccionar los datos con skim?\n\n## visualicemos los datos (ggplot)\nggplot(data=spotify , aes(x=tempo , y=danceability)) +\ngeom_point()","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## filtrar variables\nfeatures <- select(.data=spotify , danceability,  tempo)\n\n## check los objetos en la memoria\nls()\n\n## \nhead(features)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## escalar\nx <- scale(features)\n\n## check data (skim)\nskim(x)\n\n## visualicemos las variables danceability y tempo\nggplot(data=x , aes(x=tempo , y=danceability)) +\ngeom_point()","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## fijar semilla\nset.seed(2024)\n\n## ajustar modelo\nkm <- kmeans(x, centers = 4, nstart = 30)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Agregar variable de cluster\nspotify_c <- spotify %>% \n             mutate(cluster = factor(km$cluster))\n\n## head(spotify_c)\nhead(spotify_c)\n\n## inspeccionar con tabla de frecuencias\ntable(spotify_c$cluster)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## plot\nggplot(spotify_c, aes(x=tempo , y=danceability , color=cluster)) +\ngeom_point(alpha = 0.6) +\ntheme_minimal(base_size = 12)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## fijar semilla\nset.seed(2024)\n\n## numero de codos\nks <- 1:8","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## wss\nwss <- map_dbl(ks, ~ kmeans(x, centers = .x, nstart = 20)$tot.withinss)\n\n## inspeccionar el objeto\nhead(wss)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## elbow_df\nelbow_df <- tibble(k = ks, wss = wss)\n\n## inspeccionar el objeto\nhead(elbow_df)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## plot data \nggplot(elbow_df, aes(k, wss)) +\ngeom_line(color = \"#0ea5e9\", linewidth = 1) +\ngeom_point(color = \"#0ea5e9\", size = 2) +\ntheme_minimal(base_size = 12) +\nlabs(title = \"Heurística del codo para elegir K\",\n     x = \"N. de clusters (K)\", y = \"Suma intra-cluster (WSS)\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1589,6 +1589,35 @@ globalThis.qwebrExecuteCode = async function (
 
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -1603,21 +1632,30 @@ globalThis.qwebrExecuteCode = async function (
   <ul>
   <li><a href="#introducción-al-clustering" id="toc-introducción-al-clustering" class="nav-link active" data-scroll-target="#introducción-al-clustering"><span class="header-section-number">1</span> Introducción al Clustering</a>
   <ul class="collapse">
-  <li><a href="#intuición-de-k-means" id="toc-intuición-de-k-means" class="nav-link" data-scroll-target="#intuición-de-k-means"><span class="header-section-number">1.1</span> Intuición de K-means</a>
+  <li><a href="#intuición-del-clustering-jerárquico-y-dendrogramas" id="toc-intuición-del-clustering-jerárquico-y-dendrogramas" class="nav-link" data-scroll-target="#intuición-del-clustering-jerárquico-y-dendrogramas"><span class="header-section-number">1.1</span> Intuición del clustering jerárquico y dendrogramas</a>
   <ul class="collapse">
-  <li><a href="#algorimto-de-implementación" id="toc-algorimto-de-implementación" class="nav-link" data-scroll-target="#algorimto-de-implementación"><span class="header-section-number">1.1.1</span> Algorimto de implementación:</a></li>
+  <li><a href="#la-noción-de-proximidad-depende-de" id="toc-la-noción-de-proximidad-depende-de" class="nav-link" data-scroll-target="#la-noción-de-proximidad-depende-de"><span class="header-section-number">1.1.1</span> La noción de “proximidad” depende de:</a></li>
+  <li><a href="#algoritmo-de-implementación-aglomerativo" id="toc-algoritmo-de-implementación-aglomerativo" class="nav-link" data-scroll-target="#algoritmo-de-implementación-aglomerativo"><span class="header-section-number">1.1.2</span> Algoritmo de implementación (aglomerativo)</a></li>
+  <li><a href="#cómo-leer-un-dendrograma-rápido" id="toc-cómo-leer-un-dendrograma-rápido" class="nav-link" data-scroll-target="#cómo-leer-un-dendrograma-rápido"><span class="header-section-number">1.1.3</span> Cómo leer un dendrograma (rápido)</a></li>
+  <li><a href="#ventajas-y-limitaciones" id="toc-ventajas-y-limitaciones" class="nav-link" data-scroll-target="#ventajas-y-limitaciones"><span class="header-section-number">1.1.4</span> Ventajas y limitaciones</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2</span> Aplicación en R</a>
+  <li><a href="#distancias-y-modelos" id="toc-distancias-y-modelos" class="nav-link" data-scroll-target="#distancias-y-modelos"><span class="header-section-number">2</span> — 2. Distancias y modelos —</a></li>
+  <li><a href="#dendrogramas" id="toc-dendrogramas" class="nav-link" data-scroll-target="#dendrogramas"><span class="header-section-number">3</span> — 3. Dendrogramas —</a></li>
+  <li><a href="#corte-y-comparación" id="toc-corte-y-comparación" class="nav-link" data-scroll-target="#corte-y-comparación"><span class="header-section-number">4</span> — 4. Corte y comparación —</a></li>
+  <li><a href="#tabla-de-contingencia-vs-group-si-group-existe-como-verdad-terreno-o-cohorte" id="toc-tabla-de-contingencia-vs-group-si-group-existe-como-verdad-terreno-o-cohorte" class="nav-link" data-scroll-target="#tabla-de-contingencia-vs-group-si-group-existe-como-verdad-terreno-o-cohorte"><span class="header-section-number">5</span> Tabla de contingencia vs ‘group’ (si group existe como verdad-terreno o cohorte)</a></li>
+  <li><a href="#perfil-de-clusters" id="toc-perfil-de-clusters" class="nav-link" data-scroll-target="#perfil-de-clusters"><span class="header-section-number">6</span> — 5. Perfil de clusters —</a></li>
+  <li><a href="#opcional-ordena-estudiantes-por-su-altura-de-fusión-para-ver-casos-límite" id="toc-opcional-ordena-estudiantes-por-su-altura-de-fusión-para-ver-casos-límite" class="nav-link" data-scroll-target="#opcional-ordena-estudiantes-por-su-altura-de-fusión-para-ver-casos-límite"><span class="header-section-number">7</span> (opcional) Ordena estudiantes por su “altura” de fusión para ver casos límite</a></li>
+  <li><a href="#heurística-para-elegir-k-sin-librerías" id="toc-heurística-para-elegir-k-sin-librerías" class="nav-link" data-scroll-target="#heurística-para-elegir-k-sin-librerías"><span class="header-section-number">8</span> — 6. Heurística para elegir k (sin librerías) —</a></li>
+  <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">9</span> Aplicación en R</a>
   <ul class="collapse">
-  <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</a></li>
-  <li><a href="#ingesta-de-datos-carga-desde-archivo-o-url" id="toc-ingesta-de-datos-carga-desde-archivo-o-url" class="nav-link" data-scroll-target="#ingesta-de-datos-carga-desde-archivo-o-url"><span class="header-section-number">2.2</span> Ingesta de datos (carga desde archivo o URL)</a></li>
-  <li><a href="#selección-de-variables" id="toc-selección-de-variables" class="nav-link" data-scroll-target="#selección-de-variables"><span class="header-section-number">2.3</span> Selección de variables</a></li>
-  <li><a href="#escalado" id="toc-escalado" class="nav-link" data-scroll-target="#escalado"><span class="header-section-number">2.4</span> Escalado</a></li>
-  <li><a href="#ajuste-de-k-means-con-k-4" id="toc-ajuste-de-k-means-con-k-4" class="nav-link" data-scroll-target="#ajuste-de-k-means-con-k-4"><span class="header-section-number">2.5</span> Ajuste de K-means con K = 4</a></li>
-  <li><a href="#inspeccionar-los-clusters" id="toc-inspeccionar-los-clusters" class="nav-link" data-scroll-target="#inspeccionar-los-clusters"><span class="header-section-number">2.6</span> Inspeccionar los clusters</a></li>
-  <li><a href="#heurística-del-codo" id="toc-heurística-del-codo" class="nav-link" data-scroll-target="#heurística-del-codo"><span class="header-section-number">2.7</span> Heurística del codo</a></li>
-  <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">2.8</span> Actividad en Clase</a></li>
+  <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">9.1</span> Preparación del entorno</a></li>
+  <li><a href="#ingesta-de-datos-carga-desde-archivo-o-url" id="toc-ingesta-de-datos-carga-desde-archivo-o-url" class="nav-link" data-scroll-target="#ingesta-de-datos-carga-desde-archivo-o-url"><span class="header-section-number">9.2</span> Ingesta de datos (carga desde archivo o URL)</a></li>
+  <li><a href="#selección-de-variables" id="toc-selección-de-variables" class="nav-link" data-scroll-target="#selección-de-variables"><span class="header-section-number">9.3</span> Selección de variables</a></li>
+  <li><a href="#escalado" id="toc-escalado" class="nav-link" data-scroll-target="#escalado"><span class="header-section-number">9.4</span> Escalado</a></li>
+  <li><a href="#ajuste-de-k-means-con-k-4" id="toc-ajuste-de-k-means-con-k-4" class="nav-link" data-scroll-target="#ajuste-de-k-means-con-k-4"><span class="header-section-number">9.5</span> Ajuste de K-means con K = 4</a></li>
+  <li><a href="#inspeccionar-los-clusters" id="toc-inspeccionar-los-clusters" class="nav-link" data-scroll-target="#inspeccionar-los-clusters"><span class="header-section-number">9.6</span> Inspeccionar los clusters</a></li>
+  <li><a href="#heurística-del-codo" id="toc-heurística-del-codo" class="nav-link" data-scroll-target="#heurística-del-codo"><span class="header-section-number">9.7</span> Heurística del codo</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1941,30 +1979,104 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <hr>
 <section id="introducción-al-clustering" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Introducción al Clustering</h1>
-<p>El clustering es una técnica fundamental dentro del aprendizaje no supervisado. A diferencia de otros métodos, en clustering no contamos con una variable objetivo o etiqueta que nos diga cuál es la “respuesta correcta”. En su lugar, el algoritmo busca organizar los datos en grupos de tal manera que las observaciones dentro de un mismo grupo sean lo más parecidas posible, y a la vez, que las diferencias entre grupos sean lo más marcadas que se pueda.</p>
-<p>En contraste, en el aprendizaje supervisado —como en los casos de regresión o clasificación— el modelo aprende a partir de ejemplos en los que sí conocemos la respuesta. Por ejemplo, podemos tener un conjunto de datos con las ventas históricas de una empresa y usar esas observaciones para entrenar un modelo que prediga las ventas futuras. La clave está en que existe una etiqueta o variable dependiente a la cual el modelo ajusta sus parámetros.</p>
-<p>El clustering, en cambio, persigue un objetivo exploratorio: descubrir patrones ocultos en los datos. Al agrupar observaciones con base en sus características, permite identificar segmentos de clientes, canciones, productos o mercados, incluso cuando no tenemos categorías predefinidas. Por esta razón, se convierte en una herramienta poderosa para la toma de decisiones, ya que revela estructuras y perfiles que no son evidentes a simple vista.</p>
-<hr>
-<section id="intuición-de-k-means" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="intuición-de-k-means"><span class="header-section-number">1.1</span> Intuición de K-means</h2>
-<p>El algoritmo K-means parte de una idea sencilla pero poderosa: agrupar observaciones en función de su cercanía en el espacio de variables. Lo primero que se hace es elegir un número de grupos k, que representa cuántos clusters queremos identificar en los datos. Ese número no lo calcula automáticamente el algoritmo; depende de nuestra decisión, aunque existen criterios como el método del codo o la silueta que ayudan a definirlo.</p>
-<p>Una vez fijado k, el algoritmo inicializa k centroides en posiciones aleatorias. Estos centroides son puntos que actúan como el “corazón” de cada cluster. En la siguiente etapa, cada observación se asigna al centroide más cercano según una medida de distancia (usualmente, la distancia euclidiana). De esta manera, se crean grupos iniciales basados únicamente en la proximidad.</p>
-<p>Luego, se recalculan los centroides tomando el promedio de todas las observaciones asignadas a cada cluster. Con los nuevos centroides actualizados, el proceso de asignación se repite: cada observación puede cambiar de grupo si encuentra un centroide más cercano. Esta rutina se ejecuta de manera iterativa hasta que los centroides dejan de moverse significativamente o se alcanza un número máximo de iteraciones.</p>
-<p>Al final, el resultado es una partición de los datos en clusters de observaciones similares, donde cada grupo está representado por su centroide. La simplicidad del algoritmo y su interpretación intuitiva lo convierten en uno de los métodos de clustering más populares en analítica y ciencia de datos.</p>
-<section id="algorimto-de-implementación" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="algorimto-de-implementación"><span class="header-section-number">1.1.1</span> Algorimto de implementación:</h3>
-<ol type="1">
-<li>Elegir un número de grupos (k).</li>
-<li>Inicializar (k) puntos llamados <strong>centroides</strong>.</li>
-<li>Asignar cada observación al centroide más cercano.</li>
-<li>Recalcular centroides como el promedio de cada grupo.</li>
-<li>Repetir el proceso hasta que los grupos se estabilicen.</li>
-</ol>
+<p>El clustering es una técnica central del aprendizaje no supervisado. A diferencia de los métodos supervisados, aquí no existe una variable objetivo que indique la “respuesta correcta”. El propósito es descubrir estructura agrupando observaciones de modo que dentro de cada grupo haya alta similitud y, al mismo tiempo, diferencias claras entre grupos.</p>
+<p>En el aprendizaje supervisado —por ejemplo, en regresión o clasificación— el modelo aprende a partir de pares (características, etiqueta). En clustering el objetivo es exploratorio: revelar patrones latentes en los datos para segmentar clientes, productos, canciones o, como en nuestro curso, estudiantes con perfiles de desempeño similares aun sin categorías predefinidas.</p>
+<section id="intuición-del-clustering-jerárquico-y-dendrogramas" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="intuición-del-clustering-jerárquico-y-dendrogramas"><span class="header-section-number">1.1</span> Intuición del clustering jerárquico y dendrogramas</h2>
+<p>El clustering jerárquico construye una estructura en forma de árbol que muestra cómo se agrupan progresivamente las observaciones según su semejanza. La representación visual es el dendrograma: cada “hoja” es una observación; las “ramas” indican fusiones de grupos; y la altura donde se unen refleja la diferencia (distancia) entre ellos.</p>
+<p>Hay dos enfoques conceptuales:</p>
+<pre><code>•   Aglomerativo (bottom-up): comienza con cada observación como su propio cluster y fusiona en pasos sucesivos los grupos más próximos.
+•   Divisivo (top-down): parte de un único gran cluster y divide recursivamente.</code></pre>
+<p>En la práctica docente, usamos casi siempre el aglomerativo.</p>
+<section id="la-noción-de-proximidad-depende-de" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="la-noción-de-proximidad-depende-de"><span class="header-section-number">1.1.1</span> La noción de “proximidad” depende de:</h3>
+<pre><code>1.  Métrica de distancia (p. ej., euclidiana sobre variables estandarizadas).
+2.  Criterio de enlace (linkage), que define la distancia entre clusters:
+•   Single: distancia mínima entre pares (tiende a “encadenar”).
+•   Complete: distancia máxima (clusters más compactos).
+•   Average: promedio de distancias.
+•   Ward.D2: fusiona minimizando el aumento de varianza dentro del cluster (suele dar grupos esféricos y balanceados).</code></pre>
+<p>A diferencia de K-means, aquí no fijamos k de entrada. El dendrograma permite elegir k ex-post “cortando” el árbol a una cierta altura: un corte más alto produce menos grupos (más generales); un corte más bajo produce más grupos (más específicos).</p>
+</section>
+<section id="algoritmo-de-implementación-aglomerativo" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="algoritmo-de-implementación-aglomerativo"><span class="header-section-number">1.1.2</span> Algoritmo de implementación (aglomerativo)</h3>
+<pre><code>1.  Preparar las variables: si están en escalas distintas, estandarizarlas (media 0, desviación 1).
+2.  Calcular la matriz de distancias entre observaciones (p. ej., euclidiana).
+3.  Iniciar con n clusters (cada observación es su propio grupo).
+4.  Repetir: encontrar los dos clusters más cercanos según el criterio de enlace y fusionarlos; actualizar distancias entre el nuevo cluster y los existentes.
+5.  Detener cuando quede un solo cluster. El historial de fusiones forma el dendrograma.
+6.  Elegir k cortando horizontalmente el dendrograma a una altura que evite fusiones “costosas” (saltos grandes de altura).</code></pre>
+</section>
+<section id="cómo-leer-un-dendrograma-rápido" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="cómo-leer-un-dendrograma-rápido"><span class="header-section-number">1.1.3</span> Cómo leer un dendrograma (rápido)</h3>
+<pre><code>•   Hojas: observaciones individuales.
+•   Altura de unión: cuán diferentes eran los grupos al fusionarse.
+•   Corte horizontal: determina el número de clusters; las ramas que quedan separadas bajo el corte son los grupos.
+•   Saltos grandes de altura: sugieren fronteras naturales entre segmentos.</code></pre>
+</section>
+<section id="ventajas-y-limitaciones" class="level3" data-number="1.1.4">
+<h3 data-number="1.1.4" class="anchored" data-anchor-id="ventajas-y-limitaciones"><span class="header-section-number">1.1.4</span> Ventajas y limitaciones</h3>
+<pre><code>•   Ventajas: no requiere fijar k de inicio; ofrece una vista multiescala de la estructura; útil para explicar y justificar segmentaciones.
+•   Limitaciones: complejidad computacional mayor que K-means en datasets muy grandes; sensible a escalas y a la elección de distancia/enlace.</code></pre>
+<p>df &lt;- grades[complete.cases(grades[, c(“taller”,“quiz”,“parcial”,“midterm”)]), ] X &lt;- as.matrix(df[, c(“taller”,“quiz”,“parcial”,“midterm”)]) # solo variables numéricas Xz &lt;- scale(X) # estandariza para dar el mismo peso a cada nota</p>
+<pre><code>2.  Matriz de distancias y clustering jerárquico
+
+•   Usa distancia Euclidiana.
+•   Compara al menos dos métodos de enlace (por ejemplo, ward.D2 y complete).</code></pre>
 </section>
 </section>
 </section>
-<section id="aplicación-en-r" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Aplicación en R</h1>
+<section id="distancias-y-modelos" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> — 2. Distancias y modelos —</h1>
+<p>D &lt;- dist(Xz, method = “euclidean”)</p>
+<p>hc_ward &lt;- hclust(D, method = “ward.D2”) hc_complete &lt;- hclust(D, method = “complete”)</p>
+<pre><code>3.  Dendrogramas
+
+•   Etiqueta con codigo.
+•   Señala, por ejemplo, k = 3 grupos (ajústalo si ves otro corte más natural).</code></pre>
+</section>
+<section id="dendrogramas" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> — 3. Dendrogramas —</h1>
+<p>par(mfrow = c(1,2)) plot(hc_ward, labels = df$codigo, main = “Dendrograma - Ward.D2”, xlab = ““, sub =”“) rect.hclust(hc_ward, k = 3, border =”red”)</p>
+<p>plot(hc_complete, labels = df$codigo, main = “Dendrograma - Complete”, xlab = ““, sub =”“) rect.hclust(hc_complete, k = 3, border =”red”) par(mfrow = c(1,1))</p>
+<pre><code>4.  Corte del árbol y comparación con group
+
+•   Obtén asignaciones de cluster y compáralas con la columna group.</code></pre>
+</section>
+<section id="corte-y-comparación" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> — 4. Corte y comparación —</h1>
+<p>k &lt;- 3 cl_w &lt;- cutree(hc_ward, k = k) cl_c &lt;- cutree(hc_complete, k = k)</p>
+</section>
+<section id="tabla-de-contingencia-vs-group-si-group-existe-como-verdad-terreno-o-cohorte" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Tabla de contingencia vs ‘group’ (si group existe como verdad-terreno o cohorte)</h1>
+<p>tab_w &lt;- table(real = df<span class="math inline">\(group, clust = cl_w)
+tab_c &lt;- table(real = df\)</span>group, clust = cl_c)</p>
+<p>tab_w tab_c</p>
+<pre><code>5.  Perfil de clusters (interpretación)
+
+•   Calcula promedios de cada nota por cluster para interpretar “tipos” de estudiantes.</code></pre>
+</section>
+<section id="perfil-de-clusters" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> — 5. Perfil de clusters —</h1>
+<p>aggregate(df[, c(“taller”,“quiz”,“parcial”,“midterm”)], by = list(cluster = cl_w), FUN = mean)</p>
+</section>
+<section id="opcional-ordena-estudiantes-por-su-altura-de-fusión-para-ver-casos-límite" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> (opcional) Ordena estudiantes por su “altura” de fusión para ver casos límite</h1>
+<p>ord &lt;- hc_ward$order df[ord[1:10], c(“codigo”,“taller”,“quiz”,“parcial”,“midterm”)]</p>
+<pre><code>6.  (Opcional) Sugerencia del número de clusters desde el dendrograma
+
+•   Observa los “saltos” grandes en hc_ward$height.</code></pre>
+</section>
+<section id="heurística-para-elegir-k-sin-librerías" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> — 6. Heurística para elegir k (sin librerías) —</h1>
+<p>plot(rev(hc_ward$height), type = “b”, main = “Alturas de fusión (rev)”, xlab = “Uniones (de última a primera)”, ylab = “Altura”)</p>
+<p>⸻</p>
+<p>Preguntas guía para entregar 1. ¿Qué método de enlace (Ward vs.&nbsp;Complete) produce una separación más clara? Justifica con el dendrograma. 2. ¿Cuántos clusters elegirías y por qué (menciona el/los “saltos” de fusión)? 3. Caracteriza cada cluster con los promedios de taller, quiz, parcial, midterm. 4. ¿Qué tan bien coinciden los clusters con group? Incluye la tabla de contingencia. 5. Menciona dos acciones pedagógicas que podrías tomar con base en los clusters (p.&nbsp;ej., refuerzos focalizados).</p>
+<p>Entregable (máx. 1 página + figuras) • 1–2 dendrogramas con el corte elegido (rectángulos). • Una tabla con promedios por cluster. • La tabla de contingencia vs group. • Breve interpretación (5–7 líneas).</p>
+<p>Nota: Todo se resuelve con base R (stats/graphics): scale, dist, hclust, plot, rect.hclust, cutree, aggregate, table. No se usan librerías adicionales.</p>
+</section>
+<section id="aplicación-en-r" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Aplicación en R</h1>
 <p>Para ilustrar el funcionamiento de <code>K-means</code> utilizaremos la base de datos <code>spotify</code>, que contiene información sobre canciones, artistas, duración y número de reproducciones, entre otras variables musicales y de negocio. A modo de ejemplo, podemos imaginar un gráfico de dispersión donde en el eje X representamos la duración de la canción y en el eje Y el número de reproducciones. Al aplicar K-means con k=3, el algoritmo podría identificar patrones como: Cluster 1, compuesto por canciones cortas con un alto nivel de reproducciones; Cluster 2, formado por canciones más largas pero con menor popularidad; y Cluster 3, que agrupa canciones con valores intermedios en ambas dimensiones.</p>
 <p>Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos naturales a partir de los datos, sin necesidad de categorías predefinidas, mostrando el poder del aprendizaje no supervisado en la exploración de patrones y perfiles.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -1980,14 +2092,14 @@ Tip
 <p><strong>Cómo usar este material:</strong> Puedes ejecutar los <em>chunks</em> de R directamente en el navegador gracias a <strong>webR</strong> (según tu <code>_quarto.yml</code>), sin instalar nada localmente.</p>
 </div>
 </div>
-<section id="preparación-del-entorno" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</h2>
+<section id="preparación-del-entorno" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="preparación-del-entorno"><span class="header-section-number">9.1</span> Preparación del entorno</h2>
 <p>El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="ingesta-de-datos-carga-desde-archivo-o-url" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="ingesta-de-datos-carga-desde-archivo-o-url"><span class="header-section-number">2.2</span> Ingesta de datos (carga desde archivo o URL)</h2>
+<section id="ingesta-de-datos-carga-desde-archivo-o-url" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="ingesta-de-datos-carga-desde-archivo-o-url"><span class="header-section-number">9.2</span> Ingesta de datos (carga desde archivo o URL)</h2>
 <p>En esta sección realizamos la <strong>ingesta de datos</strong>, es decir, el proceso de cargar la base que usaremos en los ejercicios de clustering. La base contiene información de canciones en Spotify, incluyendo variables como <strong>artista, álbum, duración, número de reproducciones, género</strong> y otras características relevantes. Estos atributos nos permitirán más adelante aplicar K-means para identificar patrones y segmentar canciones en grupos con perfiles similares.</p>
 <p>Para garantizar reproducibilidad, podemos trabajar de dos maneras:</p>
 <ol type="1">
@@ -2001,22 +2113,22 @@ Tip
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="selección-de-variables" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="selección-de-variables"><span class="header-section-number">2.3</span> Selección de variables</h2>
+<section id="selección-de-variables" class="level2" data-number="9.3">
+<h2 data-number="9.3" class="anchored" data-anchor-id="selección-de-variables"><span class="header-section-number">9.3</span> Selección de variables</h2>
 <p>En este paso se seleccionan únicamente las variables numéricas asociadas a las características de audio de cada canción: danceability, energy, valence, acousticness, liveness, speechiness y tempo. Estas son las más adecuadas para aplicar un algoritmo de clustering, ya que describen propiedades musicales cuantitativas y comparables entre canciones.</p>
 <p>Al reducir la base a este subconjunto, garantizamos que el análisis con <code>K-means</code> se centre en los atributos musicales relevantes, eliminando información categórica o identificadores que no aportan al agrupamiento.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="escalado" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="escalado"><span class="header-section-number">2.4</span> Escalado</h2>
+<section id="escalado" class="level2" data-number="9.4">
+<h2 data-number="9.4" class="anchored" data-anchor-id="escalado"><span class="header-section-number">9.4</span> Escalado</h2>
 <p>Antes de aplicar K-means es fundamental escalar las variables: transformarlas para que todas queden en la misma escala (media 0 y desviación estándar 1). Esto evita que una variable con valores naturalmente más grandes (como tempo) domine el cálculo de distancias frente a otras en rangos más pequeños (como danceability).</p>
 <p>Con la función scale() se obtiene una matriz estandarizada lista para el análisis. Posteriormente, se utiliza skim() para verificar de manera rápida la estructura de los datos escalados y confirmar que la transformación se realizó correctamente.</p>
 <div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="ajuste-de-k-means-con-k-4" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="ajuste-de-k-means-con-k-4"><span class="header-section-number">2.5</span> Ajuste de K-means con K = 4</h2>
+<section id="ajuste-de-k-means-con-k-4" class="level2" data-number="9.5">
+<h2 data-number="9.5" class="anchored" data-anchor-id="ajuste-de-k-means-con-k-4"><span class="header-section-number">9.5</span> Ajuste de K-means con K = 4</h2>
 <p>En este bloque se realiza el entrenamiento del modelo K-means fijando el número de clusters en k = 3. Primero, se establece una semilla aleatoria (set.seed(2024)) para asegurar que los resultados sean reproducibles, ya que K-means depende de inicializaciones aleatorias de los centroides.</p>
 <p>Después, con la función kmeans() se ajusta el modelo sobre la matriz estandarizada X, indicando centers = 4 para formar cuatro grupos. El argumento nstart = 30 hace que el algoritmo se ejecute 30 veces con diferentes inicializaciones y escoja la mejor solución encontrada, reduciendo la posibilidad de caer en mínimos locales.</p>
 <p>El objeto resultante km contiene la información clave del modelo: asignación de observaciones a clusters, coordenadas de los centroides y medidas de ajuste como la suma de cuadrados intra e inter-cluster.</p>
@@ -2026,13 +2138,13 @@ Tip
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="inspeccionar-los-clusters" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="inspeccionar-los-clusters"><span class="header-section-number">2.6</span> Inspeccionar los clusters</h2>
+<section id="inspeccionar-los-clusters" class="level2" data-number="9.6">
+<h2 data-number="9.6" class="anchored" data-anchor-id="inspeccionar-los-clusters"><span class="header-section-number">9.6</span> Inspeccionar los clusters</h2>
 <div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="heurística-del-codo" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="heurística-del-codo"><span class="header-section-number">2.7</span> Heurística del codo</h2>
+<section id="heurística-del-codo" class="level2" data-number="9.7">
+<h2 data-number="9.7" class="anchored" data-anchor-id="heurística-del-codo"><span class="header-section-number">9.7</span> Heurística del codo</h2>
 <p>El método del codo es una técnica práctica para determinar el número apropiado de clusters k. Consiste en calcular la suma de cuadrados intra-cluster (WSS, within-cluster sum of squares) para distintos valores de k. A medida que aumenta el número de clusters, el WSS disminuye (ya que los grupos se vuelven más homogéneos). Sin embargo, llega un punto en que la mejora se vuelve marginal: ese punto de inflexión, con forma de “codo” en la curva, sugiere el número óptimo de clusters.</p>
 <div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
@@ -2046,33 +2158,6 @@ Tip
 <p>Finalmente, se aplica theme_minimal() para una visualización limpia y labs() para asignar título y etiquetas a los ejes. El resultado es una curva decreciente donde se espera identificar un punto de inflexión: allí se encuentra el “codo”, que sugiere un número razonable de clusters para aplicar el algoritmo de K-means.</p>
 <div id="qwebr-insertion-location-12"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
-<section id="actividad-en-clase" class="level2" data-number="2.8">
-<h2 data-number="2.8" class="anchored" data-anchor-id="actividad-en-clase"><span class="header-section-number">2.8</span> Actividad en Clase</h2>
-<p>Instrucciones:</p>
-<pre><code>1.  Ejecute los chunks de código proporcionados en R.
-
-2.  Observe los resultados obtenidos (tablas resumen por clúster).
-
-3.  Genere un documento en Word donde:
-•   Copie las preguntas que aparecen a continuación.
-•   Escriba sus interpretaciones y conclusiones con base en los resultados (no debe copiar el código ni las tablas, solo redactar sus respuestas).
-
-4.  Suba su documento a la plataforma Intu.</code></pre>
-<div id="qwebr-insertion-location-13"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Preguntas de interpretación:</p>
-<pre><code>1.  Streams (Reproducciones):
-•   Según los promedios, mínimos y máximos de streams en cada clúster:
-•   ¿Qué cluster contiene la canción más escuchada?
-•   ¿En promedio, qué cluster contiene las canciónes más escuchada?
-
-2.  Duración: A partir de la mediana de duration_ms por clúster:
-•   ¿En promedio, cuál cluster tiene canciones más cortas?
-
-3.  Tempo y Danceability: Considerando el promedio de tempo y danceability por clúster:
-•   ¿Qué cluster tiende a tener canciones con mayor energía rítmica?
-•   ¿Cuál agrupa canciones con menor “bailabilidad”?</code></pre>
 </section>
 </section>
 

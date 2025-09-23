@@ -1,0 +1,189 @@
+---
+title: "Unidad 5 — Agrupando Observaciones"
+subtitle: "Semana 08: Clustering"
+author: "Eduard F. Martínez González"
+---
+  
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
+<img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
+</a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
+
+---
+
+# Clustering jerárquico y dendrogramas
+
+El clustering jerárquico construye una estructura en forma de árbol que muestra cómo se agrupan progresivamente las observaciones según su semejanza. La representación visual es el dendrograma: cada “hoja” corresponde a una observación; las “ramas” reflejan fusiones de grupos; y la altura de unión indica la diferencia (distancia) entre los grupos que se combinan.
+
+## Enfoques aglomerativo y divisivo
+
+Existen dos enfoques conceptuales. En el aglomerativo (bottom-up), se inicia con cada observación como su propio grupo y, en pasos sucesivos, se fusionan los clusters más próximos hasta obtener una sola agrupación. En el divisivo (top-down), se parte de un único gran cluster y se divide recursivamente. En la práctica docente suele emplearse principalmente el enfoque aglomerativo por su interpretabilidad y disponibilidad en paquetes estándar.
+
+## Proximidad: métricas y criterios de enlace
+
+La noción de “proximidad” depende de dos decisiones. Primero, la métrica de distancia; con variables en escalas distintas, se recomienda estandarizar (media 0, desviación 1) y usar, por ejemplo, distancia euclidiana. Segundo, el criterio de enlace (linkage), que define la distancia entre clusters: single (distancia mínima entre pares, propenso a “encadenar”), complete (distancia máxima, favorece clusters compactos), average (promedio de distancias) y Ward.D2 (fusiona minimizando el aumento de varianza intracluster, produciendo grupos usualmente más esféricos y balanceados). A diferencia de K-means, no se fija el número de clusters k de entrada; el dendrograma permite seleccionar k ex-post.
+
+## Elección del número de clusters
+
+El número de grupos se elige “cortando” horizontalmente el dendrograma a una cierta altura. Un corte alto produce menos grupos y mayor generalidad; un corte bajo produce más grupos y mayor especificidad. Saltos grandes en la altura de las fusiones sugieren fronteras naturales entre segmentos y orientan una elección prudente de k.
+
+## Algoritmo aglomerativo: descripción operativa
+
+Para implementar el enfoque aglomerativo, se procede usualmente de la siguiente manera. Primero, se preparan las variables; cuando se encuentran en escalas heterogéneas, se estandarizan. Luego, se calcula la matriz de distancias entre observaciones con la métrica elegida. A continuación, se inicia con n clusters (uno por observación) y, de forma iterativa, se identifican y fusionan los dos clusters más cercanos según el criterio de enlace seleccionado, actualizando después las distancias entre el nuevo cluster y los existentes. El proceso continúa hasta que queda un único cluster; el historial de fusiones define el dendrograma. Finalmente, se selecciona k cortando el dendrograma a una altura que evite fusiones “costosas”, es decir, asociadas a incrementos bruscos en la altura.
+
+## Lectura rápida de un dendrograma
+
+La interpretación sigue pautas simples. Las hojas representan observaciones individuales. La altura de unión indica cuán diferentes eran los grupos al fusionarse: una unión a gran altura sugiere que los grupos combinados estaban muy separados. Un corte horizontal determina el número de clusters; las ramas que permanecen separadas por debajo del corte definen los grupos resultantes. La presencia de grandes saltos verticales antes de ciertas fusiones suele señalar límites naturales entre segmentos.
+
+## Ventajas y limitaciones
+
+Entre las ventajas, no se requiere fijar k al inicio, se obtiene una representación jerárquica que facilita justificar segmentaciones y se dispone de una lectura multiescala de la estructura de los datos. Entre las limitaciones, su complejidad computacional puede ser mayor que la de K-means en conjuntos de datos muy grandes, y la solución es sensible tanto a las escalas de las variables como a la elección de métrica y criterio de enlace, por lo que la estandarización y la verificación de robustez resultan recomendables.
+
+---
+
+# Aplicación en R
+
+Para ilustrar el funcionamiento de `K-means` utilizaremos la base de datos `spotify`, que contiene información sobre canciones, artistas, duración y número de reproducciones, entre otras variables musicales y de negocio. A modo de ejemplo, podemos imaginar un gráfico de dispersión donde en el eje X representamos la duración de la canción y en el eje Y el número de reproducciones. Al aplicar K-means con k=3, el algoritmo podría identificar patrones como: Cluster 1, compuesto por canciones cortas con un alto nivel de reproducciones; Cluster 2, formado por canciones más largas pero con menor popularidad; y Cluster 3, que agrupa canciones con valores intermedios en ambas dimensiones.
+
+Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos naturales a partir de los datos, sin necesidad de categorías predefinidas, mostrando el poder del aprendizaje no supervisado en la exploración de patrones y perfiles.
+
+::: callout-tip
+**Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
+:::
+
+## Preparación del entorno
+
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
+
+```{webr-r}
+## Author:
+## Date: 
+
+## limpiar entorno
+rm(list = ls())
+
+## cargar paquetes
+require(dplyr)      # Manipulación de datos 
+require(ggplot2)    # Visualización de datos
+require(skimr)      # Resúmenes rápidos y completos
+```
+
+## Ingesta de datos (carga desde archivo o URL)
+
+En esta sección realizamos la **ingesta de datos**, es decir, el proceso de cargar la base que usaremos en los ejercicios de clustering. La base contiene información de canciones en Spotify, incluyendo variables como **artista, álbum, duración, número de reproducciones, género** y otras características relevantes. Estos atributos nos permitirán más adelante aplicar K-means para identificar patrones y segmentar canciones en grupos con perfiles similares.
+
+Para garantizar reproducibilidad, podemos trabajar de dos maneras:  
+
+1. **Archivo local**: leer directamente el archivo `data.csv` que acompaña a este material.  
+2. **Fuente externa (opcional)**: usar una URL (por ejemplo, un repositorio en GitHub) para que cualquier estudiante pueda replicar el ejercicio sin necesidad del archivo local.
+
+Una vez cargados los datos, listamos los objetos en memoria para confirmar que el dataset esperado (`spotify`) está disponible y listo para la exploración inicial.
+
+```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/quarto/data/prepare-data.R")
+
+## chuequear objetos en la memoria
+ls()
+
+## atributos de sotify
+class(spotify)
+nrow(spotify)
+ncol(spotify)
+```
+
+
+
+df <- grades[complete.cases(grades[, c("taller","quiz","parcial","midterm")]), ]
+X  <- as.matrix(df[, c("taller","quiz","parcial","midterm")])   # solo variables numéricas
+Xz <- scale(X)  # estandariza para dar el mismo peso a cada nota
+
+	2.	Matriz de distancias y clustering jerárquico
+
+	•	Usa distancia Euclidiana.
+	•	Compara al menos dos métodos de enlace (por ejemplo, ward.D2 y complete).
+
+# --- 2. Distancias y modelos ---
+D  <- dist(Xz, method = "euclidean")
+
+hc_ward     <- hclust(D, method = "ward.D2")
+hc_complete <- hclust(D, method = "complete")
+
+	3.	Dendrogramas
+
+	•	Etiqueta con codigo.
+	•	Señala, por ejemplo, k = 3 grupos (ajústalo si ves otro corte más natural).
+
+# --- 3. Dendrogramas ---
+par(mfrow = c(1,2))
+plot(hc_ward, labels = df$codigo, main = "Dendrograma - Ward.D2", xlab = "", sub = "")
+rect.hclust(hc_ward, k = 3, border = "red")
+
+plot(hc_complete, labels = df$codigo, main = "Dendrograma - Complete", xlab = "", sub = "")
+rect.hclust(hc_complete, k = 3, border = "red")
+par(mfrow = c(1,1))
+
+	4.	Corte del árbol y comparación con group
+
+	•	Obtén asignaciones de cluster y compáralas con la columna group.
+
+# --- 4. Corte y comparación ---
+k <- 3
+cl_w <- cutree(hc_ward, k = k)
+cl_c <- cutree(hc_complete, k = k)
+
+# Tabla de contingencia vs 'group' (si group existe como verdad-terreno o cohorte)
+tab_w <- table(real = df$group, clust = cl_w)
+tab_c <- table(real = df$group, clust = cl_c)
+
+tab_w
+tab_c
+
+	5.	Perfil de clusters (interpretación)
+
+	•	Calcula promedios de cada nota por cluster para interpretar “tipos” de estudiantes.
+
+# --- 5. Perfil de clusters ---
+aggregate(df[, c("taller","quiz","parcial","midterm")], 
+          by = list(cluster = cl_w), 
+          FUN = mean)
+
+# (opcional) Ordena estudiantes por su "altura" de fusión para ver casos límite
+ord <- hc_ward$order
+df[ord[1:10], c("codigo","taller","quiz","parcial","midterm")]
+
+	6.	(Opcional) Sugerencia del número de clusters desde el dendrograma
+
+	•	Observa los “saltos” grandes en hc_ward$height.
+
+# --- 6. Heurística para elegir k (sin librerías) ---
+plot(rev(hc_ward$height), type = "b",
+     main = "Alturas de fusión (rev)",
+     xlab = "Uniones (de última a primera)",
+     ylab = "Altura")
+
+
+⸻
+
+Preguntas guía para entregar
+	1.	¿Qué método de enlace (Ward vs. Complete) produce una separación más clara? Justifica con el dendrograma.
+	2.	¿Cuántos clusters elegirías y por qué (menciona el/los “saltos” de fusión)?
+	3.	Caracteriza cada cluster con los promedios de taller, quiz, parcial, midterm.
+	4.	¿Qué tan bien coinciden los clusters con group? Incluye la tabla de contingencia.
+	5.	Menciona dos acciones pedagógicas que podrías tomar con base en los clusters (p. ej., refuerzos focalizados).
+
+Entregable (máx. 1 página + figuras)
+	•	1–2 dendrogramas con el corte elegido (rectángulos).
+	•	Una tabla con promedios por cluster.
+	•	La tabla de contingencia vs group.
+	•	Breve interpretación (5–7 líneas).
+
+Nota: Todo se resuelve con base R (stats/graphics): scale, dist, hclust, plot, rect.hclust, cutree, aggregate, table. No se usan librerías adicionales.
