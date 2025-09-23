@@ -16,41 +16,11 @@ author: "Eduard F. Martínez González"
 
 ---
 
-
-
-# Introducción al Clustering
-
-El clustering es una técnica fundamental dentro del aprendizaje no supervisado. A diferencia de otros métodos, en clustering no contamos con una variable objetivo o etiqueta que nos diga cuál es la “respuesta correcta”. En su lugar, el algoritmo busca organizar los datos en grupos de tal manera que las observaciones dentro de un mismo grupo sean lo más parecidas posible, y a la vez, que las diferencias entre grupos sean lo más marcadas que se pueda.
-
-En contraste, en el aprendizaje supervisado —como en los casos de regresión o clasificación— el modelo aprende a partir de ejemplos en los que sí conocemos la respuesta. Por ejemplo, podemos tener un conjunto de datos con las ventas históricas de una empresa y usar esas observaciones para entrenar un modelo que prediga las ventas futuras. La clave está en que existe una etiqueta o variable dependiente a la cual el modelo ajusta sus parámetros.
-
-El clustering, en cambio, persigue un objetivo exploratorio: descubrir patrones ocultos en los datos. Al agrupar observaciones con base en sus características, permite identificar segmentos de clientes, canciones, productos o mercados, incluso cuando no tenemos categorías predefinidas. Por esta razón, se convierte en una herramienta poderosa para la toma de decisiones, ya que revela estructuras y perfiles que no son evidentes a simple vista.
-
----
-
-## Intuición de K-means
-
-El algoritmo K-means parte de una idea sencilla pero poderosa: agrupar observaciones en función de su cercanía en el espacio de variables. Lo primero que se hace es elegir un número de grupos k, que representa cuántos clusters queremos identificar en los datos. Ese número no lo calcula automáticamente el algoritmo; depende de nuestra decisión, aunque existen criterios como el método del codo o la silueta que ayudan a definirlo.
-
-Una vez fijado k, el algoritmo inicializa k centroides en posiciones aleatorias. Estos centroides son puntos que actúan como el “corazón” de cada cluster. En la siguiente etapa, cada observación se asigna al centroide más cercano según una medida de distancia (usualmente, la distancia euclidiana). De esta manera, se crean grupos iniciales basados únicamente en la proximidad.
-
-Luego, se recalculan los centroides tomando el promedio de todas las observaciones asignadas a cada cluster. Con los nuevos centroides actualizados, el proceso de asignación se repite: cada observación puede cambiar de grupo si encuentra un centroide más cercano. Esta rutina se ejecuta de manera iterativa hasta que los centroides dejan de moverse significativamente o se alcanza un número máximo de iteraciones.
-
-Al final, el resultado es una partición de los datos en clusters de observaciones similares, donde cada grupo está representado por su centroide. La simplicidad del algoritmo y su interpretación intuitiva lo convierten en uno de los métodos de clustering más populares en analítica y ciencia de datos.
-
-### Algorimto de implementación:
-
-1. Elegir un número de grupos \(k\).
-2. Inicializar \(k\) puntos llamados **centroides**.
-3. Asignar cada observación al centroide más cercano.
-4. Recalcular centroides como el promedio de cada grupo.
-5. Repetir el proceso hasta que los grupos se estabilicen.
-
 # Aplicación en R
 
-Para ilustrar el funcionamiento de `K-means` utilizaremos la base de datos `spotify`, que contiene información sobre canciones, artistas, duración y número de reproducciones, entre otras variables musicales y de negocio. A modo de ejemplo, podemos imaginar un gráfico de dispersión donde en el eje X representamos la duración de la canción y en el eje Y el número de reproducciones. Al aplicar K-means con k=3, el algoritmo podría identificar patrones como: Cluster 1, compuesto por canciones cortas con un alto nivel de reproducciones; Cluster 2, formado por canciones más largas pero con menor popularidad; y Cluster 3, que agrupa canciones con valores intermedios en ambas dimensiones.
+Para ejemplificar el uso de K-means se trabajará con una base de notas del curso, que reúne para cada estudiante sus calificaciones en talleres, quices, parcial y midterm. Imagine un diagrama de dispersión donde en el eje X se ubica el promedio de talleres y en el eje Y el promedio de quices. Al ajustar K-means con k = 3, el algoritmo puede revelar patrones como los siguientes: Cluster 1, formado por estudiantes con desempeños altos y consistentes en trabajos y evaluaciones cortas; Cluster 2, con estudiantes que rinden mejor en actividades prácticas (talleres) pero muestran rezagos en quices; y Cluster 3, que agrupa desempeños más bajos o inestables en ambas dimensiones.
 
-Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos naturales a partir de los datos, sin necesidad de categorías predefinidas, mostrando el poder del aprendizaje no supervisado en la exploración de patrones y perfiles.
+Este ejercicio permite observar cómo el algoritmo construye segmentos naturales a partir de los datos, sin categorías predefinidas, resaltando la utilidad del aprendizaje no supervisado para explorar perfiles y patrones de desempeño académico.
 
 ::: callout-tip
 **Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
@@ -58,7 +28,7 @@ Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos natur
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de `K-means`. Con esto, dejamos el entorno preparado para comenzar.
 
 ```{webr-r}
 ## Author:
@@ -71,203 +41,100 @@ rm(list = ls())
 require(dplyr)      # Manipulación de datos 
 require(ggplot2)    # Visualización de datos
 require(skimr)      # Resúmenes rápidos y completos
-require(purrr)      # map_dbl, map, etc.
 ```
 
 ## Ingesta de datos (carga desde archivo o URL)
 
-En esta sección realizamos la **ingesta de datos**, es decir, el proceso de cargar la base que usaremos en los ejercicios de clustering. La base contiene información de canciones en Spotify, incluyendo variables como **artista, álbum, duración, número de reproducciones, género** y otras características relevantes. Estos atributos nos permitirán más adelante aplicar K-means para identificar patrones y segmentar canciones en grupos con perfiles similares.
+En esta sección se realiza la ingesta de datos, es decir, la carga de la base de notas del curso que usaremos para los ejercicios de clustering. El dataset llamado `grades` incluye, para cada estudiante, su código y las calificaciones en `talleres`, `quices`, `parcial` y `midterm` (escala 0–5). Estos atributos permitirán aplicar `K-means` para identificar patrones de desempeño y segmentar a los estudiantes en grupos con perfiles similares.
 
 Para garantizar reproducibilidad, podemos trabajar de dos maneras:  
 
 1. **Archivo local**: leer directamente el archivo `data.csv` que acompaña a este material.  
 2. **Fuente externa (opcional)**: usar una URL (por ejemplo, un repositorio en GitHub) para que cualquier estudiante pueda replicar el ejercicio sin necesidad del archivo local.
 
-Una vez cargados los datos, listamos los objetos en memoria para confirmar que el dataset esperado (`spotify`) está disponible y listo para la exploración inicial.
+Una vez cargados los datos, listamos los objetos en memoria para confirmar que el dataset esperado (`grades`) está disponible y listo para la exploración inicial.
 
 ```{webr-r}
 #| warning: false
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/quarto/data/prepare-data.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/grades.R")
 
 ## chuequear objetos en la memoria
 ls()
 
-## atributos de sotify
-class(spotify)
-nrow(spotify)
-ncol(spotify)
-```
-
-```{webr-r}
-## Inspecciona nombres del dataset (colnames)
-
-## Inspeccionar los datos con skim?
-
-## visualicemos los datos (ggplot)
-ggplot(data=spotify , aes(x=tempo , y=danceability)) +
-geom_point()
+## atributos de grades
+class(grades)
+skim(grades)
 ```
 
 ## Selección de variables
 
-En este paso se seleccionan únicamente las variables numéricas asociadas a las características de audio de cada canción: danceability, energy, valence, acousticness, liveness, speechiness y tempo. Estas son las más adecuadas para aplicar un algoritmo de clustering, ya que describen propiedades musicales cuantitativas y comparables entre canciones.
+En este paso se eligen únicamente las variables numéricas relevantes para el agrupamiento. En el caso de las notas, pueden incluirse `taller`, `quiz`, `parcial` y `midterm.` Estas variables son adecuadas para `K-means` porque están en la misma escala (0–5) y describen cuantitativamente el desempeño académico.
 
-Al reducir la base a este subconjunto, garantizamos que el análisis con `K-means` se centre en los atributos musicales relevantes, eliminando información categórica o identificadores que no aportan al agrupamiento.
+Para un ejemplo simple, trabajaremos con dos dimensiones (`quiz` y `parcial`) a fin de visualizar con claridad la lógica del clustering. Al reducir la base a este subconjunto se garantiza que el análisis se centre en atributos comparables y se excluyan identificadores u otras columnas que no aportan a la formación de grupos.
 
 ```{webr-r}
 ## filtrar variables
-features <- select(.data=spotify , danceability,  tempo)
-
-## check los objetos en la memoria
-ls()
-
-## 
-head(features)
+db <- select(.data=grades , quiz,  parcial)
 ```
 
 ## Escalado
 
-Antes de aplicar K-means es fundamental escalar las variables: transformarlas para que todas queden en la misma escala (media 0 y desviación estándar 1). Esto evita que una variable con valores naturalmente más grandes (como tempo) domine el cálculo de distancias frente a otras en rangos más pequeños (como danceability).
+Antes de aplicar `K-means` es buena práctica escalar las variables para que todas queden con media 0 y desviación estándar 1. Así se evita que alguna dimensión pese más en el cálculo de distancias euclidianas. Aunque aquí todas las notas comparten el rango 0–5, el escalado ayuda a estandarizar y comparar contribuciones.
 
-Con la función scale() se obtiene una matriz estandarizada lista para el análisis. Posteriormente, se utiliza skim() para verificar de manera rápida la estructura de los datos escalados y confirmar que la transformación se realizó correctamente.
+Con `scale()` se obtiene una matriz estandarizada lista para el análisis. Luego, se usa `skim()` para comprobar rápidamente que la transformación se aplicó correctamente (medias cercanas a 0 y desviaciones cercanas a 1).
 
 ```{webr-r}
 ## escalar
-x <- scale(features)
+db <- scale(db)
 
 ## check data (skim)
-skim(x)
+skim(db)
 
-## visualicemos las variables danceability y tempo
-ggplot(data=x , aes(x=tempo , y=danceability)) +
-geom_point()
+## visualicemos las variables
+ggplot(data=db , aes(x=quiz , y=parcial)) +
+geom_point() +
+theme_basic()
 ```
 
 ## Ajuste de K-means con K = 4
 
-En este bloque se realiza el entrenamiento del modelo K-means fijando el número de clusters en k = 3. Primero, se establece una semilla aleatoria (set.seed(2024)) para asegurar que los resultados sean reproducibles, ya que K-means depende de inicializaciones aleatorias de los centroides.
+En este bloque se entrena el modelo `K-means` fijando el número de grupos en `k = 4`. Primero, se establece una semilla (`set.seed(2024)`) para asegurar reproducibilidad, dado que `K-means` depende de inicializaciones aleatorias de los centroides.
 
-Después, con la función kmeans() se ajusta el modelo sobre la matriz estandarizada X, indicando centers = 4 para formar cuatro grupos. El argumento nstart = 30 hace que el algoritmo se ejecute 30 veces con diferentes inicializaciones y escoja la mejor solución encontrada, reduciendo la posibilidad de caer en mínimos locales.
+Luego, con `kmeans()` se ajusta el modelo sobre la matriz estandarizada (`db` creada en el paso anterior), indicando `centers = 4`. El argumento `nstart = 30` hace que el algoritmo arranque desde 30 inicializaciones distintas y escoja la mejor solución (menor SSE), reduciendo el riesgo de mínimos locales.
 
-El objeto resultante km contiene la información clave del modelo: asignación de observaciones a clusters, coordenadas de los centroides y medidas de ajuste como la suma de cuadrados intra e inter-cluster.
+El objeto resultante `km` contiene la información clave del modelo: asignación de observaciones a clusters, coordenadas de los centroides y medidas de ajuste (suma de cuadrados intra/inter).
 
 ```{webr-r}
 ## fijar semilla
 set.seed(2024)
 
 ## ajustar modelo
-km <- kmeans(x, centers = 4, nstart = 30)
+km <- kmeans(db, centers = 4, nstart = 30)
 ```
 
-En este bloque se realiza el ajuste final de K-means y el resumen de los clusters obtenidos. Primero, se crea un nuevo objeto spotify_c que añade una columna llamada cluster, donde se almacena el resultado de la asignación de cada observación al grupo correspondiente (km$cluster). Esta columna se convierte en un factor para facilitar la interpretación y las operaciones posteriores.
+A continuación se construye un objeto con la asignación individual agregando la columna `cluster` al objeto original de `grades`. Se convierte en factor para facilitar la interpretación y el uso en `gráficos/tablas`.
 
 ```{webr-r}
 ## Agregar variable de cluster
-spotify_c <- spotify %>% 
-             mutate(cluster = factor(km$cluster))
+grades_c <- grades %>% 
+            mutate(cluster = factor(km$cluster))
 
 ## head(spotify_c)
-head(spotify_c)
-
-## inspeccionar con tabla de frecuencias
-table(spotify_c$cluster)
+head(grades_c)
 ```
 
 ## Inspeccionar los clusters
 
+Un primer vistazo útil es (i) el tamaño de cada cluster y (ii) un dispersograma de parcial vs. quiz coloreado por cluster.
+
 ```{webr-r}
 ## plot
-ggplot(spotify_c, aes(x=tempo , y=danceability , color=cluster)) +
+ggplot(grades_c , aes(x=parcial , y=quiz , color=cluster)) +
 geom_point(alpha = 0.6) +
 theme_minimal(base_size = 12)
 ```
-
-## Heurística del codo
-
-El método del codo es una técnica práctica para determinar el número apropiado de clusters k. Consiste en calcular la suma de cuadrados intra-cluster (WSS, within-cluster sum of squares) para distintos valores de k. A medida que aumenta el número de clusters, el WSS disminuye (ya que los grupos se vuelven más homogéneos). Sin embargo, llega un punto en que la mejora se vuelve marginal: ese punto de inflexión, con forma de “codo” en la curva, sugiere el número óptimo de clusters.
-
-```{webr-r}
-## fijar semilla
-set.seed(2024)
-
-## numero de codos
-ks <- 1:8
-```
-
-Aquí se calcula el WSS (suma de cuadrados intra-cluster) para cada valor de k definido anteriormente. Se utiliza un map_dbl() que ejecuta la función kmeans() repetidamente, y para cada solución obtiene el valor de tot.withinss. El argumento nstart = 20 indica que el algoritmo se ejecutará varias veces con diferentes inicializaciones para mejorar la estabilidad del resultado.
-
-```{webr-r}
-## wss
-wss <- map_dbl(ks, ~ kmeans(x, centers = .x, nstart = 20)$tot.withinss)
-
-## inspeccionar el objeto
-head(wss)
-```
-
-Finalmente, se organiza la información en un tibble llamado elbow_df, que contiene dos columnas: el número de clusters (k) y el valor correspondiente de WSS (wss). Esta tabla servirá como insumo para construir el gráfico del codo y tomar una decisión sobre el número óptimo de clusters.
-
-```{webr-r}
-## elbow_df
-elbow_df <- tibble(k = ks, wss = wss)
-
-## inspeccionar el objeto
-head(elbow_df)
-```
-
-En este bloque se construye el gráfico del codo, que permite visualizar cómo varía la suma de cuadrados intra-cluster (WSS) a medida que aumenta el número de clusters k. Primero, se utiliza ggplot() para graficar el objeto elbow_df, que contiene los pares (k, wss) obtenidos en pasos anteriores. La función geom_line() dibuja la línea que conecta los puntos, mientras que geom_point() resalta cada valor de k con un marcador. Los parámetros de color (#0ea5e9) y grosor de línea (linewidth = 1) sirven para mejorar la estética del gráfico.
-
-Finalmente, se aplica theme_minimal() para una visualización limpia y labs() para asignar título y etiquetas a los ejes. El resultado es una curva decreciente donde se espera identificar un punto de inflexión: allí se encuentra el “codo”, que sugiere un número razonable de clusters para aplicar el algoritmo de K-means.
-
-```{webr-r}
-## plot data 
-ggplot(elbow_df, aes(k, wss)) +
-geom_line(color = "#0ea5e9", linewidth = 1) +
-geom_point(color = "#0ea5e9", size = 2) +
-theme_minimal(base_size = 12) +
-labs(title = "Heurística del codo para elegir K",
-     x = "N. de clusters (K)", y = "Suma intra-cluster (WSS)")
-```
-
-## Actividad en Clase
-
-Instrucciones:
-
-	1.	Ejecute los chunks de código proporcionados en R.
-	
-	2.	Observe los resultados obtenidos (tablas resumen por clúster).
-	
-	3.	Genere un documento en Word donde:
-	•	Copie las preguntas que aparecen a continuación.
-	•	Escriba sus interpretaciones y conclusiones con base en los resultados (no debe copiar el código ni las tablas, solo redactar sus respuestas).
-	
-	4.	Suba su documento a la plataforma Intu.
-
-```{webr-r}
-## Streams (Reproducciones)
-summarise(.data = spotify_c , mean(streams) , min(streams) , max(streams) , .by=cluster)
-
-## Duración
-summarise(.data = spotify_c , median(duration_ms) , .by=cluster)
-
-## Tempo y Danceability:
-summarise(.data = spotify_c , mean(tempo) , mean(danceability) , .by=cluster)
-```
-
-Preguntas de interpretación:
-
-	1.	Streams (Reproducciones):
-	•	Según los promedios, mínimos y máximos de streams en cada clúster:
-	•	¿Qué cluster contiene la canción más escuchada?
-	•	¿En promedio, qué cluster contiene las canciónes más escuchada?
-
-	2.	Duración: A partir de la mediana de duration_ms por clúster:
-	•	¿En promedio, cuál cluster tiene canciones más cortas?
-
-	3.	Tempo y Danceability: Considerando el promedio de tempo y danceability por clúster:
-	•	¿Qué cluster tiende a tener canciones con mayor energía rítmica?
-	•	¿Cuál agrupa canciones con menor “bailabilidad”?
 
 

@@ -48,9 +48,9 @@ Entre las ventajas, no se requiere fijar k al inicio, se obtiene una representac
 
 # Aplicación en R
 
-Para ilustrar el funcionamiento de `K-means` utilizaremos la base de datos `spotify`, que contiene información sobre canciones, artistas, duración y número de reproducciones, entre otras variables musicales y de negocio. A modo de ejemplo, podemos imaginar un gráfico de dispersión donde en el eje X representamos la duración de la canción y en el eje Y el número de reproducciones. Al aplicar K-means con k=3, el algoritmo podría identificar patrones como: Cluster 1, compuesto por canciones cortas con un alto nivel de reproducciones; Cluster 2, formado por canciones más largas pero con menor popularidad; y Cluster 3, que agrupa canciones con valores intermedios en ambas dimensiones.
+Para ejemplificar el uso de K-means se trabajará con una base de notas del curso, que reúne para cada estudiante sus calificaciones en talleres, quices, parcial y midterm. Imagine un diagrama de dispersión donde en el eje X se ubica el promedio de talleres y en el eje Y el promedio de quices. Al ajustar K-means con k = 3, el algoritmo puede revelar patrones como los siguientes: Cluster 1, formado por estudiantes con desempeños altos y consistentes en trabajos y evaluaciones cortas; Cluster 2, con estudiantes que rinden mejor en actividades prácticas (talleres) pero muestran rezagos en quices; y Cluster 3, que agrupa desempeños más bajos o inestables en ambas dimensiones.
 
-Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos naturales a partir de los datos, sin necesidad de categorías predefinidas, mostrando el poder del aprendizaje no supervisado en la exploración de patrones y perfiles.
+Este ejercicio permite observar cómo el algoritmo construye segmentos naturales a partir de los datos, sin categorías predefinidas, resaltando la utilidad del aprendizaje no supervisado para explorar perfiles y patrones de desempeño académico.
 
 ::: callout-tip
 **Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
@@ -58,7 +58,7 @@ Este ejercicio nos permitirá observar cómo el algoritmo genera segmentos natur
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de `K-means`. Con esto, dejamos el entorno preparado para comenzar.
 
 ```{webr-r}
 ## Author:
@@ -75,36 +75,62 @@ require(skimr)      # Resúmenes rápidos y completos
 
 ## Ingesta de datos (carga desde archivo o URL)
 
-En esta sección realizamos la **ingesta de datos**, es decir, el proceso de cargar la base que usaremos en los ejercicios de clustering. La base contiene información de canciones en Spotify, incluyendo variables como **artista, álbum, duración, número de reproducciones, género** y otras características relevantes. Estos atributos nos permitirán más adelante aplicar K-means para identificar patrones y segmentar canciones en grupos con perfiles similares.
+En esta sección se realiza la ingesta de datos, es decir, la carga de la base de notas del curso que usaremos para los ejercicios de clustering. El dataset llamado `grades` incluye, para cada estudiante, su código y las calificaciones en `talleres`, `quices`, `parcial` y `midterm` (escala 0–5). Estos atributos permitirán aplicar `K-means` para identificar patrones de desempeño y segmentar a los estudiantes en grupos con perfiles similares.
 
 Para garantizar reproducibilidad, podemos trabajar de dos maneras:  
 
 1. **Archivo local**: leer directamente el archivo `data.csv` que acompaña a este material.  
 2. **Fuente externa (opcional)**: usar una URL (por ejemplo, un repositorio en GitHub) para que cualquier estudiante pueda replicar el ejercicio sin necesidad del archivo local.
 
-Una vez cargados los datos, listamos los objetos en memoria para confirmar que el dataset esperado (`spotify`) está disponible y listo para la exploración inicial.
+Una vez cargados los datos, listamos los objetos en memoria para confirmar que el dataset esperado (`grades`) está disponible y listo para la exploración inicial.
 
 ```{webr-r}
 #| warning: false
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-08/quarto/data/prepare-data.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/grades.R")
 
 ## chuequear objetos en la memoria
 ls()
 
-## atributos de sotify
-class(spotify)
-nrow(spotify)
-ncol(spotify)
+## atributos de grades
+class(grades)
+skim(grades)
+```
+
+## Selección de variables
+
+En este paso se eligen únicamente las variables numéricas relevantes para el agrupamiento. En el caso de las notas, pueden incluirse `taller`, `quiz`, `parcial` y `midterm.` Estas variables son adecuadas para `K-means` porque están en la misma escala (0–5) y describen cuantitativamente el desempeño académico.
+
+Para un ejemplo simple, trabajaremos con dos dimensiones (`quiz` y `parcial`) a fin de visualizar con claridad la lógica del clustering. Al reducir la base a este subconjunto se garantiza que el análisis se centre en atributos comparables y se excluyan identificadores u otras columnas que no aportan a la formación de grupos.
+
+```{webr-r}
+## filtrar variables
+db <- select(.data=grades , quiz,  parcial)
+```
+
+## Escalado
+
+Antes de aplicar `K-means` es buena práctica escalar las variables para que todas queden con media 0 y desviación estándar 1. Así se evita que alguna dimensión pese más en el cálculo de distancias euclidianas. Aunque aquí todas las notas comparten el rango 0–5, el escalado ayuda a estandarizar y comparar contribuciones.
+
+Con `scale()` se obtiene una matriz estandarizada lista para el análisis. Luego, se usa `skim()` para comprobar rápidamente que la transformación se aplicó correctamente (medias cercanas a 0 y desviaciones cercanas a 1).
+
+```{webr-r}
+## escalar
+db <- scale(db)
+
+## check data (skim)
+skim(db)
+
+## visualicemos las variables
+ggplot(data=db , aes(x=quiz , y=parcial)) +
+geom_point() +
+theme_basic()
 ```
 
 
 
-df <- grades[complete.cases(grades[, c("taller","quiz","parcial","midterm")]), ]
-X  <- as.matrix(df[, c("taller","quiz","parcial","midterm")])   # solo variables numéricas
-Xz <- scale(X)  # estandariza para dar el mismo peso a cada nota
 
 	2.	Matriz de distancias y clustering jerárquico
 
@@ -170,20 +196,3 @@ plot(rev(hc_ward$height), type = "b",
      xlab = "Uniones (de última a primera)",
      ylab = "Altura")
 
-
-⸻
-
-Preguntas guía para entregar
-	1.	¿Qué método de enlace (Ward vs. Complete) produce una separación más clara? Justifica con el dendrograma.
-	2.	¿Cuántos clusters elegirías y por qué (menciona el/los “saltos” de fusión)?
-	3.	Caracteriza cada cluster con los promedios de taller, quiz, parcial, midterm.
-	4.	¿Qué tan bien coinciden los clusters con group? Incluye la tabla de contingencia.
-	5.	Menciona dos acciones pedagógicas que podrías tomar con base en los clusters (p. ej., refuerzos focalizados).
-
-Entregable (máx. 1 página + figuras)
-	•	1–2 dendrogramas con el corte elegido (rectángulos).
-	•	Una tabla con promedios por cluster.
-	•	La tabla de contingencia vs group.
-	•	Breve interpretación (5–7 líneas).
-
-Nota: Todo se resuelve con base R (stats/graphics): scale, dist, hclust, plot, rect.hclust, cutree, aggregate, table. No se usan librerías adicionales.
