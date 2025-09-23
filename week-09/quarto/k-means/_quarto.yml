@@ -16,6 +16,6 @@ filters:
   - webr
 
 webr:
-  packages: [wordcloud , RColorBrewer, dplyr, ggplot2 , skimr , stringr]
+  packages: [wordcloud , dplyr, ggplot2 , stringr]
 
 

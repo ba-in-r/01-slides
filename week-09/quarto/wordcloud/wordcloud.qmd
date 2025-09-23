@@ -65,6 +65,9 @@ Este ejercicio nos permitirá observar cómo el procesamiento sistemático del t
 El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para procesamiento de texto, manipulación de datos, conteo de frecuencias y generación de wordclouds. Con esto, dejamos el entorno preparado para comenzar.
 
 ```{webr-r}
+#| warning: false
+#| message: false
+
 ## Author:
 ## Date:
 
@@ -76,6 +79,9 @@ require(wordcloud)    # Generación de wordclouds
 require(RColorBrewer) # Paletas de colores
 require(dplyr)        # Manipulación de datos
 require(stringr)      # Procesamiento de strings
+
+## print
+print("Listo!")
 ```
 
 ## Ingesta de datos (creación de corpus de ejemplo)
@@ -85,10 +91,18 @@ En esta sección realizamos la **ingesta de datos**, es decir, creamos el corpus
 Para garantizar reproducibilidad y facilidad de replicación, trabajamos con un dataset sintético pero realista que simula comentarios auténticos. Una vez creados los datos, inspeccionamos la estructura para confirmar que el corpus está listo para el procesamiento de texto.
 
 ```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/textos.r")
 
 ## inspeccionar estructura
 str(corpus_df)
 head(corpus_df, 3)
+
+## print
+print("Listo!")
 ```
 
 ## Tokenización y normalización
