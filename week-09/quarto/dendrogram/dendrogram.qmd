@@ -1,6 +1,6 @@
 ---
 title: "Unidad 5 — Agrupando Observaciones"
-subtitle: "Semana 08: Clustering"
+subtitle: "Semana 09: Clustering jerárquico"
 author: "Eduard F. Martínez González"
 ---
   
@@ -48,7 +48,7 @@ Entre las ventajas, no se requiere fijar k al inicio, se obtiene una representac
 
 # Aplicación en R
 
-Para ejemplificar el uso de K-means se trabajará con una base de notas del curso, que reúne para cada estudiante sus calificaciones en talleres, quices, parcial y midterm. Imagine un diagrama de dispersión donde en el eje X se ubica el promedio de talleres y en el eje Y el promedio de quices. Al ajustar K-means con k = 3, el algoritmo puede revelar patrones como los siguientes: Cluster 1, formado por estudiantes con desempeños altos y consistentes en trabajos y evaluaciones cortas; Cluster 2, con estudiantes que rinden mejor en actividades prácticas (talleres) pero muestran rezagos en quices; y Cluster 3, que agrupa desempeños más bajos o inestables en ambas dimensiones.
+Para ejemplificar el uso de `dendrogramas` se trabajará con una base de notas del curso, que reúne para cada estudiante sus calificaciones en talleres, quices, parcial y midterm. Imagine un diagrama de dispersión donde en el eje X se ubica el promedio de talleres y en el eje Y el promedio de quices. Al ajustar K-means con k = 3, el algoritmo puede revelar patrones como los siguientes: Cluster 1, formado por estudiantes con desempeños altos y consistentes en trabajos y evaluaciones cortas; Cluster 2, con estudiantes que rinden mejor en actividades prácticas (talleres) pero muestran rezagos en quices; y Cluster 3, que agrupa desempeños más bajos o inestables en ambas dimensiones.
 
 Este ejercicio permite observar cómo el algoritmo construye segmentos naturales a partir de los datos, sin categorías predefinidas, resaltando la utilidad del aprendizaje no supervisado para explorar perfiles y patrones de desempeño académico.
 
@@ -58,7 +58,7 @@ Este ejercicio permite observar cómo el algoritmo construye segmentos naturales
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de `K-means`. Con esto, dejamos el entorno preparado para comenzar.
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de un `dendrograma`. Con esto, dejamos el entorno preparado para comenzar.
 
 ```{webr-r}
 ## Author:
@@ -71,6 +71,9 @@ rm(list = ls())
 require(dplyr)      # Manipulación de datos 
 require(ggplot2)    # Visualización de datos
 require(skimr)      # Resúmenes rápidos y completos
+
+## print
+print("Listo!")
 ```
 
 ## Ingesta de datos (carga desde archivo o URL)
@@ -89,7 +92,7 @@ Una vez cargados los datos, listamos los objetos en memoria para confirmar que e
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/grades.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/grades.r")
 
 ## chuequear objetos en la memoria
 ls()
@@ -101,18 +104,21 @@ skim(grades)
 
 ## Selección de variables
 
-En este paso se eligen únicamente las variables numéricas relevantes para el agrupamiento. En el caso de las notas, pueden incluirse `taller`, `quiz`, `parcial` y `midterm.` Estas variables son adecuadas para `K-means` porque están en la misma escala (0–5) y describen cuantitativamente el desempeño académico.
+En este paso se eligen únicamente las variables numéricas relevantes para el agrupamiento. En el caso de las notas, pueden incluirse `taller`, `quiz`, `parcial` y `midterm.` Estas variables son adecuadas para `dendrograma` porque están en la misma escala (0–5) y describen cuantitativamente el desempeño académico.
 
-Para un ejemplo simple, trabajaremos con dos dimensiones (`quiz` y `parcial`) a fin de visualizar con claridad la lógica del clustering. Al reducir la base a este subconjunto se garantiza que el análisis se centre en atributos comparables y se excluyan identificadores u otras columnas que no aportan a la formación de grupos.
+Para un ejemplo simple, trabajaremos con dos dimensiones (`quiz` y `midterm`) a fin de visualizar con claridad la lógica del clustering. Al reducir la base a este subconjunto se garantiza que el análisis se centre en atributos comparables y se excluyan identificadores u otras columnas que no aportan a la formación de grupos.
 
 ```{webr-r}
 ## filtrar variables
-db <- select(.data=grades , quiz,  parcial)
+db <- select(.data=grades , midterm,  quiz , group)
+
+## print
+print("Listo!")
 ```
 
 ## Escalado
 
-Antes de aplicar `K-means` es buena práctica escalar las variables para que todas queden con media 0 y desviación estándar 1. Así se evita que alguna dimensión pese más en el cálculo de distancias euclidianas. Aunque aquí todas las notas comparten el rango 0–5, el escalado ayuda a estandarizar y comparar contribuciones.
+Antes de aplicar `dendrograma` es buena práctica escalar las variables para que todas queden con media 0 y desviación estándar 1. Así se evita que alguna dimensión pese más en el cálculo de distancias euclidianas. Aunque aquí todas las notas comparten el rango 0–5, el escalado ayuda a estandarizar y comparar contribuciones.
 
 Con `scale()` se obtiene una matriz estandarizada lista para el análisis. Luego, se usa `skim()` para comprobar rápidamente que la transformación se aplicó correctamente (medias cercanas a 0 y desviaciones cercanas a 1).
 
@@ -124,75 +130,106 @@ db <- scale(db)
 skim(db)
 
 ## visualicemos las variables
-ggplot(data=db , aes(x=quiz , y=parcial)) +
+ggplot(data=db , aes(x=midterm , y=quiz)) +
 geom_point() +
-theme_basic()
+theme_minimal()
 ```
 
+## Distancias
 
+**¿Qué hace este bloque y qué devuelve?** Matriz de distancias. A partir del conjunto estandarizado `db`, se construye la matriz de distancias. Para `Ward.D2`, utiliza `method = "euclidean"`.
 
+```{webr-r}
+## escalar
+D  <- dist(db , method="euclidean")
 
-	2.	Matriz de distancias y clustering jerárquico
+## print
+head(D)
+```
 
-	•	Usa distancia Euclidiana.
-	•	Compara al menos dos métodos de enlace (por ejemplo, ward.D2 y complete).
+### H-Cluster
 
-# --- 2. Distancias y modelos ---
-D  <- dist(Xz, method = "euclidean")
+**`ward.D2`**: fusiona los grupos que **menor incremento** generan en la suma de cuadrados intra‑cluster (varianza). Suele producir **clusters compactos** y de tamaño similar. Recomendado con **distancia euclidiana** y **datos escalados**.
 
+**`complete`**: distancia entre grupos = **máxima distancia** entre sus puntos. Tiende a formar grupos **apretados** y separa bien **outliers**, pero puede ser **sensible a ruido extremo**.
+
+**Idea práctica**: Entrenamos dos variantes para comparar la estructura del árbol: `Ward.D2` y `Complete`.
+
+```{webr-r}
+## hclust ward
 hc_ward     <- hclust(D, method = "ward.D2")
-hc_complete <- hclust(D, method = "complete")
 
-	3.	Dendrogramas
+## print
+print("Listo!")
+```
+Componentes clave de un objeto `hclust`
 
-	•	Etiqueta con codigo.
-	•	Señala, por ejemplo, k = 3 grupos (ajústalo si ves otro corte más natural).
+- `merge`: matriz de tamaño `(n - 1) × 2` que registra qué grupos se fusionan en cada paso.
+  - Índices **negativos** (`-i`) son observaciones individuales (hojas).
+  - Índices **positivos** (`j`) refieren a clusters formados en el **paso `j`**.
+- `height`: vector con la disimilitud (altura) a la que ocurre cada fusión.
+- `order`: orden de las hojas (útil al graficar).
+- `labels`: etiquetas de las observaciones (si estaban disponibles).
+- `method`: método de enlace utilizado.
+- `call`, `dist.method`: metadatos de la llamada y de la distancia.
 
-# --- 3. Dendrogramas ---
+```{webr-r}
+## Resumen básico
+print(hc_ward)
+
+## Tipo y componentes
+class(hc_ward)
+names(hc_ward)
+str(hc_ward, max.level = 1)
+
+## Detalle de fusiones y alturas
+dim(hc_ward$merge)
+head(hc_ward$merge)
+head(hc_ward$height)
+head(hc_ward$order)
+
+## Método de enlace y distancia (si está disponible)
+hc_ward$method
+hc_ward$dist.method
+```
+
+## Dendrogramas
+
+Un dendrograma representa la historia de fusiones del clustering jerárquico: 
+
++ La altura de fusión (eje vertical) aproxima la disimilitud al unir dos ramas: más alto ⇒ más diferentes eran los grupos. 
++ Un corte horizontal a una altura fija particiona el árbol en k clusters. 
++ Ramas largas que se unen tarde pueden señalar outliers o grupos bien separados. 
++ El orden de las hojas (eje horizontal) es conveniente para lectura, pero no tiene escala métrica.
+
+```{webr-r}
 par(mfrow = c(1,2))
-plot(hc_ward, labels = df$codigo, main = "Dendrograma - Ward.D2", xlab = "", sub = "")
+plot(hc_ward, labels = grades$codigo, main = "Dendrograma - Ward.D2", xlab = "", sub = "")
 rect.hclust(hc_ward, k = 3, border = "red")
+```
 
-plot(hc_complete, labels = df$codigo, main = "Dendrograma - Complete", xlab = "", sub = "")
-rect.hclust(hc_complete, k = 3, border = "red")
-par(mfrow = c(1,1))
+## Corte del árbol y comparación con group
 
-	4.	Corte del árbol y comparación con group
+El bloque corta el árbol jerárquico obtenido con hc_ward en k = 3 grupos usando cutree(), creando así la asignación de cada estudiante a un cluster. Luego agrega esa etiqueta (cluster_w) a la tabla original de notas (grades) y la convierte en factor para facilitar análisis y gráficos. Con count() calcula el tamaño de cada cluster, lo que permite ver la distribución de estudiantes por grupo (en el ejemplo: 18, 18 y 35).
 
-	•	Obtén asignaciones de cluster y compáralas con la columna group.
+Después, con un group_by(cluster_w) y summarise(across(...)), calcula los perfiles promedio por cluster en las cuatro evaluaciones (taller, quiz, parcial, midterm), ignorando faltantes con na.rm = TRUE. Los resultados impresos ilustran cómo interpretar esos perfiles: p. ej., el cluster 1 muestra alto desempeño en talleres (4.48) y quices (4.84) pero menor en parcial (2.98); el cluster 2 refleja un rezago general; y el cluster 3 combina buen rendimiento práctico (talleres 4.54) con niveles intermedios en quiz y parcial. Con esto, se obtiene tanto la composición de los clusters como su caracterización académica.
 
-# --- 4. Corte y comparación ---
+```{webr-r}
+## crear clusters
 k <- 3
 cl_w <- cutree(hc_ward, k = k)
-cl_c <- cutree(hc_complete, k = k)
 
-# Tabla de contingencia vs 'group' (si group existe como verdad-terreno o cohorte)
-tab_w <- table(real = df$group, clust = cl_w)
-tab_c <- table(real = df$group, clust = cl_c)
+# Añadir cluster a la tabla original
+grades_w <- grades %>% mutate(cluster_w = factor(cl_w))
 
-tab_w
-tab_c
+# Tamaños por cluster
+count(grades_w, cluster_w)
 
-	5.	Perfil de clusters (interpretación)
-
-	•	Calcula promedios de cada nota por cluster para interpretar “tipos” de estudiantes.
-
-# --- 5. Perfil de clusters ---
-aggregate(df[, c("taller","quiz","parcial","midterm")], 
-          by = list(cluster = cl_w), 
-          FUN = mean)
-
-# (opcional) Ordena estudiantes por su "altura" de fusión para ver casos límite
-ord <- hc_ward$order
-df[ord[1:10], c("codigo","taller","quiz","parcial","midterm")]
-
-	6.	(Opcional) Sugerencia del número de clusters desde el dendrograma
-
-	•	Observa los “saltos” grandes en hc_ward$height.
-
-# --- 6. Heurística para elegir k (sin librerías) ---
-plot(rev(hc_ward$height), type = "b",
-     main = "Alturas de fusión (rev)",
-     xlab = "Uniones (de última a primera)",
-     ylab = "Altura")
+# Perfiles (medias por nota)
+profiles_w <- grades_w %>%
+              group_by(cluster_w) %>%
+              summarise(across(c(taller, quiz, parcial, midterm), ~ mean(.x, na.rm = TRUE)),
+                        .groups = "drop")
+profiles_w
+```
 

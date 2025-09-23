@@ -1,6 +1,6 @@
 ---
 title: "Unidad 5 — Agrupando Observaciones"
-subtitle: "Semana 08: Clustering"
+subtitle: "Semana 09: Clustering"
 author: "Eduard F. Martínez González"
 ---
   
@@ -41,6 +41,9 @@ rm(list = ls())
 require(dplyr)      # Manipulación de datos 
 require(ggplot2)    # Visualización de datos
 require(skimr)      # Resúmenes rápidos y completos
+
+## print
+print("Listo!")
 ```
 
 ## Ingesta de datos (carga desde archivo o URL)
@@ -59,7 +62,7 @@ Una vez cargados los datos, listamos los objetos en memoria para confirmar que e
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/grades.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-09/data/grades.r")
 
 ## chuequear objetos en la memoria
 ls()
@@ -78,6 +81,9 @@ Para un ejemplo simple, trabajaremos con dos dimensiones (`quiz` y `parcial`) a 
 ```{webr-r}
 ## filtrar variables
 db <- select(.data=grades , quiz,  parcial)
+
+## print
+print("Listo!")
 ```
 
 ## Escalado
@@ -96,7 +102,7 @@ skim(db)
 ## visualicemos las variables
 ggplot(data=db , aes(x=quiz , y=parcial)) +
 geom_point() +
-theme_basic()
+theme_minimal()
 ```
 
 ## Ajuste de K-means con K = 4
@@ -113,6 +119,9 @@ set.seed(2024)
 
 ## ajustar modelo
 km <- kmeans(db, centers = 4, nstart = 30)
+
+## print
+print("Listo!")
 ```
 
 A continuación se construye un objeto con la asignación individual agregando la columna `cluster` al objeto original de `grades`. Se convierte en factor para facilitar la interpretación y el uso en `gráficos/tablas`.
@@ -132,7 +141,7 @@ Un primer vistazo útil es (i) el tamaño de cada cluster y (ii) un dispersogram
 
 ```{webr-r}
 ## plot
-ggplot(grades_c , aes(x=parcial , y=quiz , color=cluster)) +
+ggplot(grades_c , aes(x=parcial , y=midterm , color=cluster)) +
 geom_point(alpha = 0.6) +
 theme_minimal(base_size = 12)
 ```
