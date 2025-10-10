@@ -206,158 +206,205 @@ sel_colombia
 
 ## Tipos de grafos
 
+Este tipo de red solo representa la existencia de conexión entre dos jugadores, sin importar quién inició el pase ni cuántas veces ocurrió. Se usa cuando el interés es identificar si existe relación, no su dirección ni su intensidad.
 
 ```{webr-r}
-# Crear matriz de adyacencia ponderada
-sel_colombia <- sel_colombia %>%
-  pivot_wider(names_from = to, values_from = peso, values_fill = 0) %>%
-  column_to_rownames("from") %>%
-  as.matrix()
+## No ponderado, no dirigido
+no_dir_plot <- graph.adjacency(sel_colombia, mode="undirected" , diag=FALSE)
 
-# Crear grafo no dirigido desde la matriz
-no_dir_plot <- graph.adjacency(sel_colombia, mode = "undirected", diag = FALSE)
-
+## plot
 plot(no_dir_plot)
 ```
-
-## Escalado
-
-Antes de aplicar K-means es fundamental escalar las variables: transformarlas para que todas queden en la misma escala (media 0 y desviación estándar 1). Esto evita que una variable con valores naturalmente más grandes (como tempo) domine el cálculo de distancias frente a otras en rangos más pequeños (como danceability).
-
-Con la función scale() se obtiene una matriz estandarizada lista para el análisis. Posteriormente, se utiliza skim() para verificar de manera rápida la estructura de los datos escalados y confirmar que la transformación se realizó correctamente.
+Aquí se incorpora la dirección del pase, lo cual es crucial en contextos dinámicos como el fútbol. Cada flecha representa quién pasa y quién recibe el balón.
 
 ```{webr-r}
-## escalar
-x <- scale(features)
+## No ponderado, dirigido
+dir_plot <- graph.adjacency(sel_colombia, mode="directed" , diag=FALSE)
 
-## check data (skim)
-skim(x)
-
-## visualicemos las variables danceability y tempo
-ggplot(data=x , aes(x=tempo , y=danceability)) +
-geom_point()
-```
-
-## Ajuste de K-means con K = 4
-
-En este bloque se realiza el entrenamiento del modelo K-means fijando el número de clusters en k = 3. Primero, se establece una semilla aleatoria (set.seed(2024)) para asegurar que los resultados sean reproducibles, ya que K-means depende de inicializaciones aleatorias de los centroides.
-
-Después, con la función kmeans() se ajusta el modelo sobre la matriz estandarizada X, indicando centers = 4 para formar cuatro grupos. El argumento nstart = 30 hace que el algoritmo se ejecute 30 veces con diferentes inicializaciones y escoja la mejor solución encontrada, reduciendo la posibilidad de caer en mínimos locales.
-
-El objeto resultante km contiene la información clave del modelo: asignación de observaciones a clusters, coordenadas de los centroides y medidas de ajuste como la suma de cuadrados intra e inter-cluster.
-
-```{webr-r}
-## fijar semilla
-set.seed(2024)
-
-## ajustar modelo
-km <- kmeans(x, centers = 4, nstart = 30)
-```
-
-En este bloque se realiza el ajuste final de K-means y el resumen de los clusters obtenidos. Primero, se crea un nuevo objeto spotify_c que añade una columna llamada cluster, donde se almacena el resultado de la asignación de cada observación al grupo correspondiente (km$cluster). Esta columna se convierte en un factor para facilitar la interpretación y las operaciones posteriores.
-
-```{webr-r}
-## Agregar variable de cluster
-spotify_c <- spotify %>% 
-             mutate(cluster = factor(km$cluster))
-
-## head(spotify_c)
-head(spotify_c)
-
-## inspeccionar con tabla de frecuencias
-table(spotify_c$cluster)
-```
-
-## Inspeccionar los clusters
-
-```{webr-r}
 ## plot
-ggplot(spotify_c, aes(x=tempo , y=danceability , color=cluster)) +
-geom_point(alpha = 0.6) +
-theme_minimal(base_size = 12)
+plot(dir_plot, edge.arrow.size=0.8)
 ```
 
-## Heurística del codo
-
-El método del codo es una técnica práctica para determinar el número apropiado de clusters k. Consiste en calcular la suma de cuadrados intra-cluster (WSS, within-cluster sum of squares) para distintos valores de k. A medida que aumenta el número de clusters, el WSS disminuye (ya que los grupos se vuelven más homogéneos). Sin embargo, llega un punto en que la mejora se vuelve marginal: ese punto de inflexión, con forma de “codo” en la curva, sugiere el número óptimo de clusters.
+Incorporamos ahora la intensidad del pase (peso), pero tratamos la red como bidireccional: si dos jugadores se pasan el balón mutuamente, la arista representa la suma de sus interacciones.
 
 ```{webr-r}
-## fijar semilla
-set.seed(2024)
+## Ponderado, no dirigido
+pond_no_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode ="undirected", diag = FALSE)
 
-## numero de codos
-ks <- 1:8
+## plot
+plot(pond_no_dir , edge.width=E(pond_no_dir)$weight)
 ```
-
-Aquí se calcula el WSS (suma de cuadrados intra-cluster) para cada valor de k definido anteriormente. Se utiliza un map_dbl() que ejecuta la función kmeans() repetidamente, y para cada solución obtiene el valor de tot.withinss. El argumento nstart = 20 indica que el algoritmo se ejecutará varias veces con diferentes inicializaciones para mejorar la estabilidad del resultado.
+Finalmente, representamos la red completa: cada arista tiene una dirección (quién pasa a quién) y un peso (frecuencia del pase). Este es el tipo de grafo más informativo para analizar patrones de juego y centralidad.
 
 ```{webr-r}
-## wss
-wss <- map_dbl(ks, ~ kmeans(x, centers = .x, nstart = 20)$tot.withinss)
+## Ponderado, dirigido
+pond_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode ="directed", diag = FALSE)
 
-## inspeccionar el objeto
-head(wss)
+## plot
+plot(pond_dir , edge.width=E(pond_no_dir)$weight ,  edge.arrow.size = 0.8)
 ```
 
-Finalmente, se organiza la información en un tibble llamado elbow_df, que contiene dos columnas: el número de clusters (k) y el valor correspondiente de WSS (wss). Esta tabla servirá como insumo para construir el gráfico del codo y tomar una decisión sobre el número óptimo de clusters.
+## Indicadores de centralidad
+
+El grafo por sí solo nos permite visualizar la estructura general del equipo, pero no siempre es suficiente para analizar la influencia de cada jugador. En la práctica, las redes pueden ser densas y confusas — las líneas se sobreponen y es difícil identificar quién tiene un rol central o de conexión.
+
+Para eso, usamos los indicadores de centralidad, que cuantifican la importancia de cada nodo (jugador) dentro de la red según diferentes criterios. Estas métricas pueden dividirse en tres grupos: medidas locales, medidas globales y medidas agregadas de red.
+
+### Medidas locales
+
+Evalúan la posición de un nodo respecto a su entorno más inmediato, es decir, cuántos vínculos tiene o qué tan importante es como intermediario en los flujos de interacción.
+
+#### Grado de Centralidad (Degree Centrality)
+
+Mide el número de conexiones directas de cada jugador. En el contexto futbolístico, un jugador con alto grado de centralidad es aquel que participa en muchas jugadas de pase.
 
 ```{webr-r}
-## elbow_df
-elbow_df <- tibble(k = ks, wss = wss)
-
-## inspeccionar el objeto
-head(elbow_df)
+degree(no_dir_plot, mode = "all")
 ```
 
-En este bloque se construye el gráfico del codo, que permite visualizar cómo varía la suma de cuadrados intra-cluster (WSS) a medida que aumenta el número de clusters k. Primero, se utiliza ggplot() para graficar el objeto elbow_df, que contiene los pares (k, wss) obtenidos en pasos anteriores. La función geom_line() dibuja la línea que conecta los puntos, mientras que geom_point() resalta cada valor de k con un marcador. Los parámetros de color (#0ea5e9) y grosor de línea (linewidth = 1) sirven para mejorar la estética del gráfico.
+**Interpretación:** Los jugadores con valores más altos son los que tienen mayor participación directa en la circulación del balón (por ejemplo, mediocampistas que conectan líneas o defensas que inician las jugadas).
 
-Finalmente, se aplica theme_minimal() para una visualización limpia y labs() para asignar título y etiquetas a los ejes. El resultado es una curva decreciente donde se espera identificar un punto de inflexión: allí se encuentra el “codo”, que sugiere un número razonable de clusters para aplicar el algoritmo de K-means.
+#### Intermediación (Betweenness Centrality)
+
+Mide cuántas veces un nodo actúa como puente entre otros dos jugadores. Un jugador con alta intermediación es esencial para mantener la cohesión del equipo: si se elimina, la red puede fragmentarse.
 
 ```{webr-r}
-## plot data 
-ggplot(elbow_df, aes(k, wss)) +
-geom_line(color = "#0ea5e9", linewidth = 1) +
-geom_point(color = "#0ea5e9", size = 2) +
-theme_minimal(base_size = 12) +
-labs(title = "Heurística del codo para elegir K",
-     x = "N. de clusters (K)", y = "Suma intra-cluster (WSS)")
+betweenness(no_dir_plot)
 ```
 
-## Actividad en Clase
+**Interpretación:** Valores altos indican jugadores que canalizan el juego entre distintas zonas del campo (por ejemplo, James o Muñoz como conectores entre defensa y ataque).
 
-Instrucciones:
+### Medidas globales
 
-	1.	Ejecute los chunks de código proporcionados en R.
+Evalúan la posición de un jugador respecto a toda la red, considerando distancias, flujos y relevancia relativa dentro del equipo.
+
+#### Cercanía (Closeness Centrality)
+
+Mide qué tan rápido un jugador puede alcanzar al resto de sus compañeros (en promedio). Cuanto mayor la cercanía, más eficiente es su acceso al resto de la red.
+
+```{webr-r}
+## Centralidad de cercanía: eficiencia de conexión global
+closeness(no_dir_plot, mode = "all")
+```
+
+**Interpretación:** Los jugadores con alta cercanía son aquellos que reciben y distribuyen el balón con pocos intermediarios, facilitando la fluidez del juego.
+
+#### Puntaje de autoridad (Authority Score)
+
+Indica la importancia relativa de un nodo considerando no solo su número de conexiones, sino la relevancia de los nodos a los que está conectado. En el fútbol, representa a los jugadores más influyentes en el flujo del balón.
+
+```{webr-r}
+## Puntaje de autoridad: influencia relativa de cada nodo
+authority.score(no_dir_plot)$vector
+```
+
+**Interpretación:** Un puntaje alto sugiere que el jugador está conectado con otros importantes. En redes dirigidas, esta métrica suele identificar a los receptores clave de pases.
+
+### Otras medidas complementarias
+
+Existen también métricas que no pertenecen estrictamente a las categorías anteriores, pero ayudan a describir la estructura general de la red.
+
+#### Distancia promedio (Mean Distance)
+
+Mide el número medio de pasos necesarios para conectar dos jugadores cualesquiera. Cuanto menor sea la distancia, más compacto y eficiente es el equipo.
+
+```{webr-r}
+## Distancia promedio entre jugadores
+mean_distance(no_dir_plot)
+```
+
+#### Excentricidad (Eccentricity)
+
+Mide la distancia máxima desde un jugador al más lejano en la red.
+
+```{webr-r}
+## Excentricidad de cada jugador
+eccentricity(no_dir_plot, mode = "all")
+```
+
+**Interpretación:** Jugadores con alta excentricidad están periféricos en el juego; los de baja excentricidad son centrales o muy conectados.
+
+### Medidas agregadas de la red
+
+Estas métricas resumen propiedades estructurales globales: cohesión, conectividad y redundancia.
+
+#### Diámetro (Diameter)
+
+Mide la máxima excentricidad, es decir, la ruta más larga que conecta dos jugadores.
+
+```{webr-r}
+## Diámetro de la red (camino más largo)
+diameter(no_dir_plot)
+```
+
+#### Densidad (Density)
+
+Es la proporción de conexiones efectivas sobre todas las posibles. Indica qué tan interconectado está el equipo.
+
+```{webr-r}
+## Crear grafo binario para medir densidad
+sel_colombia_1 <- sel_colombia
+for (i in 1:ncol(sel_colombia_1)) {
+    for (j in 1:nrow(sel_colombia_1)) {
+         sel_colombia_1[j, i] <- ifelse(sel_colombia_1[j, i] > 0, 1, sel_colombia_1[j, i])
+    }
+}
+
+g_den <- graph.adjacency(sel_colombia_1, mode = "undirected",
+                         weighted = NULL, diag = FALSE)
+
+## Calcular densidad
+edge_density(g_den)
+```
+
+**Interpretación:** Una alta densidad indica un equipo cohesionado, donde la mayoría de los jugadores interactúan entre sí.
+
+### Transitividad (Transitivity)
+
+Mide la proporción de triángulos completos en la red, es decir, cuántos grupos de tres jugadores están totalmente conectados.
+
+```{webr-r}
+transitivity(no_dir_plot)
+```
+
+**Interpretación:** Alta transitividad sugiere jugadas triangulares frecuentes (asociaciones cortas y cooperación local).
+
+#### Reciprocidad (Reciprocity)
+
+Indica la probabilidad de que si un jugador A le pasa a B, B también le devuelva el pase.
+
+```{webr-r}
+reciprocity(no_dir_plot) 
+```
+
+**Interpretación:** La reciprocidad mide la mutualidad de las interacciones, es decir, qué tanto los pases van en ambas direcciones (colaboración bidireccional).
+
+# Actividad en Clase
+
+## Instrucciones:
+
+	1.	Copie la ruta de ejecución chunks de código proporcionados en R.
+
+
+```{webr-r}
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/data.r")
+```
+
+	4.	Suba su scritp a la plataforma Intu.
+
+## Preguntas:
+
+	1. Construir el grafo: Crea el grafo dirigido y ponderado:
+	2. Obtén al menos tres indicadores de centralidad:
+	3. Identificar el jugador más influyente
+Basado en las métricas anteriores, responde:
+	•	¿Quién es el jugador más influyente en la red?
+	•	¿Cuál parece actuar como conector entre líneas?
+	•	¿Qué jugador parece más periférico?
+	4. Visualizar la red
+Haz un gráfico que muestre las relaciones entre jugadores, usando:
+	•	plot() (básico), o
+	•	ggraph() (si desean un resultado más estético).
 	
-	2.	Observe los resultados obtenidos (tablas resumen por clúster).
 	
-	3.	Genere un documento en Word donde:
-	•	Copie las preguntas que aparecen a continuación.
-	•	Escriba sus interpretaciones y conclusiones con base en los resultados (no debe copiar el código ni las tablas, solo redactar sus respuestas).
-	
-	4.	Suba su documento a la plataforma Intu.
-
-```{webr-r}
-## Streams (Reproducciones)
-summarise(.data = spotify_c , mean(streams) , min(streams) , max(streams) , .by=cluster)
-
-## Duración
-summarise(.data = spotify_c , median(duration_ms) , .by=cluster)
-
-## Tempo y Danceability:
-summarise(.data = spotify_c , mean(tempo) , mean(danceability) , .by=cluster)
-```
-
-Preguntas de interpretación:
-
-	1.	Streams (Reproducciones):
-	•	Según los promedios, mínimos y máximos de streams en cada clúster:
-	•	¿Qué cluster contiene la canción más escuchada?
-	•	¿En promedio, qué cluster contiene las canciónes más escuchada?
-
-	2.	Duración: A partir de la mediana de duration_ms por clúster:
-	•	¿En promedio, cuál cluster tiene canciones más cortas?
-
-	3.	Tempo y Danceability: Considerando el promedio de tempo y danceability por clúster:
-	•	¿Qué cluster tiende a tener canciones con mayor energía rítmica?
-	•	¿Cuál agrupa canciones con menor “bailabilidad”?
