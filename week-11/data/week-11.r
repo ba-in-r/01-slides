@@ -1,6 +1,4 @@
 ## --- Generación de la base simulada ---
-
-rm(list=ls())
 require(dplyr)
 
 # Lista de jugadores
