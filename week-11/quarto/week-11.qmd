@@ -202,19 +202,9 @@ sel_colombia
 
 ## Selección de variables
 
-En este paso se seleccionan únicamente las variables numéricas asociadas a las características de audio de cada canción: danceability, energy, valence, acousticness, liveness, speechiness y tempo. Estas son las más adecuadas para aplicar un algoritmo de clustering, ya que describen propiedades musicales cuantitativas y comparables entre canciones.
-
-Al reducir la base a este subconjunto, garantizamos que el análisis con `K-means` se centre en los atributos musicales relevantes, eliminando información categórica o identificadores que no aportan al agrupamiento.
 
 ```{webr-r}
-## filtrar variables
-features <- select(.data=spotify , danceability,  tempo)
-
-## check los objetos en la memoria
-ls()
-
-## 
-head(features)
+Croacia.Und.graph <- graph.adjacency(Croacia, mode = "undirected", diag = FALSE)
 ```
 
 ## Escalado
