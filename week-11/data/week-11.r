@@ -1,7 +1,7 @@
 ## --- Generación de la base simulada ---
 
 rm(list=ls())
-require(tidyverse)
+require(dplyr)
 
 # Lista de jugadores
 jugadores <- c("Vargas", "Cuesta", "Mina", "Machado", "Muñoz",

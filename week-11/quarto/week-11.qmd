@@ -194,10 +194,10 @@ Esta estructura de datos nos permitirá representar el flujo del balón como un 
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/week-11.R")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/week-11.r")
 
 ## chuequear objetos en la memoria
-print("Listo")
+pases_colombia
 ```
 
 ## Selección de variables
