@@ -23,6 +23,23 @@ mensajes <- data.frame(
   group_by(emisor, receptor) %>%
   summarise(mensajes = n(), .groups = "drop")
 
+
+mensajes <- mensajes %>%
+  pivot_wider(
+    names_from = receptor,   # las columnas serán los receptores
+    values_from = mensajes,  # los valores serán el número de mensajes
+    values_fill = 0          # los pares sin mensajes se llenan con 0
+  ) %>% data.frame()
+
+rownames(mensajes) = mensajes$emisor
+rownames(mensajes)
+mensajes$emisor = NULL
+
+
+mensajes = as.matrix(mensajes)
+
+
+
 rm(contactos)
 cat("\f")
 head(mensajes)
