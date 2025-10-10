@@ -1662,10 +1662,11 @@ window.Quarto = {
   <li><a href="#transitividad-transitivity" id="toc-transitividad-transitivity" class="nav-link" data-scroll-target="#transitividad-transitivity"><span class="header-section-number">2.4.5</span> Transitividad (Transitivity)</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">3</span> Actividad en Clase</a>
+  <li><a href="#actividad-en-clase-red-de-mensajes-de-whatsapp" id="toc-actividad-en-clase-red-de-mensajes-de-whatsapp" class="nav-link" data-scroll-target="#actividad-en-clase-red-de-mensajes-de-whatsapp"><span class="header-section-number">3</span> Actividad en Clase: Red de Mensajes de WhatsApp</a>
   <ul class="collapse">
-  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</a></li>
-  <li><a href="#preguntas" id="toc-preguntas" class="nav-link" data-scroll-target="#preguntas"><span class="header-section-number">3.2</span> Preguntas:</a></li>
+  <li><a href="#objetivo" id="toc-objetivo" class="nav-link" data-scroll-target="#objetivo"><span class="header-section-number">3.1</span> Objetivo</a></li>
+  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.2</span> Instrucciones</a></li>
+  <li><a href="#preguntas" id="toc-preguntas" class="nav-link" data-scroll-target="#preguntas"><span class="header-section-number">3.3</span> Preguntas</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2269,21 +2270,42 @@ Tip
 </section>
 </section>
 </section>
-<section id="actividad-en-clase" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Actividad en Clase</h1>
-<section id="instrucciones" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</h2>
-<pre><code>1.  Copie la ruta de ejecución chunks de código proporcionados en R.</code></pre>
+<section id="actividad-en-clase-red-de-mensajes-de-whatsapp" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Actividad en Clase: Red de Mensajes de WhatsApp</h1>
+<section id="objetivo" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="objetivo"><span class="header-section-number">3.1</span> Objetivo</h2>
+<p>Aplicar los conceptos de <strong>análisis de redes</strong> vistos en clase para identificar los contactos más influyentes, los intermediarios y la estructura general de comunicación dentro de un grupo de mensajes de WhatsApp simulado.</p>
+</section>
+<section id="instrucciones" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">3.2</span> Instrucciones</h2>
+<ol type="1">
+<li>Copia y ejecuta los <em>chunks</em> de código en R (o directamente en tu entorno webR si está habilitado). Esto generará una base de datos con los mensajes enviados entre un grupo de contactos y construirá la matriz de adyacencia necesaria para el análisis.</li>
+</ol>
 <div id="qwebr-insertion-location-17"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<pre><code>4.  Suba su scritp a la plataforma Intu.</code></pre>
+<ol start="2" type="1">
+<li>Analiza los resultados obtenidos paso a paso.</li>
+</ol>
+<pre><code>3.  Guarda tu código y tus respuestas en un único archivo .qmd o .html.
+
+4.  Sube tu archivo final a la plataforma Intu antes del cierre de la sesión.</code></pre>
 </section>
-<section id="preguntas" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="preguntas"><span class="header-section-number">3.2</span> Preguntas:</h2>
-<pre><code>1. Construir el grafo: Crea el grafo dirigido y ponderado:
-2. Obtén al menos tres indicadores de centralidad:
-3. Identificar el jugador más influyente</code></pre>
-<p>Basado en las métricas anteriores, responde: • ¿Quién es el jugador más influyente en la red? • ¿Cuál parece actuar como conector entre líneas? • ¿Qué jugador parece más periférico? 4. Visualizar la red Haz un gráfico que muestre las relaciones entre jugadores, usando: • plot() (básico), o • ggraph() (si desean un resultado más estético).</p>
+<section id="preguntas" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="preguntas"><span class="header-section-number">3.3</span> Preguntas</h2>
+<p><strong>1. Construcción del grafo:</strong></p>
+<pre><code>•   Crea un grafo dirigido y ponderado a partir de la base generada (mensajes).
+•   Asegúrate de que las aristas representen la dirección del mensaje y su frecuencia (peso).</code></pre>
+<p><strong>2. Indicadores de centralidad:</strong></p>
+<p>Calcula al menos tres indicadores de centralidad:</p>
+<pre><code>•   Grado de centralidad (Degree)
+•   Intermediación (Betweenness)
+•   Cercanía (Closeness)</code></pre>
+<p><strong>3. Visualización de la red</strong></p>
+<p>Genera una visualización que muestre las relaciones entre los contactos usando:</p>
+<pre><code>•   plot() (visualización básica), o
+•   ggraph() (visualización avanzada con control de color y tamaño).</code></pre>
+<p><strong>4. Entrega:</strong> Archivo .R con código.</p>
+<p>Sube tu archivo a Intu con el nombre: Taller7_Apellido_Nombre.qmd</p>
 </section>
 </section>
 

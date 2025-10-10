@@ -379,32 +379,51 @@ reciprocity(no_dir_plot)
 
 **Interpretación:** La reciprocidad mide la mutualidad de las interacciones, es decir, qué tanto los pases van en ambas direcciones (colaboración bidireccional).
 
-# Actividad en Clase
+# Actividad en Clase: Red de Mensajes de WhatsApp
 
-## Instrucciones:
+## Objetivo
 
-	1.	Copie la ruta de ejecución chunks de código proporcionados en R.
+Aplicar los conceptos de **análisis de redes** vistos en clase para identificar los contactos más influyentes, los intermediarios y la estructura general de comunicación dentro de un grupo de mensajes de WhatsApp simulado.
 
+## Instrucciones
+
+  1. Copia y ejecuta los *chunks* de código en R (o directamente en tu entorno webR si está habilitado). Esto generará una base de datos con los mensajes enviados entre un grupo de contactos y construirá la matriz de adyacencia necesaria para el análisis.
 
 ```{webr-r}
 ## generar los datos
 source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/data.r")
 ```
 
-	4.	Suba su scritp a la plataforma Intu.
+  2.	Analiza los resultados obtenidos paso a paso.
 
-## Preguntas:
+	3.	Guarda tu código y tus respuestas en un único archivo .qmd o .html.
 
-	1. Construir el grafo: Crea el grafo dirigido y ponderado:
-	2. Obtén al menos tres indicadores de centralidad:
-	3. Identificar el jugador más influyente
-Basado en las métricas anteriores, responde:
-	•	¿Quién es el jugador más influyente en la red?
-	•	¿Cuál parece actuar como conector entre líneas?
-	•	¿Qué jugador parece más periférico?
-	4. Visualizar la red
-Haz un gráfico que muestre las relaciones entre jugadores, usando:
-	•	plot() (básico), o
-	•	ggraph() (si desean un resultado más estético).
+	4.	Sube tu archivo final a la plataforma Intu antes del cierre de la sesión.
+
+## Preguntas
+
+**1. Construcción del grafo:**
+
+	•	Crea un grafo dirigido y ponderado a partir de la base generada (mensajes).
+	•	Asegúrate de que las aristas representen la dirección del mensaje y su frecuencia (peso).
+
+**2. Indicadores de centralidad:**
+
+Calcula al menos tres indicadores de centralidad:
+
+	•	Grado de centralidad (Degree)
+	•	Intermediación (Betweenness)
+	•	Cercanía (Closeness)
+
+**3. Visualización de la red**
+
+Genera una visualización que muestre las relaciones entre los contactos usando:
+
+	•	plot() (visualización básica), o
+	•	ggraph() (visualización avanzada con control de color y tamaño).
+
+**4. Entrega:** Archivo .R con código.
+
+Sube tu archivo a Intu con el nombre: Taller7_Apellido_Nombre.qmd
 	
 	
