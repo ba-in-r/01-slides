@@ -8,7 +8,7 @@ jugadores <- c("Vargas", "Cuesta", "Mina", "Machado", "Muñoz",
 set.seed(123)
 
 # Generar pases de forma aleatoria
-pases_colombia <- data.frame(
+sel_colombia <- data.frame(
   from = sample(jugadores, 35, replace = TRUE),
   to   = sample(jugadores, 35, replace = TRUE)
 ) %>%
@@ -27,6 +27,6 @@ hacia_james <- data.frame(
 )
 
 # Unir todo y agregar pesos
-pases_colombia <- bind_rows(pases_colombia, james_extra, hacia_james) %>% count(from, to, name = "peso")
+sel_colombia <- bind_rows(sel_colombia, james_extra, hacia_james) %>% count(from, to, name = "peso")
 
 rm(hacia_james,james_extra,jugadores)
