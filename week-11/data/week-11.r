@@ -27,6 +27,9 @@ hacia_james <- data.frame(
 )
 
 # Unir todo y agregar pesos
-sel_colombia <- bind_rows(sel_colombia, james_extra, hacia_james) %>% count(from, to, name = "peso")
+sel_colombia <- bind_rows(sel_colombia, james_extra, hacia_james) %>% count(from, to, name = "peso") %>%
+                pivot_wider(names_from = to, values_from = peso, values_fill = 0) %>%
+                column_to_rownames("from") %>%
+                as.matrix()
 
 rm(hacia_james,james_extra,jugadores)

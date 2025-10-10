@@ -170,6 +170,10 @@ El propósito de este bloque es asegurar un entorno limpio y reproducible. Prime
 # Limpiar el entorno de trabajo
 rm(list = ls())
 
+# instalar
+install.packages("ggraph")
+install.packages("igraph")
+
 # Cargar paquetes
 library(tidyverse)   # Manipulación y transformación de datos
 library(igraph)      # Construcción y análisis de redes
@@ -200,11 +204,20 @@ source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/we
 sel_colombia
 ```
 
-## Selección de variables
+## Tipos de grafos
 
 
 ```{webr-r}
-Croacia.Und.graph <- graph.adjacency(Croacia, mode = "undirected", diag = FALSE)
+# Crear matriz de adyacencia ponderada
+sel_colombia <- sel_colombia %>%
+  pivot_wider(names_from = to, values_from = peso, values_fill = 0) %>%
+  column_to_rownames("from") %>%
+  as.matrix()
+
+# Crear grafo no dirigido desde la matriz
+no_dir_plot <- graph.adjacency(sel_colombia, mode = "undirected", diag = FALSE)
+
+plot(no_dir_plot)
 ```
 
 ## Escalado
