@@ -1,0 +1,360 @@
+---
+title: "Unidad 7"
+subtitle: "Semana 11: Visualización y Análisis de Redes (Teoría de Grafos)"
+author: "Eduard F. Martínez González"
+---
+  
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
+<img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
+</a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
+
+# ¿Qué es una red?
+
+En Business Analytics, una **red** (o *grafo*) es una representación matemática de las **relaciones** entre entidades:
+
+- Cada **nodo (vértice)** representa un agente: persona, empresa, producto, ciudad, etc.  
+- Cada **arista (enlace)** representa una relación o interacción entre ellos: amistad, transacción, flujo de información, etc.  
+
+Las redes permiten analizar fenómenos donde la **interdependencia** entre unidades es clave:  
+
+- Comunicación dentro de una organización.  
+- Recomendaciones de productos.  
+- Flujos comerciales entre países.  
+- Colaboraciones científicas o empresariales.  
+
+::: callout-note
+**Idea clave:** Una red combina estructura (nodos y enlaces) y comportamiento (intensidad, dirección, frecuencia).  
+:::
+
+## Tipos de grafos
+
+Los grafos se clasifican según la naturaleza de las relaciones que representan.
+
+### Grafo no dirigido
+Las conexiones son **bidireccionales**: si A está conectado con B, entonces B también lo está con A.  
+📘 Ejemplo: amistad, coautoría, colaboración.
+
+Matemáticamente:
+$$A_{ij} = A_{ji}$$
+donde $A_{ij}$ indica la existencia de un vínculo entre los nodos *i* y *j*.
+
+### Grafo dirigido (*dígrafo*)
+Las conexiones tienen **dirección**, lo que permite identificar flujos o jerarquías.  
+📘 Ejemplo: seguidores en redes sociales, flujo de información, pagos entre empresas.
+
+$$A_{ij} \neq A_{ji}$$
+
+Un enlace de *i* a *j* no implica necesariamente que exista el de *j* a *i*.
+
+### Grafo ponderado
+Cada arista tiene un **peso o intensidad** que mide la fuerza, frecuencia o costo de la relación.  
+📘 Ejemplo: número de transacciones, horas de comunicación, volumen comercial.
+
+El grafo se define como:
+$$G = (V, E, W)$$
+donde $W$ es el conjunto de **pesos asociados a las aristas**.
+
+## Representación de una red
+
+Existen tres formas comunes de representar una red:
+
+1. **Lista de aristas (edge list):**
+   Cada fila indica una conexión entre dos nodos:
+
+   ```
+   from   to   weight
+   Ana   Beto    3
+   Ana   Carla   1
+   ```
+   
+2. **Matriz de adyacencia:**
+   Matriz cuadrada $A$ donde $A_{ij} = 1$ si *i* está conectado con *j*, y 0 si no.
+
+3. **Matriz de incidencia:**
+   Representa qué aristas inciden en qué nodos, útil para cálculos estructurales.
+
+
+## Métricas de análisis de redes
+
+El objetivo del análisis de redes es **cuantificar la posición e importancia de los nodos** dentro de la estructura global.
+
+### Métricas locales
+Miden la **influencia inmediata** de un nodo dentro de su entorno cercano.
+
+- **Grado de centralidad (Degree):**
+  Número de conexiones directas que tiene un nodo.
+  $$C_D(i) = \sum_j A_{ij}$$
+  Cuanto mayor el grado, mayor la capacidad de interacción directa.
+
+- **Centralidad de intermediación (Betweenness):**
+  Mide cuántas veces un nodo actúa como **puente** en los caminos más cortos entre otros nodos.
+  $$C_B(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}$$
+  donde $\sigma_{st}(i)$ es el número de caminos mínimos entre *s* y *t* que pasan por *i*.
+
+### Métricas globales
+Evalúan la posición de un nodo **respecto a toda la red**.
+
+- **Centralidad de cercanía (Closeness):**
+  Indica qué tan rápido puede un nodo llegar a todos los demás.
+  $$C_C(i) = \frac{1}{\sum_j d(i,j)}$$
+  donde $d(i,j)$ es la distancia más corta entre *i* y *j*.
+
+- **Centralidad de eigenvector:**
+  Considera no solo el número de conexiones, sino la **importancia de los nodos conectados**.
+  $$C_E(i) = \frac{1}{\lambda} \sum_j A_{ij} C_E(j)$$
+  donde $\lambda$ es el mayor valor propio de la matriz de adyacencia.
+
+## Propiedades estructurales de la red
+
+- **Distancia promedio:** número medio de pasos que separa a dos nodos cualesquiera.  
+- **Excentricidad:** distancia máxima de un nodo a cualquier otro.  
+- **Diámetro:** máxima excentricidad de la red (longitud del camino más largo entre dos nodos).  
+- **Densidad:** proporción de conexiones existentes sobre el total posible.  
+  $$D = \frac{2E}{N(N-1)}$$
+  donde $E$ es el número de aristas y $N$ el número de nodos.
+
+## Comunidades y modularidad
+
+Las **comunidades** son subconjuntos de nodos más densamente conectados entre sí que con el resto de la red.
+
+- En `igraph`, pueden detectarse con algoritmos como:
+  - `cluster_louvain()` (para grafos ponderados)
+  - `cluster_walktrap()`
+  - `cluster_fast_greedy()`
+
+- La **modularidad (Q)** mide qué tan bien separadas están esas comunidades:
+  $$Q = \frac{1}{2m}\sum_{ij}\left[A_{ij} - \frac{k_i k_j}{2m}\right]\delta(c_i, c_j)$$
+  donde $c_i$ es la comunidad del nodo *i*.
+
+## Aplicaciones en Business Analytics
+
+- **Redes sociales corporativas:** identificar líderes informales o cuellos de botella en la comunicación.  
+- **Marketing:** descubrir influenciadores clave.  
+- **Logística:** optimizar rutas o flujos de transporte.  
+- **Finanzas:** mapear interdependencias entre bancos o cooperativas.  
+- **Open Finance:** analizar relaciones entre clientes y productos financieros.  
+
+::: callout-tip
+**Resumen:** El análisis de redes permite traducir interacciones en conocimiento estructural, identificando quién influye, cómo fluye la información y dónde se forman comunidades dentro de un sistema.  
+:::
+
+---
+
+# Aplicación en R
+
+Para ilustrar el análisis de redes, construiremos un ejemplo con la red de pases de los jugadores de la Selección Colombia durante un partido. Cada nodo representa a un jugador, y cada arista dirigida indica un pase de un jugador a otro. El peso de la arista refleja la cantidad de veces que ese pase se repitió a lo largo del partido.
+
+A partir de esta red podemos responder preguntas como:
+
+	•	¿Qué jugadores son los más influyentes en la circulación del balón?
+	•	¿Existen jugadores que actúan como puentes entre líneas (defensa, medio y ataque)?
+	•	¿Qué tan conectada es la red del equipo?
+
+Este ejercicio nos permitirá visualizar cómo los patrones de interacción dentro del equipo pueden analizarse con las mismas herramientas que usamos para estudiar redes sociales, empresariales o financieras. En esencia, un equipo de fútbol es también un sistema de relaciones, donde la posición en la red revela liderazgo, dependencia y eficiencia colectiva.
+
+::: callout-tip
+**Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
+:::
+
+## Preparación del entorno
+
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
+
+```{webr-r}
+# Limpiar el entorno de trabajo
+rm(list = ls())
+
+# Cargar paquetes
+library(tidyverse)   # Manipulación y transformación de datos
+library(igraph)      # Construcción y análisis de redes
+library(ggraph)      # Visualización avanzada de grafos
+
+# Fijar semilla para reproducibilidad
+set.seed(123)
+```
+
+## Ingesta de datos (carga desde archivo o URL)
+
+En esta sección realizamos la ingesta de datos, es decir, el proceso de cargar la base que utilizaremos para construir la red de pases de la Selección Colombia. Cada fila de la base representa un pase realizado entre dos jugadores durante un partido, con información sobre quién hizo el pase, a quién se dirigió y cuántas veces se repitió esa acción.
+
+Esta estructura de datos nos permitirá representar el flujo del balón como un grafo dirigido y ponderado, donde:
+
+	•	Los nodos son los jugadores.
+	•	Las aristas son los pases.
+	•	El peso de la arista indica la frecuencia del pase.
+
+```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/week-11.R")
+
+## chuequear objetos en la memoria
+print("Listo")
+```
+
+## Selección de variables
+
+En este paso se seleccionan únicamente las variables numéricas asociadas a las características de audio de cada canción: danceability, energy, valence, acousticness, liveness, speechiness y tempo. Estas son las más adecuadas para aplicar un algoritmo de clustering, ya que describen propiedades musicales cuantitativas y comparables entre canciones.
+
+Al reducir la base a este subconjunto, garantizamos que el análisis con `K-means` se centre en los atributos musicales relevantes, eliminando información categórica o identificadores que no aportan al agrupamiento.
+
+```{webr-r}
+## filtrar variables
+features <- select(.data=spotify , danceability,  tempo)
+
+## check los objetos en la memoria
+ls()
+
+## 
+head(features)
+```
+
+## Escalado
+
+Antes de aplicar K-means es fundamental escalar las variables: transformarlas para que todas queden en la misma escala (media 0 y desviación estándar 1). Esto evita que una variable con valores naturalmente más grandes (como tempo) domine el cálculo de distancias frente a otras en rangos más pequeños (como danceability).
+
+Con la función scale() se obtiene una matriz estandarizada lista para el análisis. Posteriormente, se utiliza skim() para verificar de manera rápida la estructura de los datos escalados y confirmar que la transformación se realizó correctamente.
+
+```{webr-r}
+## escalar
+x <- scale(features)
+
+## check data (skim)
+skim(x)
+
+## visualicemos las variables danceability y tempo
+ggplot(data=x , aes(x=tempo , y=danceability)) +
+geom_point()
+```
+
+## Ajuste de K-means con K = 4
+
+En este bloque se realiza el entrenamiento del modelo K-means fijando el número de clusters en k = 3. Primero, se establece una semilla aleatoria (set.seed(2024)) para asegurar que los resultados sean reproducibles, ya que K-means depende de inicializaciones aleatorias de los centroides.
+
+Después, con la función kmeans() se ajusta el modelo sobre la matriz estandarizada X, indicando centers = 4 para formar cuatro grupos. El argumento nstart = 30 hace que el algoritmo se ejecute 30 veces con diferentes inicializaciones y escoja la mejor solución encontrada, reduciendo la posibilidad de caer en mínimos locales.
+
+El objeto resultante km contiene la información clave del modelo: asignación de observaciones a clusters, coordenadas de los centroides y medidas de ajuste como la suma de cuadrados intra e inter-cluster.
+
+```{webr-r}
+## fijar semilla
+set.seed(2024)
+
+## ajustar modelo
+km <- kmeans(x, centers = 4, nstart = 30)
+```
+
+En este bloque se realiza el ajuste final de K-means y el resumen de los clusters obtenidos. Primero, se crea un nuevo objeto spotify_c que añade una columna llamada cluster, donde se almacena el resultado de la asignación de cada observación al grupo correspondiente (km$cluster). Esta columna se convierte en un factor para facilitar la interpretación y las operaciones posteriores.
+
+```{webr-r}
+## Agregar variable de cluster
+spotify_c <- spotify %>% 
+             mutate(cluster = factor(km$cluster))
+
+## head(spotify_c)
+head(spotify_c)
+
+## inspeccionar con tabla de frecuencias
+table(spotify_c$cluster)
+```
+
+## Inspeccionar los clusters
+
+```{webr-r}
+## plot
+ggplot(spotify_c, aes(x=tempo , y=danceability , color=cluster)) +
+geom_point(alpha = 0.6) +
+theme_minimal(base_size = 12)
+```
+
+## Heurística del codo
+
+El método del codo es una técnica práctica para determinar el número apropiado de clusters k. Consiste en calcular la suma de cuadrados intra-cluster (WSS, within-cluster sum of squares) para distintos valores de k. A medida que aumenta el número de clusters, el WSS disminuye (ya que los grupos se vuelven más homogéneos). Sin embargo, llega un punto en que la mejora se vuelve marginal: ese punto de inflexión, con forma de “codo” en la curva, sugiere el número óptimo de clusters.
+
+```{webr-r}
+## fijar semilla
+set.seed(2024)
+
+## numero de codos
+ks <- 1:8
+```
+
+Aquí se calcula el WSS (suma de cuadrados intra-cluster) para cada valor de k definido anteriormente. Se utiliza un map_dbl() que ejecuta la función kmeans() repetidamente, y para cada solución obtiene el valor de tot.withinss. El argumento nstart = 20 indica que el algoritmo se ejecutará varias veces con diferentes inicializaciones para mejorar la estabilidad del resultado.
+
+```{webr-r}
+## wss
+wss <- map_dbl(ks, ~ kmeans(x, centers = .x, nstart = 20)$tot.withinss)
+
+## inspeccionar el objeto
+head(wss)
+```
+
+Finalmente, se organiza la información en un tibble llamado elbow_df, que contiene dos columnas: el número de clusters (k) y el valor correspondiente de WSS (wss). Esta tabla servirá como insumo para construir el gráfico del codo y tomar una decisión sobre el número óptimo de clusters.
+
+```{webr-r}
+## elbow_df
+elbow_df <- tibble(k = ks, wss = wss)
+
+## inspeccionar el objeto
+head(elbow_df)
+```
+
+En este bloque se construye el gráfico del codo, que permite visualizar cómo varía la suma de cuadrados intra-cluster (WSS) a medida que aumenta el número de clusters k. Primero, se utiliza ggplot() para graficar el objeto elbow_df, que contiene los pares (k, wss) obtenidos en pasos anteriores. La función geom_line() dibuja la línea que conecta los puntos, mientras que geom_point() resalta cada valor de k con un marcador. Los parámetros de color (#0ea5e9) y grosor de línea (linewidth = 1) sirven para mejorar la estética del gráfico.
+
+Finalmente, se aplica theme_minimal() para una visualización limpia y labs() para asignar título y etiquetas a los ejes. El resultado es una curva decreciente donde se espera identificar un punto de inflexión: allí se encuentra el “codo”, que sugiere un número razonable de clusters para aplicar el algoritmo de K-means.
+
+```{webr-r}
+## plot data 
+ggplot(elbow_df, aes(k, wss)) +
+geom_line(color = "#0ea5e9", linewidth = 1) +
+geom_point(color = "#0ea5e9", size = 2) +
+theme_minimal(base_size = 12) +
+labs(title = "Heurística del codo para elegir K",
+     x = "N. de clusters (K)", y = "Suma intra-cluster (WSS)")
+```
+
+## Actividad en Clase
+
+Instrucciones:
+
+	1.	Ejecute los chunks de código proporcionados en R.
+	
+	2.	Observe los resultados obtenidos (tablas resumen por clúster).
+	
+	3.	Genere un documento en Word donde:
+	•	Copie las preguntas que aparecen a continuación.
+	•	Escriba sus interpretaciones y conclusiones con base en los resultados (no debe copiar el código ni las tablas, solo redactar sus respuestas).
+	
+	4.	Suba su documento a la plataforma Intu.
+
+```{webr-r}
+## Streams (Reproducciones)
+summarise(.data = spotify_c , mean(streams) , min(streams) , max(streams) , .by=cluster)
+
+## Duración
+summarise(.data = spotify_c , median(duration_ms) , .by=cluster)
+
+## Tempo y Danceability:
+summarise(.data = spotify_c , mean(tempo) , mean(danceability) , .by=cluster)
+```
+
+Preguntas de interpretación:
+
+	1.	Streams (Reproducciones):
+	•	Según los promedios, mínimos y máximos de streams en cada clúster:
+	•	¿Qué cluster contiene la canción más escuchada?
+	•	¿En promedio, qué cluster contiene las canciónes más escuchada?
+
+	2.	Duración: A partir de la mediana de duration_ms por clúster:
+	•	¿En promedio, cuál cluster tiene canciones más cortas?
+
+	3.	Tempo y Danceability: Considerando el promedio de tempo y danceability por clúster:
+	•	¿Qué cluster tiende a tener canciones con mayor energía rítmica?
+	•	¿Cuál agrupa canciones con menor “bailabilidad”?
