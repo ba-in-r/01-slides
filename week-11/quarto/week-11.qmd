@@ -164,7 +164,7 @@ Este ejercicio nos permitirá visualizar cómo los patrones de interacción dent
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
+El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes. Con esto, dejamos el entorno preparado para comenzar.
 
 ```{webr-r}
 # Limpiar el entorno de trabajo
@@ -241,7 +241,7 @@ Finalmente, representamos la red completa: cada arista tiene una dirección (qui
 pond_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode ="directed", diag = FALSE)
 
 ## plot
-plot(pond_dir , edge.width=E(pond_no_dir)$weight ,  edge.arrow.size = 0.8)
+plot(pond_dir , edge.width=E(pond_dir)$weight ,  edge.arrow.size = 0.8)
 ```
 
 ## Indicadores de centralidad

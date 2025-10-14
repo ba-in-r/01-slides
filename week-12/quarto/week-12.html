@@ -8,7 +8,7 @@
 
 <meta name="author" content="Eduard F. Martínez González">
 
-<title>Unidad 7</title>
+<title>Unidad 8 — Análisis de Canasta de Mercado</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,17 +24,17 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="week-11_files/libs/clipboard/clipboard.min.js"></script>
-<script src="week-11_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="week-11_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="week-11_files/libs/quarto-html/popper.min.js"></script>
-<script src="week-11_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="week-11_files/libs/quarto-html/anchor.min.js"></script>
-<link href="week-11_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="week-11_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="week-11_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="week-11_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="week-11_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="week-12_files/libs/clipboard/clipboard.min.js"></script>
+<script src="week-12_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="week-12_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="week-12_files/libs/quarto-html/popper.min.js"></script>
+<script src="week-12_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="week-12_files/libs/quarto-html/anchor.min.js"></script>
+<link href="week-12_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="week-12_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="week-12_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="week-12_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="week-12_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/editor/editor.main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"# Limpiar el entorno de trabajo\nrm(list = ls())\n\n# instalar\ninstall.packages(\"ggraph\")\ninstall.packages(\"igraph\")\n\n# Cargar paquetes\nlibrary(tidyverse)   # Manipulación y transformación de datos\nlibrary(igraph)      # Construcción y análisis de redes\nlibrary(ggraph)      # Visualización avanzada de grafos\n\n# Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/week-11.r\")\n\n## chuequear objeto\nsel_colombia","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## No ponderado, no dirigido\nno_dir_plot <- graph.adjacency(sel_colombia, mode=\"undirected\" , diag=FALSE)\n\n## plot\nplot(no_dir_plot)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## No ponderado, dirigido\ndir_plot <- graph.adjacency(sel_colombia, mode=\"directed\" , diag=FALSE)\n\n## plot\nplot(dir_plot, edge.arrow.size=0.8)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ponderado, no dirigido\npond_no_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode =\"undirected\", diag = FALSE)\n\n## plot\nplot(pond_no_dir , edge.width=E(pond_no_dir)$weight)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ponderado, dirigido\npond_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode =\"directed\", diag = FALSE)\n\n## plot\nplot(pond_dir , edge.width=E(pond_dir)$weight ,  edge.arrow.size = 0.8)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"degree(no_dir_plot, mode = \"all\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"betweenness(no_dir_plot)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Centralidad de cercanía: eficiencia de conexión global\ncloseness(no_dir_plot, mode = \"all\")","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Puntaje de autoridad: influencia relativa de cada nodo\nauthority.score(no_dir_plot)$vector","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Distancia promedio entre jugadores\nmean_distance(no_dir_plot)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Excentricidad de cada jugador\neccentricity(no_dir_plot, mode = \"all\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Diámetro de la red (camino más largo)\ndiameter(no_dir_plot)","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Crear grafo binario para medir densidad\nsel_colombia_1 <- sel_colombia\nfor (i in 1:ncol(sel_colombia_1)) {\n    for (j in 1:nrow(sel_colombia_1)) {\n         sel_colombia_1[j, i] <- ifelse(sel_colombia_1[j, i] > 0, 1, sel_colombia_1[j, i])\n    }\n}\n\ng_den <- graph.adjacency(sel_colombia_1, mode = \"undirected\",\n                         weighted = NULL, diag = FALSE)\n\n## Calcular densidad\nedge_density(g_den)","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"transitivity(no_dir_plot)","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"reciprocity(no_dir_plot) ","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/data.r\")","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"# Limpiar el entorno de trabajo\nrm(list = ls())\n\n# instalar\ninstall.packages(\"arules\")\ninstall.packages(\"arulesViz\")\n\n# Cargar paquetes\nlibrary(tidyverse)   # Manipulación y transformación de datos\nlibrary(arules)      # Construcción y análisis de redes\nlibrary(arulesViz)      # Visualización avanzada de grafos\n\n# Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/week-11.r\")\n\n## chuequear objeto\nsel_colombia","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## No ponderado, no dirigido\nno_dir_plot <- graph.adjacency(sel_colombia, mode=\"undirected\" , diag=FALSE)\n\n## plot\nplot(no_dir_plot)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## No ponderado, dirigido\ndir_plot <- graph.adjacency(sel_colombia, mode=\"directed\" , diag=FALSE)\n\n## plot\nplot(dir_plot, edge.arrow.size=0.8)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ponderado, no dirigido\npond_no_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode =\"undirected\", diag = FALSE)\n\n## plot\nplot(pond_no_dir , edge.width=E(pond_no_dir)$weight)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ponderado, dirigido\npond_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode =\"directed\", diag = FALSE)\n\n## plot\nplot(pond_dir , edge.width=E(pond_no_dir)$weight ,  edge.arrow.size = 0.8)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"degree(no_dir_plot, mode = \"all\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"betweenness(no_dir_plot)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Centralidad de cercanía: eficiencia de conexión global\ncloseness(no_dir_plot, mode = \"all\")","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Puntaje de autoridad: influencia relativa de cada nodo\nauthority.score(no_dir_plot)$vector","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Distancia promedio entre jugadores\nmean_distance(no_dir_plot)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Excentricidad de cada jugador\neccentricity(no_dir_plot, mode = \"all\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Diámetro de la red (camino más largo)\ndiameter(no_dir_plot)","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Crear grafo binario para medir densidad\nsel_colombia_1 <- sel_colombia\nfor (i in 1:ncol(sel_colombia_1)) {\n    for (j in 1:nrow(sel_colombia_1)) {\n         sel_colombia_1[j, i] <- ifelse(sel_colombia_1[j, i] > 0, 1, sel_colombia_1[j, i])\n    }\n}\n\ng_den <- graph.adjacency(sel_colombia_1, mode = \"undirected\",\n                         weighted = NULL, diag = FALSE)\n\n## Calcular densidad\nedge_density(g_den)","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"transitivity(no_dir_plot)","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"reciprocity(no_dir_plot) ","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/data.r\")","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1589,35 +1589,6 @@ globalThis.qwebrExecuteCode = async function (
 
 </script>
 
-  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -1630,29 +1601,16 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#qué-es-una-red" id="toc-qué-es-una-red" class="nav-link active" data-scroll-target="#qué-es-una-red"><span class="header-section-number">1</span> ¿Qué es una red?</a>
+  <li><a href="#análisis-de-canasta-de-mercado" id="toc-análisis-de-canasta-de-mercado" class="nav-link active" data-scroll-target="#análisis-de-canasta-de-mercado"><span class="header-section-number">1</span> Análisis de Canasta de Mercado</a>
   <ul class="collapse">
-  <li><a href="#tipos-de-grafos" id="toc-tipos-de-grafos" class="nav-link" data-scroll-target="#tipos-de-grafos"><span class="header-section-number">1.1</span> Tipos de grafos</a>
-  <ul class="collapse">
-  <li><a href="#grafo-no-dirigido" id="toc-grafo-no-dirigido" class="nav-link" data-scroll-target="#grafo-no-dirigido"><span class="header-section-number">1.1.1</span> Grafo no dirigido</a></li>
-  <li><a href="#grafo-dirigido-dígrafo" id="toc-grafo-dirigido-dígrafo" class="nav-link" data-scroll-target="#grafo-dirigido-dígrafo"><span class="header-section-number">1.1.2</span> Grafo dirigido (<em>dígrafo</em>)</a></li>
-  <li><a href="#grafo-ponderado" id="toc-grafo-ponderado" class="nav-link" data-scroll-target="#grafo-ponderado"><span class="header-section-number">1.1.3</span> Grafo ponderado</a></li>
-  </ul></li>
-  <li><a href="#representación-de-una-red" id="toc-representación-de-una-red" class="nav-link" data-scroll-target="#representación-de-una-red"><span class="header-section-number">1.2</span> Representación de una red</a></li>
-  <li><a href="#métricas-de-análisis-de-redes" id="toc-métricas-de-análisis-de-redes" class="nav-link" data-scroll-target="#métricas-de-análisis-de-redes"><span class="header-section-number">1.3</span> Métricas de análisis de redes</a>
-  <ul class="collapse">
-  <li><a href="#métricas-locales" id="toc-métricas-locales" class="nav-link" data-scroll-target="#métricas-locales"><span class="header-section-number">1.3.1</span> Métricas locales</a></li>
-  <li><a href="#métricas-globales" id="toc-métricas-globales" class="nav-link" data-scroll-target="#métricas-globales"><span class="header-section-number">1.3.2</span> Métricas globales</a></li>
-  </ul></li>
-  <li><a href="#propiedades-estructurales-de-la-red" id="toc-propiedades-estructurales-de-la-red" class="nav-link" data-scroll-target="#propiedades-estructurales-de-la-red"><span class="header-section-number">1.4</span> Propiedades estructurales de la red</a></li>
-  <li><a href="#comunidades-y-modularidad" id="toc-comunidades-y-modularidad" class="nav-link" data-scroll-target="#comunidades-y-modularidad"><span class="header-section-number">1.5</span> Comunidades y modularidad</a></li>
-  <li><a href="#aplicaciones-en-business-analytics" id="toc-aplicaciones-en-business-analytics" class="nav-link" data-scroll-target="#aplicaciones-en-business-analytics"><span class="header-section-number">1.6</span> Aplicaciones en Business Analytics</a></li>
+  <li><a href="#conceptos-clave" id="toc-conceptos-clave" class="nav-link" data-scroll-target="#conceptos-clave"><span class="header-section-number">1.1</span> Conceptos clave</a></li>
+  <li><a href="#aplicaciones-típicas" id="toc-aplicaciones-típicas" class="nav-link" data-scroll-target="#aplicaciones-típicas"><span class="header-section-number">1.2</span> Aplicaciones típicas</a></li>
   </ul></li>
   <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2</span> Aplicación en R</a>
   <ul class="collapse">
   <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</a></li>
   <li><a href="#ingesta-de-datos-carga-desde-archivo-o-url" id="toc-ingesta-de-datos-carga-desde-archivo-o-url" class="nav-link" data-scroll-target="#ingesta-de-datos-carga-desde-archivo-o-url"><span class="header-section-number">2.2</span> Ingesta de datos (carga desde archivo o URL)</a></li>
-  <li><a href="#tipos-de-grafos-1" id="toc-tipos-de-grafos-1" class="nav-link" data-scroll-target="#tipos-de-grafos-1"><span class="header-section-number">2.3</span> Tipos de grafos</a></li>
+  <li><a href="#tipos-de-grafos" id="toc-tipos-de-grafos" class="nav-link" data-scroll-target="#tipos-de-grafos"><span class="header-section-number">2.3</span> Tipos de grafos</a></li>
   <li><a href="#indicadores-de-centralidad" id="toc-indicadores-de-centralidad" class="nav-link" data-scroll-target="#indicadores-de-centralidad"><span class="header-section-number">2.4</span> Indicadores de centralidad</a>
   <ul class="collapse">
   <li><a href="#medidas-locales" id="toc-medidas-locales" class="nav-link" data-scroll-target="#medidas-locales"><span class="header-section-number">2.4.1</span> Medidas locales</a></li>
@@ -1959,8 +1917,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unidad 7</h1>
-<p class="subtitle lead">Semana 11: Visualización y Análisis de Redes (Teoría de Grafos)</p>
+<h1 class="title">Unidad 8 — Análisis de Canasta de Mercado</h1>
+<p class="subtitle lead">Semana 12: Reglas de Asociación</p>
 </div>
 
 
@@ -1987,155 +1945,56 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p><a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"> eduard-martinez</a></p>
 <p><a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"> <span class="citation" data-cites="emartigo">@emartigo</span></a></p>
 <p><a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"> https://eduard-martinez.github.io</a></p>
-<section id="qué-es-una-red" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> ¿Qué es una red?</h1>
-<p>En Business Analytics, una <strong>red</strong> (o <em>grafo</em>) es una representación matemática de las <strong>relaciones</strong> entre entidades:</p>
+<section id="análisis-de-canasta-de-mercado" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Análisis de Canasta de Mercado</h1>
+<p>El <strong>análisis de canasta de mercado</strong> (Market Basket Analysis) es un conjunto de técnicas de <strong>minería de datos</strong> utilizadas para descubrir asociaciones entre productos comprados por los clientes.</p>
+<p>Es una herramienta fundamental en <strong>retail analytics</strong>, ya que permite a los minoristas identificar patrones de consumo, mejorar la disposición de productos, diseñar promociones cruzadas y aumentar las ventas.</p>
+<section id="conceptos-clave" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="conceptos-clave"><span class="header-section-number">1.1</span> Conceptos clave</h2>
+<p>Este análisis pertenece a la tarea de <strong>asociación</strong>, un tipo de <strong>aprendizaje no supervisado</strong> que busca identificar <strong>patrones frecuentes de co-ocurrencia</strong> entre ítems dentro de transacciones (también conocidas como <em>tirillas de compra</em> o <em>tickets de venta</em>).</p>
 <ul>
-<li>Cada <strong>nodo (vértice)</strong> representa un agente: persona, empresa, producto, ciudad, etc.<br>
-</li>
-<li>Cada <strong>arista (enlace)</strong> representa una relación o interacción entre ellos: amistad, transacción, flujo de información, etc.</li>
-</ul>
-<p>Las redes permiten analizar fenómenos donde la <strong>interdependencia</strong> entre unidades es clave:</p>
-<ul>
-<li>Comunicación dentro de una organización.<br>
-</li>
-<li>Recomendaciones de productos.<br>
-</li>
-<li>Flujos comerciales entre países.<br>
-</li>
-<li>Colaboraciones científicas o empresariales.</li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Idea clave:</strong> Una red combina estructura (nodos y enlaces) y comportamiento (intensidad, dirección, frecuencia).</p>
-</div>
-</div>
-<section id="tipos-de-grafos" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="tipos-de-grafos"><span class="header-section-number">1.1</span> Tipos de grafos</h2>
-<p>Los grafos se clasifican según la naturaleza de las relaciones que representan.</p>
-<section id="grafo-no-dirigido" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="grafo-no-dirigido"><span class="header-section-number">1.1.1</span> Grafo no dirigido</h3>
-<p>Las conexiones son <strong>bidireccionales</strong>: si A está conectado con B, entonces B también lo está con A.<br>
-📘 Ejemplo: amistad, coautoría, colaboración.</p>
-<p>Matemáticamente: <span class="math display">\[A_{ij} = A_{ji}\]</span> donde <span class="math inline">\(A_{ij}\)</span> indica la existencia de un vínculo entre los nodos <em>i</em> y <em>j</em>.</p>
-</section>
-<section id="grafo-dirigido-dígrafo" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="grafo-dirigido-dígrafo"><span class="header-section-number">1.1.2</span> Grafo dirigido (<em>dígrafo</em>)</h3>
-<p>Las conexiones tienen <strong>dirección</strong>, lo que permite identificar flujos o jerarquías.<br>
-📘 Ejemplo: seguidores en redes sociales, flujo de información, pagos entre empresas.</p>
-<p><span class="math display">\[A_{ij} \neq A_{ji}\]</span></p>
-<p>Un enlace de <em>i</em> a <em>j</em> no implica necesariamente que exista el de <em>j</em> a <em>i</em>.</p>
-</section>
-<section id="grafo-ponderado" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="grafo-ponderado"><span class="header-section-number">1.1.3</span> Grafo ponderado</h3>
-<p>Cada arista tiene un <strong>peso o intensidad</strong> que mide la fuerza, frecuencia o costo de la relación.<br>
-📘 Ejemplo: número de transacciones, horas de comunicación, volumen comercial.</p>
-<p>El grafo se define como: <span class="math display">\[G = (V, E, W)\]</span> donde <span class="math inline">\(W\)</span> es el conjunto de <strong>pesos asociados a las aristas</strong>.</p>
-</section>
-</section>
-<section id="representación-de-una-red" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="representación-de-una-red"><span class="header-section-number">1.2</span> Representación de una red</h2>
-<p>Existen tres formas comunes de representar una red:</p>
-<ol type="1">
-<li><p><strong>Lista de aristas (edge list):</strong> Cada fila indica una conexión entre dos nodos:</p>
-<pre><code>from   to   weight
-Ana   Beto    3
-Ana   Carla   1</code></pre></li>
-<li><p><strong>Matriz de adyacencia:</strong> Matriz cuadrada <span class="math inline">\(A\)</span> donde <span class="math inline">\(A_{ij} = 1\)</span> si <em>i</em> está conectado con <em>j</em>, y 0 si no.</p></li>
-<li><p><strong>Matriz de incidencia:</strong> Representa qué aristas inciden en qué nodos, útil para cálculos estructurales.</p></li>
-</ol>
-</section>
-<section id="métricas-de-análisis-de-redes" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="métricas-de-análisis-de-redes"><span class="header-section-number">1.3</span> Métricas de análisis de redes</h2>
-<p>El objetivo del análisis de redes es <strong>cuantificar la posición e importancia de los nodos</strong> dentro de la estructura global.</p>
-<section id="métricas-locales" class="level3" data-number="1.3.1">
-<h3 data-number="1.3.1" class="anchored" data-anchor-id="métricas-locales"><span class="header-section-number">1.3.1</span> Métricas locales</h3>
-<p>Miden la <strong>influencia inmediata</strong> de un nodo dentro de su entorno cercano.</p>
-<ul>
-<li><p><strong>Grado de centralidad (Degree):</strong> Número de conexiones directas que tiene un nodo. <span class="math display">\[C_D(i) = \sum_j A_{ij}\]</span> Cuanto mayor el grado, mayor la capacidad de interacción directa.</p></li>
-<li><p><strong>Centralidad de intermediación (Betweenness):</strong> Mide cuántas veces un nodo actúa como <strong>puente</strong> en los caminos más cortos entre otros nodos. <span class="math display">\[C_B(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}\]</span> donde <span class="math inline">\(\sigma_{st}(i)\)</span> es el número de caminos mínimos entre <em>s</em> y <em>t</em> que pasan por <em>i</em>.</p></li>
+<li><p><strong>Antecedente:</strong> producto o conjunto de productos que provocan la compra de otros. Ejemplo: <code>{Leche} → {Pan}</code></p>
+<p>→ Si un cliente compra leche, es probable que también compre pan.</p></li>
+<li><p><strong>Consecuente:</strong> producto que resulta asociado al antecedente.<br>
+En el ejemplo anterior, el <em>pan</em> es el consecuente.</p></li>
 </ul>
 </section>
-<section id="métricas-globales" class="level3" data-number="1.3.2">
-<h3 data-number="1.3.2" class="anchored" data-anchor-id="métricas-globales"><span class="header-section-number">1.3.2</span> Métricas globales</h3>
-<p>Evalúan la posición de un nodo <strong>respecto a toda la red</strong>.</p>
+<section id="aplicaciones-típicas" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="aplicaciones-típicas"><span class="header-section-number">1.2</span> Aplicaciones típicas</h2>
 <ul>
-<li><p><strong>Centralidad de cercanía (Closeness):</strong> Indica qué tan rápido puede un nodo llegar a todos los demás. <span class="math display">\[C_C(i) = \frac{1}{\sum_j d(i,j)}\]</span> donde <span class="math inline">\(d(i,j)\)</span> es la distancia más corta entre <em>i</em> y <em>j</em>.</p></li>
-<li><p><strong>Centralidad de eigenvector:</strong> Considera no solo el número de conexiones, sino la <strong>importancia de los nodos conectados</strong>. <span class="math display">\[C_E(i) = \frac{1}{\lambda} \sum_j A_{ij} C_E(j)\]</span> donde <span class="math inline">\(\lambda\)</span> es el mayor valor propio de la matriz de adyacencia.</p></li>
+<li><strong>Comercio minorista:</strong> identificar productos que se venden juntos (leche y cereales).<br>
+</li>
+<li><strong>Marketing digital:</strong> recomendaciones tipo “los clientes que compraron este producto también compraron…”.<br>
+</li>
+<li><strong>Bancos:</strong> detección de co-uso de productos financieros (cuenta de ahorros + tarjeta).<br>
+</li>
+<li><strong>Streaming:</strong> recomendación de contenidos según consumo conjunto.</li>
 </ul>
-</section>
-</section>
-<section id="propiedades-estructurales-de-la-red" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="propiedades-estructurales-de-la-red"><span class="header-section-number">1.4</span> Propiedades estructurales de la red</h2>
-<ul>
-<li><strong>Distancia promedio:</strong> número medio de pasos que separa a dos nodos cualesquiera.<br>
-</li>
-<li><strong>Excentricidad:</strong> distancia máxima de un nodo a cualquier otro.<br>
-</li>
-<li><strong>Diámetro:</strong> máxima excentricidad de la red (longitud del camino más largo entre dos nodos).<br>
-</li>
-<li><strong>Densidad:</strong> proporción de conexiones existentes sobre el total posible.<br>
-<span class="math display">\[D = \frac{2E}{N(N-1)}\]</span> donde <span class="math inline">\(E\)</span> es el número de aristas y <span class="math inline">\(N\)</span> el número de nodos.</li>
-</ul>
-</section>
-<section id="comunidades-y-modularidad" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="comunidades-y-modularidad"><span class="header-section-number">1.5</span> Comunidades y modularidad</h2>
-<p>Las <strong>comunidades</strong> son subconjuntos de nodos más densamente conectados entre sí que con el resto de la red.</p>
-<ul>
-<li>En <code>igraph</code>, pueden detectarse con algoritmos como:
-<ul>
-<li><code>cluster_louvain()</code> (para grafos ponderados)</li>
-<li><code>cluster_walktrap()</code></li>
-<li><code>cluster_fast_greedy()</code></li>
-</ul></li>
-<li>La <strong>modularidad (Q)</strong> mide qué tan bien separadas están esas comunidades: <span class="math display">\[Q = \frac{1}{2m}\sum_{ij}\left[A_{ij} - \frac{k_i k_j}{2m}\right]\delta(c_i, c_j)\]</span> donde <span class="math inline">\(c_i\)</span> es la comunidad del nodo <em>i</em>.</li>
-</ul>
-</section>
-<section id="aplicaciones-en-business-analytics" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="aplicaciones-en-business-analytics"><span class="header-section-number">1.6</span> Aplicaciones en Business Analytics</h2>
-<ul>
-<li><strong>Redes sociales corporativas:</strong> identificar líderes informales o cuellos de botella en la comunicación.<br>
-</li>
-<li><strong>Marketing:</strong> descubrir influenciadores clave.<br>
-</li>
-<li><strong>Logística:</strong> optimizar rutas o flujos de transporte.<br>
-</li>
-<li><strong>Finanzas:</strong> mapear interdependencias entre bancos o cooperativas.<br>
-</li>
-<li><strong>Open Finance:</strong> analizar relaciones entre clientes y productos financieros.</li>
-</ul>
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Tip
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Resumen:</strong> El análisis de redes permite traducir interacciones en conocimiento estructural, identificando quién influye, cómo fluye la información y dónde se forman comunidades dentro de un sistema.</p>
-</div>
-</div>
-<hr>
 </section>
 </section>
 <section id="aplicación-en-r" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Aplicación en R</h1>
-<p>Para ilustrar el análisis de redes, construiremos un ejemplo con la red de pases de los jugadores de la Selección Colombia durante un partido. Cada nodo representa a un jugador, y cada arista dirigida indica un pase de un jugador a otro. El peso de la arista refleja la cantidad de veces que ese pase se repitió a lo largo del partido.</p>
-<p>A partir de esta red podemos responder preguntas como:</p>
-<pre><code>•   ¿Qué jugadores son los más influyentes en la circulación del balón?
-•   ¿Existen jugadores que actúan como puentes entre líneas (defensa, medio y ataque)?
-•   ¿Qué tan conectada es la red del equipo?</code></pre>
-<p>Este ejercicio nos permitirá visualizar cómo los patrones de interacción dentro del equipo pueden analizarse con las mismas herramientas que usamos para estudiar redes sociales, empresariales o financieras. En esencia, un equipo de fútbol es también un sistema de relaciones, donde la posición en la red revela liderazgo, dependencia y eficiencia colectiva.</p>
+<p>Para ilustrar el <strong>análisis de canasta de mercado</strong>, trabajaremos con un conjunto de transacciones que representa las <strong>compras realizadas por los clientes de un supermercado</strong> durante un periodo determinado.<br>
+Cada transacción contiene uno o más productos adquiridos en la misma compra, lo que nos permitirá identificar <strong>patrones de asociación</strong> entre ellos.</p>
+<p>En este contexto:</p>
+<ul>
+<li>Cada <strong>ítem</strong> corresponde a un producto individual.<br>
+</li>
+<li>Cada <strong>transacción</strong> agrupa los productos comprados por un mismo cliente.<br>
+</li>
+<li>El objetivo es descubrir <strong>reglas del tipo</strong>:<br>
+<code>{Leche} → {Pan}</code> e interpreta como:<br>
+<em>“Los clientes que compran leche y pan tienden también a comprar mantequilla.”</em></li>
+</ul>
+<p>A partir de este ejercicio podremos responder preguntas como:</p>
+<ul>
+<li>¿Qué productos suelen comprarse juntos con mayor frecuencia?<br>
+</li>
+<li>¿Qué asociaciones son más fuertes en términos de confianza y soporte?<br>
+</li>
+<li>¿Qué reglas podrían usarse para diseñar promociones o estrategias de recomendación?</li>
+</ul>
+<p>Este tipo de análisis tiene múltiples aplicaciones prácticas en <strong>marketing, retail y comportamiento del consumidor</strong>, y se basa en los mismos principios de aprendizaje no supervisado que utilizamos en técnicas como clustering o análisis de redes.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2146,7 +2005,8 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Cómo usar este material:</strong> Puedes ejecutar los <em>chunks</em> de R directamente en el navegador gracias a <strong>webR</strong> (según tu <code>_quarto.yml</code>), sin instalar nada localmente.</p>
+<p>💡 <strong>Cómo usar este material:</strong><br>
+Puedes ejecutar los <em>chunks</em> de R directamente en el navegador gracias a <strong>webR</strong>, sin necesidad de instalar nada localmente.</p>
 </div>
 </div>
 <section id="preparación-del-entorno" class="level2" data-number="2.1">
@@ -2165,8 +2025,8 @@ Tip
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="tipos-de-grafos-1" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="tipos-de-grafos-1"><span class="header-section-number">2.3</span> Tipos de grafos</h2>
+<section id="tipos-de-grafos" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="tipos-de-grafos"><span class="header-section-number">2.3</span> Tipos de grafos</h2>
 <p>Este tipo de red solo representa la existencia de conexión entre dos jugadores, sin importar quién inició el pase ni cuántas veces ocurrió. Se usa cuando el interés es identificar si existe relación, no su dirección ni su intensidad.</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>

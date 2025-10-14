@@ -1,9 +1,9 @@
 ---
-title: "Unidad 7"
-subtitle: "Semana 11: Visualización y Análisis de Redes (Teoría de Grafos)"
+title: "Unidad 8 — Análisis de Canasta de Mercado"
+subtitle: "Semana 12: Reglas de Asociación"
 author: "Eduard F. Martínez González"
 ---
-  
+
 <a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
 <img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
 </a>
@@ -14,152 +14,54 @@ author: "Eduard F. Martínez González"
 
 <a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
 
-# ¿Qué es una red?
+# Análisis de Canasta de Mercado
 
-En Business Analytics, una **red** (o *grafo*) es una representación matemática de las **relaciones** entre entidades:
+El **análisis de canasta de mercado** (Market Basket Analysis) es un conjunto de técnicas de **minería de datos** utilizadas para descubrir asociaciones entre productos comprados por los clientes.  
 
-- Cada **nodo (vértice)** representa un agente: persona, empresa, producto, ciudad, etc.  
-- Cada **arista (enlace)** representa una relación o interacción entre ellos: amistad, transacción, flujo de información, etc.  
+Es una herramienta fundamental en **retail analytics**, ya que permite a los minoristas identificar patrones de consumo, mejorar la disposición de productos, diseñar promociones cruzadas y aumentar las ventas.
 
-Las redes permiten analizar fenómenos donde la **interdependencia** entre unidades es clave:  
+## Conceptos clave
 
-- Comunicación dentro de una organización.  
-- Recomendaciones de productos.  
-- Flujos comerciales entre países.  
-- Colaboraciones científicas o empresariales.  
+Este análisis pertenece a la tarea de **asociación**, un tipo de **aprendizaje no supervisado** que busca identificar **patrones frecuentes de co-ocurrencia** entre ítems dentro de transacciones (también conocidas como *tirillas de compra* o *tickets de venta*).
 
-::: callout-note
-**Idea clave:** Una red combina estructura (nodos y enlaces) y comportamiento (intensidad, dirección, frecuencia).  
-:::
+- **Antecedente:** producto o conjunto de productos que provocan la compra de otros. Ejemplo: `{Leche} → {Pan}`  
 
-## Tipos de grafos
+  → Si un cliente compra leche, es probable que también compre pan. 
 
-Los grafos se clasifican según la naturaleza de las relaciones que representan.
+- **Consecuente:** producto que resulta asociado al antecedente.  
+  En el ejemplo anterior, el *pan* es el consecuente.
 
-### Grafo no dirigido
-Las conexiones son **bidireccionales**: si A está conectado con B, entonces B también lo está con A.  
-📘 Ejemplo: amistad, coautoría, colaboración.
+## Aplicaciones típicas
 
-Matemáticamente:
-$$A_{ij} = A_{ji}$$
-donde $A_{ij}$ indica la existencia de un vínculo entre los nodos *i* y *j*.
-
-### Grafo dirigido (*dígrafo*)
-Las conexiones tienen **dirección**, lo que permite identificar flujos o jerarquías.  
-📘 Ejemplo: seguidores en redes sociales, flujo de información, pagos entre empresas.
-
-$$A_{ij} \neq A_{ji}$$
-
-Un enlace de *i* a *j* no implica necesariamente que exista el de *j* a *i*.
-
-### Grafo ponderado
-Cada arista tiene un **peso o intensidad** que mide la fuerza, frecuencia o costo de la relación.  
-📘 Ejemplo: número de transacciones, horas de comunicación, volumen comercial.
-
-El grafo se define como:
-$$G = (V, E, W)$$
-donde $W$ es el conjunto de **pesos asociados a las aristas**.
-
-## Representación de una red
-
-Existen tres formas comunes de representar una red:
-
-1. **Lista de aristas (edge list):**
-   Cada fila indica una conexión entre dos nodos:
-
-   ```
-   from   to   weight
-   Ana   Beto    3
-   Ana   Carla   1
-   ```
-   
-2. **Matriz de adyacencia:**
-   Matriz cuadrada $A$ donde $A_{ij} = 1$ si *i* está conectado con *j*, y 0 si no.
-
-3. **Matriz de incidencia:**
-   Representa qué aristas inciden en qué nodos, útil para cálculos estructurales.
-
-
-## Métricas de análisis de redes
-
-El objetivo del análisis de redes es **cuantificar la posición e importancia de los nodos** dentro de la estructura global.
-
-### Métricas locales
-Miden la **influencia inmediata** de un nodo dentro de su entorno cercano.
-
-- **Grado de centralidad (Degree):**
-  Número de conexiones directas que tiene un nodo.
-  $$C_D(i) = \sum_j A_{ij}$$
-  Cuanto mayor el grado, mayor la capacidad de interacción directa.
-
-- **Centralidad de intermediación (Betweenness):**
-  Mide cuántas veces un nodo actúa como **puente** en los caminos más cortos entre otros nodos.
-  $$C_B(i) = \sum_{s \neq i \neq t} \frac{\sigma_{st}(i)}{\sigma_{st}}$$
-  donde $\sigma_{st}(i)$ es el número de caminos mínimos entre *s* y *t* que pasan por *i*.
-
-### Métricas globales
-Evalúan la posición de un nodo **respecto a toda la red**.
-
-- **Centralidad de cercanía (Closeness):**
-  Indica qué tan rápido puede un nodo llegar a todos los demás.
-  $$C_C(i) = \frac{1}{\sum_j d(i,j)}$$
-  donde $d(i,j)$ es la distancia más corta entre *i* y *j*.
-
-- **Centralidad de eigenvector:**
-  Considera no solo el número de conexiones, sino la **importancia de los nodos conectados**.
-  $$C_E(i) = \frac{1}{\lambda} \sum_j A_{ij} C_E(j)$$
-  donde $\lambda$ es el mayor valor propio de la matriz de adyacencia.
-
-## Propiedades estructurales de la red
-
-- **Distancia promedio:** número medio de pasos que separa a dos nodos cualesquiera.  
-- **Excentricidad:** distancia máxima de un nodo a cualquier otro.  
-- **Diámetro:** máxima excentricidad de la red (longitud del camino más largo entre dos nodos).  
-- **Densidad:** proporción de conexiones existentes sobre el total posible.  
-  $$D = \frac{2E}{N(N-1)}$$
-  donde $E$ es el número de aristas y $N$ el número de nodos.
-
-## Comunidades y modularidad
-
-Las **comunidades** son subconjuntos de nodos más densamente conectados entre sí que con el resto de la red.
-
-- En `igraph`, pueden detectarse con algoritmos como:
-  - `cluster_louvain()` (para grafos ponderados)
-  - `cluster_walktrap()`
-  - `cluster_fast_greedy()`
-
-- La **modularidad (Q)** mide qué tan bien separadas están esas comunidades:
-  $$Q = \frac{1}{2m}\sum_{ij}\left[A_{ij} - \frac{k_i k_j}{2m}\right]\delta(c_i, c_j)$$
-  donde $c_i$ es la comunidad del nodo *i*.
-
-## Aplicaciones en Business Analytics
-
-- **Redes sociales corporativas:** identificar líderes informales o cuellos de botella en la comunicación.  
-- **Marketing:** descubrir influenciadores clave.  
-- **Logística:** optimizar rutas o flujos de transporte.  
-- **Finanzas:** mapear interdependencias entre bancos o cooperativas.  
-- **Open Finance:** analizar relaciones entre clientes y productos financieros.  
-
-::: callout-tip
-**Resumen:** El análisis de redes permite traducir interacciones en conocimiento estructural, identificando quién influye, cómo fluye la información y dónde se forman comunidades dentro de un sistema.  
-:::
-
----
+- **Comercio minorista:** identificar productos que se venden juntos (leche y cereales).  
+- **Marketing digital:** recomendaciones tipo “los clientes que compraron este producto también compraron…”.  
+- **Bancos:** detección de co-uso de productos financieros (cuenta de ahorros + tarjeta).  
+- **Streaming:** recomendación de contenidos según consumo conjunto.
 
 # Aplicación en R
 
-Para ilustrar el análisis de redes, construiremos un ejemplo con la red de pases de los jugadores de la Selección Colombia durante un partido. Cada nodo representa a un jugador, y cada arista dirigida indica un pase de un jugador a otro. El peso de la arista refleja la cantidad de veces que ese pase se repitió a lo largo del partido.
+Para ilustrar el **análisis de canasta de mercado**, trabajaremos con un conjunto de transacciones que representa las **compras realizadas por los clientes de un supermercado** durante un periodo determinado.  
+Cada transacción contiene uno o más productos adquiridos en la misma compra, lo que nos permitirá identificar **patrones de asociación** entre ellos.
 
-A partir de esta red podemos responder preguntas como:
+En este contexto:
 
-	•	¿Qué jugadores son los más influyentes en la circulación del balón?
-	•	¿Existen jugadores que actúan como puentes entre líneas (defensa, medio y ataque)?
-	•	¿Qué tan conectada es la red del equipo?
+- Cada **ítem** corresponde a un producto individual.  
+- Cada **transacción** agrupa los productos comprados por un mismo cliente.  
+- El objetivo es descubrir **reglas del tipo**:  
+  `{Leche} → {Pan}`  e interpreta como:  
+  *“Los clientes que compran leche y pan tienden también a comprar mantequilla.”*
 
-Este ejercicio nos permitirá visualizar cómo los patrones de interacción dentro del equipo pueden analizarse con las mismas herramientas que usamos para estudiar redes sociales, empresariales o financieras. En esencia, un equipo de fútbol es también un sistema de relaciones, donde la posición en la red revela liderazgo, dependencia y eficiencia colectiva.
+A partir de este ejercicio podremos responder preguntas como:
+
+- ¿Qué productos suelen comprarse juntos con mayor frecuencia?  
+- ¿Qué asociaciones son más fuertes en términos de confianza y soporte?  
+- ¿Qué reglas podrían usarse para diseñar promociones o estrategias de recomendación?
+
+Este tipo de análisis tiene múltiples aplicaciones prácticas en **marketing, retail y comportamiento del consumidor**, y se basa en los mismos principios de aprendizaje no supervisado que utilizamos en técnicas como clustering o análisis de redes.
 
 ::: callout-tip
-**Cómo usar este material:** Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR** (según tu `_quarto.yml`), sin instalar nada localmente.
+💡 **Cómo usar este material:**  
+Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR**, sin necesidad de instalar nada localmente.
 :::
 
 ## Preparación del entorno
@@ -171,13 +73,13 @@ El propósito de este bloque es asegurar un entorno limpio y reproducible. Prime
 rm(list = ls())
 
 # instalar
-install.packages("ggraph")
-install.packages("igraph")
+install.packages("arules")
+install.packages("arulesViz")
 
 # Cargar paquetes
 library(tidyverse)   # Manipulación y transformación de datos
-library(igraph)      # Construcción y análisis de redes
-library(ggraph)      # Visualización avanzada de grafos
+library(arules)      # Construcción y análisis de redes
+library(arulesViz)      # Visualización avanzada de grafos
 
 # Fijar semilla para reproducibilidad
 set.seed(123)

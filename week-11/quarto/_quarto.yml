@@ -16,7 +16,7 @@ filters:
   - webr
 
 webr:
-  packages: [tidyverse , igraph, ggraph]
+  packages: [tidyverse , arules, arulesViz]
 
 
 
