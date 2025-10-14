@@ -246,7 +246,7 @@ reglas <- apriori(transa,
 |-----------|--------|----------------|
 | **Número de reglas encontradas** | 3 | Solo 3 asociaciones cumplen simultáneamente los criterios de soporte ≥ 0.1 y confianza ≥ 0.6. |
 | **Soporte mínimo (`supp = 0.1`)** | 10 transacciones | Una combinación debe aparecer en al menos 10 de las 100 compras. |
-| **Confianza mínima (`conf = 0.5`)** | 50 % | Solo se conservan reglas que predicen el consecuente con al menos un 50 % de probabilidad. |
+| **Confianza mínima (`conf = 0.55`)** | 55 % | Solo se conservan reglas que predicen el consecuente con al menos un 55 % de probabilidad. |
 | **Longitud mínima (`minlen = 2`)** | 2 productos | Cada regla debe tener al menos un antecedente y un consecuente. |
 
 **¿Por qué ahora hay menos reglas?:** El algoritmo *filtra más agresivamente* las combinaciones de productos: Las asociaciones débiles (con confianza < 0.6) fueron eliminadas. En otras palabras: Ahora el modelo solo muestra relaciones que ocurren con alta probabilidad cuando se cumple el antecedente.
@@ -301,13 +301,10 @@ Una vez identificadas, eliminamos las redundantes y conservamos únicamente las 
 ```{webr-r}
 ## Eliminar reglas redundantes
 reglas <- reglas[!reglas.reduntantes]
-
-## Convertir a data frame para inspeccionar
-reglas.df <- as(reglas, "data.frame")
-reglas.df
+inspect(reglas)
 ```
 
-Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones. El nuevo reglas.df muestra el conjunto final depurado, con las métricas principales de soporte, confianza y lift.
+Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones.
 
 ### Plotear las reglas
 
@@ -324,6 +321,6 @@ De esta forma, podremos observar visualmente *qué reglas combinan alta frecuenc
 
 ```{webr-r}
 ## Ver resumen de reglas
-plot(reglas.df, measure = c("support", "confidence"), shading = "lift")
+plot(reglas, measure = c("support", "confidence"), shading = "lift")
 ```
 
