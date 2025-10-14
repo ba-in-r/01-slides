@@ -313,7 +313,7 @@ iframe.qwebr-output-code-browse {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['tidyverse', 'igraph', 'ggraph'];
+globalThis.qwebrInstallRPackagesList = ['tidyverse', 'arules', 'arulesViz'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"# Limpiar el entorno de trabajo\nrm(list = ls())\n\n# instalar\ninstall.packages(\"arules\")\ninstall.packages(\"arulesViz\")\n\n# Cargar paquetes\nlibrary(tidyverse)   # Manipulación y transformación de datos\nlibrary(arules)      # Construcción y análisis de redes\nlibrary(arulesViz)      # Visualización avanzada de grafos\n\n# Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## chuequear objeto\nventas[1:5]","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"# class\nclass(ventas)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Conversión directa de la lista al formato transaccional\nventas_t <- as(ventas, \"transactions\")\n\n# Resumen del objeto transaccional\nsummary(ventas_t)\n\n# Visualizar las primeras transacciones\ninspect(head(ventas_t, 5))","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## No ponderado, no dirigido\nno_dir_plot <- graph.adjacency(sel_colombia, mode=\"undirected\" , diag=FALSE)\n\n## plot\nplot(no_dir_plot)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## No ponderado, dirigido\ndir_plot <- graph.adjacency(sel_colombia, mode=\"directed\" , diag=FALSE)\n\n## plot\nplot(dir_plot, edge.arrow.size=0.8)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ponderado, no dirigido\npond_no_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode =\"undirected\", diag = FALSE)\n\n## plot\nplot(pond_no_dir , edge.width=E(pond_no_dir)$weight)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ponderado, dirigido\npond_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode =\"directed\", diag = FALSE)\n\n## plot\nplot(pond_dir , edge.width=E(pond_no_dir)$weight ,  edge.arrow.size = 0.8)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"degree(no_dir_plot, mode = \"all\")","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"betweenness(no_dir_plot)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Centralidad de cercanía: eficiencia de conexión global\ncloseness(no_dir_plot, mode = \"all\")","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Puntaje de autoridad: influencia relativa de cada nodo\nauthority.score(no_dir_plot)$vector","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Distancia promedio entre jugadores\nmean_distance(no_dir_plot)","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Excentricidad de cada jugador\neccentricity(no_dir_plot, mode = \"all\")","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Diámetro de la red (camino más largo)\ndiameter(no_dir_plot)","id":15,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-15","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Crear grafo binario para medir densidad\nsel_colombia_1 <- sel_colombia\nfor (i in 1:ncol(sel_colombia_1)) {\n    for (j in 1:nrow(sel_colombia_1)) {\n         sel_colombia_1[j, i] <- ifelse(sel_colombia_1[j, i] > 0, 1, sel_colombia_1[j, i])\n    }\n}\n\ng_den <- graph.adjacency(sel_colombia_1, mode = \"undirected\",\n                         weighted = NULL, diag = FALSE)\n\n## Calcular densidad\nedge_density(g_den)","id":16,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-16","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"transitivity(no_dir_plot)","id":17,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-17","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"reciprocity(no_dir_plot) ","id":18,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-18","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/data.r\")","id":19,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-19","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## instalar\ninstall.packages(\"arules\")\ninstall.packages(\"arulesViz\")\n\n## Cargar paquetes\nlibrary(tidyverse)   # Manipulación y transformación de datos\nlibrary(arules)      # Construcción y análisis de redes\nlibrary(arulesViz)      # Visualización avanzada de grafos\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## chuequear objeto\nventas[1:5]","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## class\nclass(ventas)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Conversión directa de la lista al formato transaccional\ntransa <- as(ventas, \"transactions\")\n\n## print\nprint(\"Listo!\")","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Resumen del objeto transaccional\nsummary(transa)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Visualizar las primeras transacciones\ninspect(head(transa, 5))","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Generar reglas de asociación\nreglas <- apriori(transa,\n                  parameter = list(supp=0.1 , conf=0.3 , minlen=2))","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Generar reglas de asociación\nreglas <- apriori(transa,\n                  parameter = list(supp=0.1 , conf=0.55 , minlen=2))","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Inspeccionar las primeras reglas\ninspect(head(reglas))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Identificar reglas redundantes\nreglas.reduntantes <- is.redundant(reglas)\n\n## Mostrar las reglas redundantes detectadas\ninspect(reglas[reglas.reduntantes])","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Eliminar reglas redundantes\nreglas <- reglas[!reglas.reduntantes]\n\n## Convertir a data frame para inspeccionar\nreglas.df <- as(reglas, \"data.frame\")\nreglas.df","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ver resumen de reglas\nplot(reglas.df, measure = c(\"support\", \"confidence\"), shading = \"lift\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1589,6 +1589,35 @@ globalThis.qwebrExecuteCode = async function (
 
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -1611,21 +1640,14 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</a></li>
   <li><a href="#ingesta-de-datos" id="toc-ingesta-de-datos" class="nav-link" data-scroll-target="#ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</a></li>
   <li><a href="#conversión-al-formato-transaccional" id="toc-conversión-al-formato-transaccional" class="nav-link" data-scroll-target="#conversión-al-formato-transaccional"><span class="header-section-number">2.3</span> Conversión al formato transaccional</a></li>
-  <li><a href="#tipos-de-grafos" id="toc-tipos-de-grafos" class="nav-link" data-scroll-target="#tipos-de-grafos"><span class="header-section-number">2.4</span> Tipos de grafos</a></li>
-  <li><a href="#indicadores-de-centralidad" id="toc-indicadores-de-centralidad" class="nav-link" data-scroll-target="#indicadores-de-centralidad"><span class="header-section-number">2.5</span> Indicadores de centralidad</a>
+  <li><a href="#reglas-de-asociación" id="toc-reglas-de-asociación" class="nav-link" data-scroll-target="#reglas-de-asociación"><span class="header-section-number">2.4</span> Reglas de asociación</a>
   <ul class="collapse">
-  <li><a href="#medidas-locales" id="toc-medidas-locales" class="nav-link" data-scroll-target="#medidas-locales"><span class="header-section-number">2.5.1</span> Medidas locales</a></li>
-  <li><a href="#medidas-globales" id="toc-medidas-globales" class="nav-link" data-scroll-target="#medidas-globales"><span class="header-section-number">2.5.2</span> Medidas globales</a></li>
-  <li><a href="#otras-medidas-complementarias" id="toc-otras-medidas-complementarias" class="nav-link" data-scroll-target="#otras-medidas-complementarias"><span class="header-section-number">2.5.3</span> Otras medidas complementarias</a></li>
-  <li><a href="#medidas-agregadas-de-la-red" id="toc-medidas-agregadas-de-la-red" class="nav-link" data-scroll-target="#medidas-agregadas-de-la-red"><span class="header-section-number">2.5.4</span> Medidas agregadas de la red</a></li>
-  <li><a href="#transitividad-transitivity" id="toc-transitividad-transitivity" class="nav-link" data-scroll-target="#transitividad-transitivity"><span class="header-section-number">2.5.5</span> Transitividad (Transitivity)</a></li>
+  <li><a href="#métricas-principales" id="toc-métricas-principales" class="nav-link" data-scroll-target="#métricas-principales"><span class="header-section-number">2.4.1</span> Métricas principales</a></li>
+  <li><a href="#obtener-las-métricas" id="toc-obtener-las-métricas" class="nav-link" data-scroll-target="#obtener-las-métricas"><span class="header-section-number">2.4.2</span> Obtener las métricas</a></li>
+  <li><a href="#generación-de-reglas-más-sólidas" id="toc-generación-de-reglas-más-sólidas" class="nav-link" data-scroll-target="#generación-de-reglas-más-sólidas"><span class="header-section-number">2.4.3</span> Generación de reglas más sólidas</a></li>
+  <li><a href="#reglas-redundantes" id="toc-reglas-redundantes" class="nav-link" data-scroll-target="#reglas-redundantes"><span class="header-section-number">2.4.4</span> Reglas redundantes</a></li>
+  <li><a href="#plotear-las-reglas" id="toc-plotear-las-reglas" class="nav-link" data-scroll-target="#plotear-las-reglas"><span class="header-section-number">2.4.5</span> Plotear las reglas</a></li>
   </ul></li>
-  </ul></li>
-  <li><a href="#actividad-en-clase-red-de-mensajes-de-whatsapp" id="toc-actividad-en-clase-red-de-mensajes-de-whatsapp" class="nav-link" data-scroll-target="#actividad-en-clase-red-de-mensajes-de-whatsapp"><span class="header-section-number">3</span> Actividad en Clase: Red de Mensajes de WhatsApp</a>
-  <ul class="collapse">
-  <li><a href="#objetivo" id="toc-objetivo" class="nav-link" data-scroll-target="#objetivo"><span class="header-section-number">3.1</span> Objetivo</a></li>
-  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.2</span> Instrucciones</a></li>
-  <li><a href="#preguntas" id="toc-preguntas" class="nav-link" data-scroll-target="#preguntas"><span class="header-section-number">3.3</span> Preguntas</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2067,154 +2089,186 @@ Note
 <p>En este caso, el objeto se presenta como una lista, lo que significa que cada elemento ya corresponde a una transacción (es decir, un conjunto de ítems comprados juntos). Por tanto, no es necesario aplicar la función split(), ya que los datos ya están organizados en el formato requerido.</p>
 </div>
 </div>
-<p>Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función as() del paquete arules. Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.</p>
-<p>Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de transacciones, como el número total de ítems y transacciones, así como ejemplos de las primeras canastas registradas.</p>
+<p>Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función <code>as()</code> del paquete <code>arules.</code> Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Con los datos agrupados ya en una lista, podemos convertirlos en una transacción, para esto, hacemos uso de la función as() del paquete arules:</p>
-<p>datos.tra &lt;- as(datos.lista, “transactions”) class(datos.tra)</p>
-</section>
-<section id="tipos-de-grafos" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="tipos-de-grafos"><span class="header-section-number">2.4</span> Tipos de grafos</h2>
-<p>Este tipo de red solo representa la existencia de conexión entre dos jugadores, sin importar quién inició el pase ni cuántas veces ocurrió. Se usa cuando el interés es identificar si existe relación, no su dirección ni su intensidad.</p>
+<p>Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de <code>transa</code>, como el número total de ítems y transacciones.</p>
 <div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Aquí se incorpora la dirección del pase, lo cual es crucial en contextos dinámicos como el fútbol. Cada flecha representa quién pasa y quién recibe el balón.</p>
+<p>El resumen muestra que el conjunto de datos contiene <code>100</code> transacciones y <code>10</code> productos únicos, almacenados en una matriz dispersa (sparse matrix). La densidad de <code>0.401</code> indica que, en promedio, cada compra incluye unos cuatro productos, lo cual coincide con la distribución de tamaños de las canastas. Los ítems más frecuentes son <code>Azúcar</code>, <code>Café</code>, <code>Cereal</code>, <code>Frutas</code> y <code>Mantequilla</code>, que aparecen en la mayoría de las transacciones y probablemente formarán parte de las reglas más relevantes en el análisis posterior.</p>
+<p>Una vez confirmada la estructura del objeto, inspeccionamos las primeras transacciones para observar cómo están representadas internamente dentro del formato <code>transactions.</code></p>
 <div id="qwebr-insertion-location-6"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Incorporamos ahora la intensidad del pase (peso), pero tratamos la red como bidireccional: si dos jugadores se pasan el balón mutuamente, la arista representa la suma de sus interacciones.</p>
+</section>
+<section id="reglas-de-asociación" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="reglas-de-asociación"><span class="header-section-number">2.4</span> Reglas de asociación</h2>
+<p>Con el objeto <code>transa</code> ya creado, podemos comenzar a descubrir patrones de compra aplicando la función <code>apriori()</code> del paquete <code>arules</code>. Este algoritmo busca relaciones del tipo:</p>
+<p><code>{Producto A, Producto B} =&gt; {Producto C}</code></p>
+<p>que nos permiten identificar qué productos tienden a comprarse juntos dentro de las transacciones.</p>
+<p><strong>Estructura de una regla:</strong></p>
+<ul>
+<li><p><strong>LHS (Left Hand Side)</strong> → <em>Antecedente</em>: conjunto de productos que originan o influyen en la compra de otros.</p></li>
+<li><p><strong>RHS (Right Hand Side)</strong> → <em>Consecuente</em>: producto asociado al antecedente, es decir, el que se compra después o junto.</p></li>
+</ul>
+<p>Ejemplo: <code>{Leche, Pan} =&gt; {Mantequilla}</code></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Interpretación:</strong> Los clientes que compran <em>Leche</em> y <em>Pan</em> tienden también a comprar <em>Mantequilla</em>. Esto sugiere una oportunidad de <em>promoción cruzada</em> o de <em>diseño estratégico de góndolas</em>.</p>
+</div>
+</div>
+<section id="métricas-principales" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="métricas-principales"><span class="header-section-number">2.4.1</span> Métricas principales</h3>
+<p><strong>Soporte (Support):</strong> Mide la frecuencia con que aparece un conjunto de ítems en todas las transacciones: <span class="math display">\[supp(Y) = \frac{freq(Y)}{N}\]</span></p>
+<p>Donde: <span class="math inline">\(freq(Y)\)</span> es el número de transacciones que contienen el conjunto <span class="math inline">\(Y\)</span> y <span class="math inline">\(N\)</span> es el número total de transacciones.</p>
+<p><strong>Confianza (Confidence):</strong> Mide la probabilidad de que el consecuente (RHS) sea comprado dado que el antecedente (LHS) fue comprado:</p>
+<p><span class="math display">\[conf(A \Rightarrow B) = \frac{supp(A \cup B)}{supp(A)}\]</span></p>
+<p><strong>Cobertura (Coverage):</strong> Número de veces que aparece el <strong>antecedente (LHS)</strong> en las transacciones. Representa el soporte del ítem que origina la regla.</p>
+<p><strong>Lift (Elevación):</strong> Evalúa la fuerza de la relación entre productos, comparando la frecuencia observada con la esperada si fueran independientes:</p>
+<p><span class="math display">\[lift(A \Rightarrow B) = \frac{conf(A \Rightarrow B)}{supp(B)}\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Interpretación:</strong> <span class="math inline">\(lift &gt; 1\)</span>: asociación positiva (la compra de A aumenta la probabilidad de comprar B). <span class="math inline">\(lift = 1\)</span>: independencia. <span class="math inline">\(lift &lt; 1\)</span>: asociación negativa (la compra de A reduce la probabilidad de comprar B).</p>
+</div>
+</div>
+<p><strong>Count:</strong> Número total de transacciones que cumplen la regla.</p>
+</section>
+<section id="obtener-las-métricas" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="obtener-las-métricas"><span class="header-section-number">2.4.2</span> Obtener las métricas</h3>
+<p>La función <code>apriori()</code> utiliza una lista de parámetros para controlar cómo se generan las reglas. Estos parámetros se definen dentro de <code>parameter = list()</code>.</p>
+<p><strong>Support:</strong> Umbral mínimo de soporte. Es la proporción mínima de transacciones en las que debe aparecer una combinación de productos. <code>supp = 0.1</code> solo se considerarán combinaciones de productos que aparezcan en al menos 10 % de las transacciones (en este caso, 10 de las 100 compras).</p>
+<p><strong>Confidence:</strong> Nivel mínimo de confianza. Es la probabilidad de que el consecuente ocurra dado el antecedente. <code>conf = 0.3</code> las reglas deben cumplirse al menos en el 30 % de los casos en que se cumple el antecedente.</p>
+<p><strong>Minimum length:</strong> Longitud mínima de la regla (número de ítems involucrados). <code>minlen = 2</code> evita reglas triviales con un solo producto, asegurando que las reglas tengan al menos un antecedente y un consecuente.</p>
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Finalmente, representamos la red completa: cada arista tiene una dirección (quién pasa a quién) y un peso (frecuencia del pase). Este es el tipo de grafo más informativo para analizar patrones de juego y centralidad.</p>
+<p>Este objeto (reglas) contiene:</p>
+<pre><code>•   Los ítems involucrados.
+•   Las métricas (support, confidence, lift, count, etc.).
+•   El formato necesario para exploración y visualización.</code></pre>
+<p>Este resultado significa que:</p>
+<pre><code>•   El algoritmo analizó 100 compras que incluyen 10 productos diferentes.
+•   Aplicó los filtros definidos (soporte ≥ 0.1, confianza ≥ 0.3).
+•   Encontró 110 combinaciones de productos que cumplen esas condiciones.</code></pre>
+</section>
+<section id="generación-de-reglas-más-sólidas" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="generación-de-reglas-más-sólidas"><span class="header-section-number">2.4.3</span> Generación de reglas más sólidas</h3>
+<p>En este paso ajustamos los parámetros del algoritmo <em>Apriori</em> para obtener <em>reglas de asociación más precisas</em>, es decir, aquellas que representan relaciones fuertes y consistentes entre productos.</p>
 <div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
-<section id="indicadores-de-centralidad" class="level2" data-number="2.5">
-<h2 data-number="2.5" class="anchored" data-anchor-id="indicadores-de-centralidad"><span class="header-section-number">2.5</span> Indicadores de centralidad</h2>
-<p>El grafo por sí solo nos permite visualizar la estructura general del equipo, pero no siempre es suficiente para analizar la influencia de cada jugador. En la práctica, las redes pueden ser densas y confusas — las líneas se sobreponen y es difícil identificar quién tiene un rol central o de conexión.</p>
-<p>Para eso, usamos los indicadores de centralidad, que cuantifican la importancia de cada nodo (jugador) dentro de la red según diferentes criterios. Estas métricas pueden dividirse en tres grupos: medidas locales, medidas globales y medidas agregadas de red.</p>
-<section id="medidas-locales" class="level3" data-number="2.5.1">
-<h3 data-number="2.5.1" class="anchored" data-anchor-id="medidas-locales"><span class="header-section-number">2.5.1</span> Medidas locales</h3>
-<p>Evalúan la posición de un nodo respecto a su entorno más inmediato, es decir, cuántos vínculos tiene o qué tan importante es como intermediario en los flujos de interacción.</p>
-<section id="grado-de-centralidad-degree-centrality" class="level4" data-number="2.5.1.1">
-<h4 data-number="2.5.1.1" class="anchored" data-anchor-id="grado-de-centralidad-degree-centrality"><span class="header-section-number">2.5.1.1</span> Grado de Centralidad (Degree Centrality)</h4>
-<p>Mide el número de conexiones directas de cada jugador. En el contexto futbolístico, un jugador con alto grado de centralidad es aquel que participa en muchas jugadas de pase.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 22%">
+<col style="width: 45%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Concepto</th>
+<th>Valor</th>
+<th>Interpretación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Número de reglas encontradas</strong></td>
+<td>3</td>
+<td>Solo 3 asociaciones cumplen simultáneamente los criterios de soporte ≥ 0.1 y confianza ≥ 0.6.</td>
+</tr>
+<tr class="even">
+<td><strong>Soporte mínimo (<code>supp = 0.1</code>)</strong></td>
+<td>10 transacciones</td>
+<td>Una combinación debe aparecer en al menos 10 de las 100 compras.</td>
+</tr>
+<tr class="odd">
+<td><strong>Confianza mínima (<code>conf = 0.5</code>)</strong></td>
+<td>50 %</td>
+<td>Solo se conservan reglas que predicen el consecuente con al menos un 50 % de probabilidad.</td>
+</tr>
+<tr class="even">
+<td><strong>Longitud mínima (<code>minlen = 2</code>)</strong></td>
+<td>2 productos</td>
+<td>Cada regla debe tener al menos un antecedente y un consecuente.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>¿Por qué ahora hay menos reglas?:</strong> El algoritmo <em>filtra más agresivamente</em> las combinaciones de productos: Las asociaciones débiles (con confianza &lt; 0.6) fueron eliminadas. En otras palabras: Ahora el modelo solo muestra relaciones que ocurren con alta probabilidad cuando se cumple el antecedente.</p>
 <div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Los jugadores con valores más altos son los que tienen mayor participación directa en la circulación del balón (por ejemplo, mediocampistas que conectan líneas o defensas que inician las jugadas).</p>
+<p><code>{Frutas} ⇒ {Azúcar}</code></p>
+<ul>
+<li>Aparece en el <strong>23 %</strong> de las compras, lo que la convierte en una de las asociaciones más frecuentes.<br>
+</li>
+<li>En el <strong>57.5 %</strong> de las ocasiones en que los clientes compran <em>Frutas</em>, también adquieren <em>Azúcar</em>.<br>
+</li>
+<li>Con un <strong>lift = 1.25</strong>, la relación es <strong>positiva pero moderada</strong>: ocurre un 25 % más de lo esperado si las compras fueran independientes.</li>
+</ul>
+<p><code>{Mantequilla, Verduras} ⇒ {Queso}</code></p>
+<ul>
+<li>Ocurre en el <strong>10 %</strong> de las transacciones.<br>
+</li>
+<li>En el <strong>58.8 %</strong> de las veces que los clientes compran <em>Mantequilla</em> y <em>Verduras</em>, también se llevan <em>Queso</em>.<br>
+</li>
+<li>El <strong>lift = 1.47</strong> indica una <strong>asociación positiva clara</strong>, aunque no extremadamente fuerte.</li>
+</ul>
+<p><code>{Frutas, Queso} ⇒ {Azúcar}</code></p>
+<ul>
+<li>Aparece en el <strong>11 %</strong> de las transacciones.<br>
+</li>
+<li>En casi el <strong>58 %</strong> de los casos donde se compran <em>Frutas</em> y <em>Queso</em>, también se incluye <em>Azúcar</em>.<br>
+</li>
+<li>Con un <strong>lift = 1.26</strong>, la asociación es <strong>ligeramente superior a lo esperado por azar</strong>.</li>
+</ul>
 </section>
-<section id="intermediación-betweenness-centrality" class="level4" data-number="2.5.1.2">
-<h4 data-number="2.5.1.2" class="anchored" data-anchor-id="intermediación-betweenness-centrality"><span class="header-section-number">2.5.1.2</span> Intermediación (Betweenness Centrality)</h4>
-<p>Mide cuántas veces un nodo actúa como puente entre otros dos jugadores. Un jugador con alta intermediación es esencial para mantener la cohesión del equipo: si se elimina, la red puede fragmentarse.</p>
+<section id="reglas-redundantes" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="reglas-redundantes"><span class="header-section-number">2.4.4</span> Reglas redundantes</h3>
+<p>Al generar reglas de asociación con <code>apriori()</code>, es común que aparezcan <strong>reglas redundantes</strong>, es decir, reglas que <strong>no aportan nueva información</strong> porque describen un patrón ya representado por otra más general o equivalente.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li><code>{Frutas, Azúcar} ⇒ {Queso}</code><br>
+</li>
+<li><code>{Frutas, Azúcar, Mantequilla} ⇒ {Queso}</code></li>
+</ul>
+<p>La segunda regla incluye la primera dentro de su antecedente, pero no mejora las métricas (soporte, confianza, lift).<br>
+En estos casos, la segunda es <strong>redundante</strong> y puede eliminarse.</p>
+<p><strong>Identificación de reglas redundantes:</strong> Podemos detectar y visualizar qué reglas son redundantes usando la función <code>is.redundant()</code>:</p>
 <div id="qwebr-insertion-location-10"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Valores altos indican jugadores que canalizan el juego entre distintas zonas del campo (por ejemplo, James o Muñoz como conectores entre defensa y ataque).</p>
-</section>
-</section>
-<section id="medidas-globales" class="level3" data-number="2.5.2">
-<h3 data-number="2.5.2" class="anchored" data-anchor-id="medidas-globales"><span class="header-section-number">2.5.2</span> Medidas globales</h3>
-<p>Evalúan la posición de un jugador respecto a toda la red, considerando distancias, flujos y relevancia relativa dentro del equipo.</p>
-<section id="cercanía-closeness-centrality" class="level4" data-number="2.5.2.1">
-<h4 data-number="2.5.2.1" class="anchored" data-anchor-id="cercanía-closeness-centrality"><span class="header-section-number">2.5.2.1</span> Cercanía (Closeness Centrality)</h4>
-<p>Mide qué tan rápido un jugador puede alcanzar al resto de sus compañeros (en promedio). Cuanto mayor la cercanía, más eficiente es su acceso al resto de la red.</p>
+<p>Una vez identificadas, eliminamos las redundantes y conservamos únicamente las reglas más informativas:</p>
 <div id="qwebr-insertion-location-11"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Los jugadores con alta cercanía son aquellos que reciben y distribuyen el balón con pocos intermediarios, facilitando la fluidez del juego.</p>
+<p>Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones. El nuevo reglas.df muestra el conjunto final depurado, con las métricas principales de soporte, confianza y lift.</p>
 </section>
-<section id="puntaje-de-autoridad-authority-score" class="level4" data-number="2.5.2.2">
-<h4 data-number="2.5.2.2" class="anchored" data-anchor-id="puntaje-de-autoridad-authority-score"><span class="header-section-number">2.5.2.2</span> Puntaje de autoridad (Authority Score)</h4>
-<p>Indica la importancia relativa de un nodo considerando no solo su número de conexiones, sino la relevancia de los nodos a los que está conectado. En el fútbol, representa a los jugadores más influyentes en el flujo del balón.</p>
+<section id="plotear-las-reglas" class="level3" data-number="2.4.5">
+<h3 data-number="2.4.5" class="anchored" data-anchor-id="plotear-las-reglas"><span class="header-section-number">2.4.5</span> Plotear las reglas</h3>
+<p>Una vez generadas las reglas y revisadas sus métricas, es útil <em>visualizar los resultados</em> para identificar rápidamente <em>qué asociaciones son más fuertes y frecuentes</em>.</p>
+<p>El paquete <em>arulesViz</em> permite crear distintos tipos de gráficos interactivos.<br>
+En este caso, utilizaremos un <em>diagrama de dispersión (scatterplot)</em> que representa cada regla en función de sus medidas principales:</p>
+<ul>
+<li><strong>Eje X:</strong> Soporte (frecuencia con que ocurre la regla).<br>
+</li>
+<li><strong>Eje Y:</strong> Confianza (probabilidad de que ocurra el consecuente).<br>
+</li>
+<li><strong>Color (sombreado):</strong> Valor del <em>lift</em>, que mide la fuerza de la asociación.</li>
+</ul>
+<p>De esta forma, podremos observar visualmente <em>qué reglas combinan alta frecuencia, alta confianza y alta fuerza de relación</em>.</p>
 <div id="qwebr-insertion-location-12"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Un puntaje alto sugiere que el jugador está conectado con otros importantes. En redes dirigidas, esta métrica suele identificar a los receptores clave de pases.</p>
 </section>
-</section>
-<section id="otras-medidas-complementarias" class="level3" data-number="2.5.3">
-<h3 data-number="2.5.3" class="anchored" data-anchor-id="otras-medidas-complementarias"><span class="header-section-number">2.5.3</span> Otras medidas complementarias</h3>
-<p>Existen también métricas que no pertenecen estrictamente a las categorías anteriores, pero ayudan a describir la estructura general de la red.</p>
-<section id="distancia-promedio-mean-distance" class="level4" data-number="2.5.3.1">
-<h4 data-number="2.5.3.1" class="anchored" data-anchor-id="distancia-promedio-mean-distance"><span class="header-section-number">2.5.3.1</span> Distancia promedio (Mean Distance)</h4>
-<p>Mide el número medio de pasos necesarios para conectar dos jugadores cualesquiera. Cuanto menor sea la distancia, más compacto y eficiente es el equipo.</p>
-<div id="qwebr-insertion-location-13"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
-<section id="excentricidad-eccentricity" class="level4" data-number="2.5.3.2">
-<h4 data-number="2.5.3.2" class="anchored" data-anchor-id="excentricidad-eccentricity"><span class="header-section-number">2.5.3.2</span> Excentricidad (Eccentricity)</h4>
-<p>Mide la distancia máxima desde un jugador al más lejano en la red.</p>
-<div id="qwebr-insertion-location-14"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Jugadores con alta excentricidad están periféricos en el juego; los de baja excentricidad son centrales o muy conectados.</p>
-</section>
-</section>
-<section id="medidas-agregadas-de-la-red" class="level3" data-number="2.5.4">
-<h3 data-number="2.5.4" class="anchored" data-anchor-id="medidas-agregadas-de-la-red"><span class="header-section-number">2.5.4</span> Medidas agregadas de la red</h3>
-<p>Estas métricas resumen propiedades estructurales globales: cohesión, conectividad y redundancia.</p>
-<section id="diámetro-diameter" class="level4" data-number="2.5.4.1">
-<h4 data-number="2.5.4.1" class="anchored" data-anchor-id="diámetro-diameter"><span class="header-section-number">2.5.4.1</span> Diámetro (Diameter)</h4>
-<p>Mide la máxima excentricidad, es decir, la ruta más larga que conecta dos jugadores.</p>
-<div id="qwebr-insertion-location-15"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
-<section id="densidad-density" class="level4" data-number="2.5.4.2">
-<h4 data-number="2.5.4.2" class="anchored" data-anchor-id="densidad-density"><span class="header-section-number">2.5.4.2</span> Densidad (Density)</h4>
-<p>Es la proporción de conexiones efectivas sobre todas las posibles. Indica qué tan interconectado está el equipo.</p>
-<div id="qwebr-insertion-location-16"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Una alta densidad indica un equipo cohesionado, donde la mayoría de los jugadores interactúan entre sí.</p>
-</section>
-</section>
-<section id="transitividad-transitivity" class="level3" data-number="2.5.5">
-<h3 data-number="2.5.5" class="anchored" data-anchor-id="transitividad-transitivity"><span class="header-section-number">2.5.5</span> Transitividad (Transitivity)</h3>
-<p>Mide la proporción de triángulos completos en la red, es decir, cuántos grupos de tres jugadores están totalmente conectados.</p>
-<div id="qwebr-insertion-location-17"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Alta transitividad sugiere jugadas triangulares frecuentes (asociaciones cortas y cooperación local).</p>
-<section id="reciprocidad-reciprocity" class="level4" data-number="2.5.5.1">
-<h4 data-number="2.5.5.1" class="anchored" data-anchor-id="reciprocidad-reciprocity"><span class="header-section-number">2.5.5.1</span> Reciprocidad (Reciprocity)</h4>
-<p>Indica la probabilidad de que si un jugador A le pasa a B, B también le devuelva el pase.</p>
-<div id="qwebr-insertion-location-18"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> La reciprocidad mide la mutualidad de las interacciones, es decir, qué tanto los pases van en ambas direcciones (colaboración bidireccional).</p>
-</section>
-</section>
-</section>
-</section>
-<section id="actividad-en-clase-red-de-mensajes-de-whatsapp" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Actividad en Clase: Red de Mensajes de WhatsApp</h1>
-<section id="objetivo" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="objetivo"><span class="header-section-number">3.1</span> Objetivo</h2>
-<p>Aplicar los conceptos de <strong>análisis de redes</strong> vistos en clase para identificar los contactos más influyentes, los intermediarios y la estructura general de comunicación dentro de un grupo de mensajes de WhatsApp simulado.</p>
-</section>
-<section id="instrucciones" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">3.2</span> Instrucciones</h2>
-<ol type="1">
-<li>Copia y ejecuta los <em>chunks</em> de código en R (o directamente en tu entorno webR si está habilitado). Esto generará una base de datos con los mensajes enviados entre un grupo de contactos y construirá la matriz de adyacencia necesaria para el análisis.</li>
-</ol>
-<div id="qwebr-insertion-location-19"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<ol start="2" type="1">
-<li>Analiza los resultados obtenidos paso a paso.</li>
-</ol>
-<pre><code>3.  Guarda tu código y tus respuestas en un único archivo .qmd o .html.
-
-4.  Sube tu archivo final a la plataforma Intu antes del cierre de la sesión.</code></pre>
-</section>
-<section id="preguntas" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="preguntas"><span class="header-section-number">3.3</span> Preguntas</h2>
-<p><strong>1. Construcción del grafo:</strong></p>
-<pre><code>•   Crea un grafo dirigido y ponderado a partir de la base generada (mensajes).
-•   Asegúrate de que las aristas representen la dirección del mensaje y su frecuencia (peso).</code></pre>
-<p><strong>2. Indicadores de centralidad:</strong></p>
-<p>Calcula al menos tres indicadores de centralidad:</p>
-<pre><code>•   Grado de centralidad (Degree)
-•   Intermediación (Betweenness)
-•   Cercanía (Closeness)</code></pre>
-<p><strong>3. Visualización de la red</strong></p>
-<p>Genera una visualización que muestre las relaciones entre los contactos usando:</p>
-<pre><code>•   plot() (visualización básica), o
-•   ggraph() (visualización avanzada con control de color y tamaño).</code></pre>
-<p><strong>4. Entrega:</strong> Archivo .R con código.</p>
-<p>Sube tu archivo a Intu con el nombre: Taller7_Apellido_Nombre.qmd</p>
 </section>
 </section>
 

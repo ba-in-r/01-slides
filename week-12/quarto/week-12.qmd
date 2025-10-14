@@ -69,19 +69,19 @@ Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR*
 El propósito de este bloque es asegurar un entorno **limpio, reproducible y funcional** antes de iniciar el análisis. Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la **manipulación de datos**, la **construcción de transacciones** y la **generación de reglas de asociación**. Con esto, dejamos el entorno preparado para comenzar el análisis de canasta de mercado.
 
 ```{webr-r}
-# Limpiar el entorno de trabajo
+## Limpiar el entorno de trabajo
 rm(list = ls())
 
-# instalar
+## instalar
 install.packages("arules")
 install.packages("arulesViz")
 
-# Cargar paquetes
+## Cargar paquetes
 library(tidyverse)   # Manipulación y transformación de datos
 library(arules)      # Construcción y análisis de redes
 library(arulesViz)      # Visualización avanzada de grafos
 
-# Fijar semilla para reproducibilidad
+## Fijar semilla para reproducibilidad
 set.seed(123)
 ```
 ::: callout-note
@@ -130,266 +130,200 @@ Para lograr esto, se deben agrupar los productos por el identificador de la tran
 A continuación, verificamos la estructura del objeto `ventas` para conocer su tipo de datos y asegurarnos de que puede convertirse correctamente al formato transaccional. 
 
 ```{webr-r}
-# class
+## class
 class(ventas)
 ```
 ::: callout-note
 En este caso, el objeto se presenta como una lista, lo que significa que cada elemento ya corresponde a una transacción (es decir, un conjunto de ítems comprados juntos). Por tanto, no es necesario aplicar la función split(), ya que los datos ya están organizados en el formato requerido.
 :::
 
-Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función as() del paquete arules.
+Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función `as()` del paquete `arules.`
 Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.
 
-Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de transacciones, como el número total de ítems y transacciones, así como ejemplos de las primeras canastas registradas.
-
 ```{webr-r}
-# Conversión directa de la lista al formato transaccional
-ventas_t <- as(ventas, "transactions")
+## Conversión directa de la lista al formato transaccional
+transa <- as(ventas, "transactions")
 
-# Resumen del objeto transaccional
-summary(ventas_t)
-
-# Visualizar las primeras transacciones
-inspect(head(ventas_t, 5))
+## print
+print("Listo!")
 ```
 
-
-
-
-
-
-Con los datos agrupados ya en una lista, podemos convertirlos en una transacción, para esto, hacemos uso de la función as() del paquete arules:
-
-datos.tra <- as(datos.lista, "transactions")
-class(datos.tra)
-
-
-
-
-
-
-
-
-## Tipos de grafos
-
-Este tipo de red solo representa la existencia de conexión entre dos jugadores, sin importar quién inició el pase ni cuántas veces ocurrió. Se usa cuando el interés es identificar si existe relación, no su dirección ni su intensidad.
+Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de `transa`, como el número total de ítems y transacciones.
 
 ```{webr-r}
-## No ponderado, no dirigido
-no_dir_plot <- graph.adjacency(sel_colombia, mode="undirected" , diag=FALSE)
-
-## plot
-plot(no_dir_plot)
+## Resumen del objeto transaccional
+summary(transa)
 ```
-Aquí se incorpora la dirección del pase, lo cual es crucial en contextos dinámicos como el fútbol. Cada flecha representa quién pasa y quién recibe el balón.
+
+El resumen muestra que el conjunto de datos contiene `100` transacciones y `10` productos únicos, almacenados en una matriz dispersa (sparse matrix). La densidad de `0.401` indica que, en promedio, cada compra incluye unos cuatro productos, lo cual coincide con la distribución de tamaños de las canastas. Los ítems más frecuentes son `Azúcar`, `Café`, `Cereal`, `Frutas` y `Mantequilla`, que aparecen en la mayoría de las transacciones y probablemente formarán parte de las reglas más relevantes en el análisis posterior.
+
+Una vez confirmada la estructura del objeto, inspeccionamos las primeras transacciones para observar cómo están representadas internamente dentro del formato `transactions.`
 
 ```{webr-r}
-## No ponderado, dirigido
-dir_plot <- graph.adjacency(sel_colombia, mode="directed" , diag=FALSE)
-
-## plot
-plot(dir_plot, edge.arrow.size=0.8)
+## Visualizar las primeras transacciones
+inspect(head(transa, 5))
 ```
 
-Incorporamos ahora la intensidad del pase (peso), pero tratamos la red como bidireccional: si dos jugadores se pasan el balón mutuamente, la arista representa la suma de sus interacciones.
+## Reglas de asociación
+
+Con el objeto `transa` ya creado, podemos comenzar a descubrir patrones de compra aplicando la función `apriori()` del paquete `arules`. Este algoritmo busca relaciones del tipo:
+
+`{Producto A, Producto B} => {Producto C}`
+
+que nos permiten identificar qué productos tienden a comprarse juntos dentro de las transacciones.
+
+**Estructura de una regla:**
+
+- **LHS (Left Hand Side)** → *Antecedente*: conjunto de productos que originan o influyen en la compra de otros.  
+
+- **RHS (Right Hand Side)** → *Consecuente*: producto asociado al antecedente, es decir, el que se compra después o junto.
+
+Ejemplo: `{Leche, Pan} => {Mantequilla}`  
+
+::: callout-note
+**Interpretación:** Los clientes que compran *Leche* y *Pan* tienden también a comprar *Mantequilla*. Esto sugiere una oportunidad de *promoción cruzada* o de *diseño estratégico de góndolas*.
+:::
+
+### Métricas principales
+
+**Soporte (Support):** Mide la frecuencia con que aparece un conjunto de ítems en todas las transacciones: $$supp(Y) = \frac{freq(Y)}{N}$$
+
+Donde: $freq(Y)$ es el número de transacciones que contienen el conjunto $Y$ y $N$ es el número total de transacciones.
+
+**Confianza (Confidence):** Mide la probabilidad de que el consecuente (RHS) sea comprado dado que el antecedente (LHS) fue comprado:
+
+$$conf(A \Rightarrow B) = \frac{supp(A \cup B)}{supp(A)}$$
+
+**Cobertura (Coverage):** Número de veces que aparece el **antecedente (LHS)** en las transacciones.  Representa el soporte del ítem que origina la regla.
+
+**Lift (Elevación):** Evalúa la fuerza de la relación entre productos, comparando la frecuencia observada con la esperada si fueran independientes:
+
+$$lift(A \Rightarrow B) = \frac{conf(A \Rightarrow B)}{supp(B)}$$
+
+::: callout-note
+**Interpretación:** $lift > 1$: asociación positiva (la compra de A aumenta la probabilidad de comprar B). $lift = 1$: independencia. $lift < 1$: asociación negativa (la compra de A reduce la probabilidad de comprar B).
+:::
+
+**Count:** Número total de transacciones que cumplen la regla. 
+
+### Obtener las métricas
+
+La función `apriori()` utiliza una lista de parámetros para controlar cómo se generan las reglas. Estos parámetros se definen dentro de `parameter = list()`.
+
+**Support:** Umbral mínimo de soporte. Es la proporción mínima de transacciones en las que debe aparecer una combinación de productos. `supp = 0.1` solo se considerarán combinaciones de productos que aparezcan en al menos 10 % de las transacciones (en este caso, 10 de las 100 compras).
+
+**Confidence:** Nivel mínimo de confianza. Es la probabilidad de que el consecuente ocurra dado el antecedente. `conf = 0.3` las reglas deben cumplirse al menos en el 30 % de los casos en que se cumple el antecedente.
+
+**Minimum length:** Longitud mínima de la regla (número de ítems involucrados). `minlen = 2` evita reglas triviales con un solo producto, asegurando que las reglas tengan al menos un antecedente y un consecuente.
 
 ```{webr-r}
-## Ponderado, no dirigido
-pond_no_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode ="undirected", diag = FALSE)
-
-## plot
-plot(pond_no_dir , edge.width=E(pond_no_dir)$weight)
+## Generar reglas de asociación
+reglas <- apriori(transa,
+                  parameter = list(supp=0.1 , conf=0.3 , minlen=2))
 ```
-Finalmente, representamos la red completa: cada arista tiene una dirección (quién pasa a quién) y un peso (frecuencia del pase). Este es el tipo de grafo más informativo para analizar patrones de juego y centralidad.
+Este objeto (reglas) contiene:
+
+	•	Los ítems involucrados.
+	•	Las métricas (support, confidence, lift, count, etc.).
+	•	El formato necesario para exploración y visualización.
+
+Este resultado significa que:
+
+	•	El algoritmo analizó 100 compras que incluyen 10 productos diferentes.
+	•	Aplicó los filtros definidos (soporte ≥ 0.1, confianza ≥ 0.3).
+	•	Encontró 110 combinaciones de productos que cumplen esas condiciones.
+
+### Generación de reglas más sólidas
+
+En este paso ajustamos los parámetros del algoritmo *Apriori* para obtener *reglas de asociación más precisas*, es decir, aquellas que representan relaciones fuertes y consistentes entre productos.
 
 ```{webr-r}
-## Ponderado, dirigido
-pond_dir <- graph.adjacency(sel_colombia, weighted = TRUE, mode ="directed", diag = FALSE)
-
-## plot
-plot(pond_dir , edge.width=E(pond_no_dir)$weight ,  edge.arrow.size = 0.8)
+## Generar reglas de asociación
+reglas <- apriori(transa,
+                  parameter = list(supp=0.1 , conf=0.55 , minlen=2))
 ```
+| Concepto | Valor | Interpretación |
+|-----------|--------|----------------|
+| **Número de reglas encontradas** | 3 | Solo 3 asociaciones cumplen simultáneamente los criterios de soporte ≥ 0.1 y confianza ≥ 0.6. |
+| **Soporte mínimo (`supp = 0.1`)** | 10 transacciones | Una combinación debe aparecer en al menos 10 de las 100 compras. |
+| **Confianza mínima (`conf = 0.5`)** | 50 % | Solo se conservan reglas que predicen el consecuente con al menos un 50 % de probabilidad. |
+| **Longitud mínima (`minlen = 2`)** | 2 productos | Cada regla debe tener al menos un antecedente y un consecuente. |
 
-## Indicadores de centralidad
-
-El grafo por sí solo nos permite visualizar la estructura general del equipo, pero no siempre es suficiente para analizar la influencia de cada jugador. En la práctica, las redes pueden ser densas y confusas — las líneas se sobreponen y es difícil identificar quién tiene un rol central o de conexión.
-
-Para eso, usamos los indicadores de centralidad, que cuantifican la importancia de cada nodo (jugador) dentro de la red según diferentes criterios. Estas métricas pueden dividirse en tres grupos: medidas locales, medidas globales y medidas agregadas de red.
-
-### Medidas locales
-
-Evalúan la posición de un nodo respecto a su entorno más inmediato, es decir, cuántos vínculos tiene o qué tan importante es como intermediario en los flujos de interacción.
-
-#### Grado de Centralidad (Degree Centrality)
-
-Mide el número de conexiones directas de cada jugador. En el contexto futbolístico, un jugador con alto grado de centralidad es aquel que participa en muchas jugadas de pase.
+**¿Por qué ahora hay menos reglas?:** El algoritmo *filtra más agresivamente* las combinaciones de productos: Las asociaciones débiles (con confianza < 0.6) fueron eliminadas. En otras palabras: Ahora el modelo solo muestra relaciones que ocurren con alta probabilidad cuando se cumple el antecedente.
 
 ```{webr-r}
-degree(no_dir_plot, mode = "all")
+## Inspeccionar las primeras reglas
+inspect(head(reglas))
 ```
 
-**Interpretación:** Los jugadores con valores más altos son los que tienen mayor participación directa en la circulación del balón (por ejemplo, mediocampistas que conectan líneas o defensas que inician las jugadas).
+`{Frutas} ⇒ {Azúcar}`  
 
-#### Intermediación (Betweenness Centrality)
+- Aparece en el **23 %** de las compras, lo que la convierte en una de las asociaciones más frecuentes.  
+- En el **57.5 %** de las ocasiones en que los clientes compran *Frutas*, también adquieren *Azúcar*.  
+- Con un **lift = 1.25**, la relación es **positiva pero moderada**: ocurre un 25 % más de lo esperado si las compras fueran independientes.  
 
-Mide cuántas veces un nodo actúa como puente entre otros dos jugadores. Un jugador con alta intermediación es esencial para mantener la cohesión del equipo: si se elimina, la red puede fragmentarse.
+`{Mantequilla, Verduras} ⇒ {Queso}`  
 
-```{webr-r}
-betweenness(no_dir_plot)
-```
+- Ocurre en el **10 %** de las transacciones.  
+- En el **58.8 %** de las veces que los clientes compran *Mantequilla* y *Verduras*, también se llevan *Queso*.  
+- El **lift = 1.47** indica una **asociación positiva clara**, aunque no extremadamente fuerte.  
 
-**Interpretación:** Valores altos indican jugadores que canalizan el juego entre distintas zonas del campo (por ejemplo, James o Muñoz como conectores entre defensa y ataque).
+`{Frutas, Queso} ⇒ {Azúcar}`  
 
-### Medidas globales
-
-Evalúan la posición de un jugador respecto a toda la red, considerando distancias, flujos y relevancia relativa dentro del equipo.
-
-#### Cercanía (Closeness Centrality)
-
-Mide qué tan rápido un jugador puede alcanzar al resto de sus compañeros (en promedio). Cuanto mayor la cercanía, más eficiente es su acceso al resto de la red.
-
-```{webr-r}
-## Centralidad de cercanía: eficiencia de conexión global
-closeness(no_dir_plot, mode = "all")
-```
-
-**Interpretación:** Los jugadores con alta cercanía son aquellos que reciben y distribuyen el balón con pocos intermediarios, facilitando la fluidez del juego.
-
-#### Puntaje de autoridad (Authority Score)
-
-Indica la importancia relativa de un nodo considerando no solo su número de conexiones, sino la relevancia de los nodos a los que está conectado. En el fútbol, representa a los jugadores más influyentes en el flujo del balón.
-
-```{webr-r}
-## Puntaje de autoridad: influencia relativa de cada nodo
-authority.score(no_dir_plot)$vector
-```
-
-**Interpretación:** Un puntaje alto sugiere que el jugador está conectado con otros importantes. En redes dirigidas, esta métrica suele identificar a los receptores clave de pases.
-
-### Otras medidas complementarias
-
-Existen también métricas que no pertenecen estrictamente a las categorías anteriores, pero ayudan a describir la estructura general de la red.
-
-#### Distancia promedio (Mean Distance)
-
-Mide el número medio de pasos necesarios para conectar dos jugadores cualesquiera. Cuanto menor sea la distancia, más compacto y eficiente es el equipo.
-
-```{webr-r}
-## Distancia promedio entre jugadores
-mean_distance(no_dir_plot)
-```
-
-#### Excentricidad (Eccentricity)
-
-Mide la distancia máxima desde un jugador al más lejano en la red.
-
-```{webr-r}
-## Excentricidad de cada jugador
-eccentricity(no_dir_plot, mode = "all")
-```
-
-**Interpretación:** Jugadores con alta excentricidad están periféricos en el juego; los de baja excentricidad son centrales o muy conectados.
-
-### Medidas agregadas de la red
-
-Estas métricas resumen propiedades estructurales globales: cohesión, conectividad y redundancia.
-
-#### Diámetro (Diameter)
-
-Mide la máxima excentricidad, es decir, la ruta más larga que conecta dos jugadores.
-
-```{webr-r}
-## Diámetro de la red (camino más largo)
-diameter(no_dir_plot)
-```
-
-#### Densidad (Density)
-
-Es la proporción de conexiones efectivas sobre todas las posibles. Indica qué tan interconectado está el equipo.
-
-```{webr-r}
-## Crear grafo binario para medir densidad
-sel_colombia_1 <- sel_colombia
-for (i in 1:ncol(sel_colombia_1)) {
-    for (j in 1:nrow(sel_colombia_1)) {
-         sel_colombia_1[j, i] <- ifelse(sel_colombia_1[j, i] > 0, 1, sel_colombia_1[j, i])
-    }
-}
-
-g_den <- graph.adjacency(sel_colombia_1, mode = "undirected",
-                         weighted = NULL, diag = FALSE)
-
-## Calcular densidad
-edge_density(g_den)
-```
-
-**Interpretación:** Una alta densidad indica un equipo cohesionado, donde la mayoría de los jugadores interactúan entre sí.
-
-### Transitividad (Transitivity)
-
-Mide la proporción de triángulos completos en la red, es decir, cuántos grupos de tres jugadores están totalmente conectados.
-
-```{webr-r}
-transitivity(no_dir_plot)
-```
-
-**Interpretación:** Alta transitividad sugiere jugadas triangulares frecuentes (asociaciones cortas y cooperación local).
-
-#### Reciprocidad (Reciprocity)
-
-Indica la probabilidad de que si un jugador A le pasa a B, B también le devuelva el pase.
-
-```{webr-r}
-reciprocity(no_dir_plot) 
-```
-
-**Interpretación:** La reciprocidad mide la mutualidad de las interacciones, es decir, qué tanto los pases van en ambas direcciones (colaboración bidireccional).
-
-# Actividad en Clase: Red de Mensajes de WhatsApp
-
-## Objetivo
-
-Aplicar los conceptos de **análisis de redes** vistos en clase para identificar los contactos más influyentes, los intermediarios y la estructura general de comunicación dentro de un grupo de mensajes de WhatsApp simulado.
-
-## Instrucciones
-
-  1. Copia y ejecuta los *chunks* de código en R (o directamente en tu entorno webR si está habilitado). Esto generará una base de datos con los mensajes enviados entre un grupo de contactos y construirá la matriz de adyacencia necesaria para el análisis.
-
-```{webr-r}
-## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/data.r")
-```
-
-  2.	Analiza los resultados obtenidos paso a paso.
-
-	3.	Guarda tu código y tus respuestas en un único archivo .qmd o .html.
-
-	4.	Sube tu archivo final a la plataforma Intu antes del cierre de la sesión.
-
-## Preguntas
-
-**1. Construcción del grafo:**
-
-	•	Crea un grafo dirigido y ponderado a partir de la base generada (mensajes).
-	•	Asegúrate de que las aristas representen la dirección del mensaje y su frecuencia (peso).
-
-**2. Indicadores de centralidad:**
-
-Calcula al menos tres indicadores de centralidad:
-
-	•	Grado de centralidad (Degree)
-	•	Intermediación (Betweenness)
-	•	Cercanía (Closeness)
-
-**3. Visualización de la red**
-
-Genera una visualización que muestre las relaciones entre los contactos usando:
-
-	•	plot() (visualización básica), o
-	•	ggraph() (visualización avanzada con control de color y tamaño).
-
-**4. Entrega:** Archivo .R con código.
-
-Sube tu archivo a Intu con el nombre: Taller7_Apellido_Nombre.qmd
+- Aparece en el **11 %** de las transacciones.  
+- En casi el **58 %** de los casos donde se compran *Frutas* y *Queso*, también se incluye *Azúcar*.  
+- Con un **lift = 1.26**, la asociación es **ligeramente superior a lo esperado por azar**.  
 	
-	
+### Reglas redundantes
+
+Al generar reglas de asociación con `apriori()`, es común que aparezcan **reglas redundantes**, es decir, reglas que **no aportan nueva información** porque describen un patrón ya representado por otra más general o equivalente.
+
+Por ejemplo:  
+
+- `{Frutas, Azúcar} ⇒ {Queso}`  
+- `{Frutas, Azúcar, Mantequilla} ⇒ {Queso}`  
+
+La segunda regla incluye la primera dentro de su antecedente, pero no mejora las métricas (soporte, confianza, lift).  
+En estos casos, la segunda es **redundante** y puede eliminarse.
+
+**Identificación de reglas redundantes:** Podemos detectar y visualizar qué reglas son redundantes usando la función `is.redundant()`:
+
+```{webr-r}
+## Identificar reglas redundantes
+reglas.reduntantes <- is.redundant(reglas)
+
+## Mostrar las reglas redundantes detectadas
+inspect(reglas[reglas.reduntantes])
+```
+
+Una vez identificadas, eliminamos las redundantes y conservamos únicamente las reglas más informativas:
+	  
+```{webr-r}
+## Eliminar reglas redundantes
+reglas <- reglas[!reglas.reduntantes]
+
+## Convertir a data frame para inspeccionar
+reglas.df <- as(reglas, "data.frame")
+reglas.df
+```
+
+Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones. El nuevo reglas.df muestra el conjunto final depurado, con las métricas principales de soporte, confianza y lift.
+
+### Plotear las reglas
+
+Una vez generadas las reglas y revisadas sus métricas, es útil *visualizar los resultados* para identificar rápidamente *qué asociaciones son más fuertes y frecuentes*.  
+
+El paquete *arulesViz* permite crear distintos tipos de gráficos interactivos.  
+En este caso, utilizaremos un *diagrama de dispersión (scatterplot)* que representa cada regla en función de sus medidas principales:
+
+- **Eje X:** Soporte (frecuencia con que ocurre la regla).  
+- **Eje Y:** Confianza (probabilidad de que ocurra el consecuente).  
+- **Color (sombreado):** Valor del *lift*, que mide la fuerza de la asociación.
+
+De esta forma, podremos observar visualmente *qué reglas combinan alta frecuencia, alta confianza y alta fuerza de relación*.
+
+```{webr-r}
+## Ver resumen de reglas
+plot(reglas.df, measure = c("support", "confidence"), shading = "lift")
+```
+
