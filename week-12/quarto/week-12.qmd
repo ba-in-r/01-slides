@@ -66,7 +66,7 @@ Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR*
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno limpio y reproducible. Primero, eliminamos objetos previos que puedan interferir con el análisis. Después, cargamos los paquetes necesarios para manipulación de datos, visualización, generación de resúmenes y ejecución de K-means. Con esto, dejamos el entorno preparado para comenzar.
+El propósito de este bloque es asegurar un entorno **limpio, reproducible y funcional** antes de iniciar el análisis. Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la **manipulación de datos**, la **construcción de transacciones** y la **generación de reglas de asociación**. Con esto, dejamos el entorno preparado para comenzar el análisis de canasta de mercado.
 
 ```{webr-r}
 # Limpiar el entorno de trabajo
@@ -84,27 +84,91 @@ library(arulesViz)      # Visualización avanzada de grafos
 # Fijar semilla para reproducibilidad
 set.seed(123)
 ```
+::: callout-note
+Los paquetes `arules` y `arulesViz` pertenecen al ecosistema de data mining en R.
+	•	`arules` permite aplicar el algoritmo Apriori, que identifica combinaciones frecuentes de productos.
+	•	`arulesViz` facilita la visualización interactiva de las reglas y sus métricas (soporte, confianza y lift).
+:::
 
-## Ingesta de datos (carga desde archivo o URL)
+## Ingesta de datos 
 
-En esta sección realizamos la ingesta de datos, es decir, el proceso de cargar la base que utilizaremos para construir la red de pases de la Selección Colombia. Cada fila de la base representa un pase realizado entre dos jugadores durante un partido, con información sobre quién hizo el pase, a quién se dirigió y cuántas veces se repitió esa acción.
+En esta sección realizamos la **ingesta de datos**, es decir, el proceso de cargar o generar la base que utilizaremos para construir la **canasta de mercado**. Cada registro representa una **transacción individual**, es decir, el conjunto de productos que un cliente compró en una misma visita al supermercado. Nuestro objetivo será analizar estos datos para descubrir **patrones de compra conjunta** y **reglas de asociación** entre productos.
 
-Esta estructura de datos nos permitirá representar el flujo del balón como un grafo dirigido y ponderado, donde:
+La estructura de datos es la siguiente:
 
-	•	Los nodos son los jugadores.
-	•	Las aristas son los pases.
-	•	El peso de la arista indica la frecuencia del pase.
+- Cada **ítem** corresponde a un producto (por ejemplo: *Leche*, *Pan*, *Huevos*).  
+- Cada **transacción** es una lista de productos comprados juntos.  
+
+- El **conjunto de todas las transacciones** conforma la base que usaremos para aplicar el algoritmo *Apriori* y encontrar asociaciones significativas.
 
 ```{webr-r}
 #| warning: false
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-11/data/week-11.r")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r")
 
 ## chuequear objeto
-sel_colombia
+ventas[1:5]
 ```
+
+**Interpretación:** Cada elemento de la lista ventas representa una compra única: un conjunto de productos adquiridos por un cliente. Por ejemplo:
+
+Esto significa que:
+
+	•	En la transacción 1, el cliente compró mantequilla, pan, queso y verduras. 
+	•	En la transacción 2, compró cereal, queso, leche, pan, mantequilla y huevos.
+
+Esta estructura servirá como punto de partida para convertir las listas en objetos transaccionales y aplicar el algoritmo Apriori, que nos permitirá descubrir qué productos se compran juntos con mayor frecuencia.
+
+## Conversión al formato transaccional
+
+Antes de aplicar técnicas de análisis de cesta de mercado, es fundamental que los datos se encuentren en un formato adecuado para este tipo de estudio. En particular, los algoritmos de reglas de asociación, como Apriori o Eclat, requieren que la información esté organizada en formato transaccional, donde cada observación representa una transacción individual y contiene el conjunto de ítems comprados conjuntamente.
+
+Para lograr esto, se deben agrupar los productos por el identificador de la transacción (ID), de modo que cada registro muestre la lista de artículos adquiridos en una misma compra o canasta. En R, esta conversión puede realizarse fácilmente utilizando la función split(), que permite crear una lista de ítems por transacción. Posteriormente, dicha lista se transforma en un objeto de clase transactions, el cual es compatible con los paquetes de análisis de asociaciones como arules.
+
+A continuación, verificamos la estructura del objeto `ventas` para conocer su tipo de datos y asegurarnos de que puede convertirse correctamente al formato transaccional. 
+
+```{webr-r}
+# class
+class(ventas)
+```
+::: callout-note
+En este caso, el objeto se presenta como una lista, lo que significa que cada elemento ya corresponde a una transacción (es decir, un conjunto de ítems comprados juntos). Por tanto, no es necesario aplicar la función split(), ya que los datos ya están organizados en el formato requerido.
+:::
+
+Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función as() del paquete arules.
+Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.
+
+Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de transacciones, como el número total de ítems y transacciones, así como ejemplos de las primeras canastas registradas.
+
+```{webr-r}
+# Conversión directa de la lista al formato transaccional
+ventas_t <- as(ventas, "transactions")
+
+# Resumen del objeto transaccional
+summary(ventas_t)
+
+# Visualizar las primeras transacciones
+inspect(head(ventas_t, 5))
+```
+
+
+
+
+
+
+Con los datos agrupados ya en una lista, podemos convertirlos en una transacción, para esto, hacemos uso de la función as() del paquete arules:
+
+datos.tra <- as(datos.lista, "transactions")
+class(datos.tra)
+
+
+
+
+
+
+
 
 ## Tipos de grafos
 

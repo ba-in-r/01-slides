@@ -10,9 +10,9 @@ productos <- c("Leche", "Pan", "Mantequilla", "Cereal", "Huevos",
 
 # Simular 20 transacciones con productos aleatorios
 set.seed(123)
-ventas <- lapply(1:100, 
-                 function(i) {sample(productos, size = sample(2:6, 1), replace=F)}
-                )
+ventas <- lapply(1:100, function(i) {
+  sample(productos, size = sample(2:6, 1), replace = FALSE)
+})
 
 # Revisar algunas transacciones
 rm(productos)
