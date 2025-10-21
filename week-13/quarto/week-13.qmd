@@ -1,6 +1,6 @@
 ---
 title: "Unidad 9 — Clasificación"
-subtitle: "Semana 12: Modelo Logit"
+subtitle: "Semana 13: Modelo Logit"
 author: "Eduard F. Martínez González"
 ---
 
@@ -395,6 +395,7 @@ Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras q
 Finalmente, podemos representar la relación entre la probabilidad predicha de aprobar y alguna variable explicativa, como las horas de estudio.
 
 ```{webr-r}
+ggplot(data=datos , aes(x=horas_estudio , y=prob_predicha)) +
 geom_point(alpha = 0.4, color = "steelblue") +
 geom_smooth(method = "loess", se = FALSE, color = "black") +
 labs(title = "Probabilidad predicha de aprobar según horas de estudio",
@@ -451,7 +452,6 @@ Una vez estimado el modelo, evalúe su capacidad predictiva. A partir de los res
 1. Interpretación general
 	•	¿Qué variables parecen tener mayor influencia en la probabilidad de retiro según el resumen del modelo (summary(modelo_logit))?
 	•	¿Cuál es el signo del coeficiente asociado a horas_estudio y cómo lo interpretarías?
-	•	¿Qué significa que una variable tenga un p-valor alto (mayor a 0.05)?
 
 2. Evaluación del desempeño
 	•	¿Qué tan bien clasifica el modelo según las métricas de desempeño calculadas?
