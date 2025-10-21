@@ -58,7 +58,7 @@ datos <- datos |>
   mutate(
     prob_retira = if_else(aprueba == 1, 0.05, 0.80),
     retira = rbinom(n, size = 1, prob = prob_retira)
-  )
+  ) %>% select(-prob_retira,-prob_aprueba)
 
 
 rm("b_afinidad","b_asistencia","b_horas","b_participacion","b_trabajos","b_usoR","b0","lineal","n","p_aprueba" )
