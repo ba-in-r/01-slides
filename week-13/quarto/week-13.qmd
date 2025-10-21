@@ -1,0 +1,371 @@
+---
+title: "Unidad 9 — Clasificación"
+subtitle: "Semana 12: Modelo Logit"
+author: "Eduard F. Martínez González"
+---
+
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
+<img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
+</a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
+
+# ¿Qué es un problema de clasificación?
+
+![](clasfication-gif.gif)
+
+En *Business Analytics*, los modelos de **clasificación** se utilizan cuando la **variable de respuesta es categórica** (por ejemplo, *acepta/no acepta*, *fraude/no fraude*, *compra/no compra*).  
+El objetivo es **asignar observaciones a categorías** con base en sus características observadas.
+
+**Ejemplos típicos:**
+
+- Determinar si un cliente pagará su crédito o caerá en mora.  
+- Identificar si una transacción es legítima o fraudulenta.  
+- Predecir si un estudiante aprobará o no un curso.  
+- Clasificar correos en “spam” o “no spam”.
+
+## Limitaciones del modelo lineal clásico
+
+La **regresión lineal** no es apropiada para variables dicotómicas porque:
+
+- Predice valores continuos fuera del rango [0,1].  
+- Asume una relación lineal entre las variables explicativas y la probabilidad.  
+- Viola la homocedasticidad y la normalidad de los errores.
+
+**Solución:** usar un modelo que prediga directamente **probabilidades entre 0 y 1**: el **Modelo Logit**.
+
+## El Modelo Logit
+
+El modelo Logit relaciona las variables explicativas con la **probabilidad de éxito** \( P(Y=1) \) mediante una función no lineal llamada **función logística**:
+
+\[ P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k)}} \]
+
+Esta transformación garantiza que las probabilidades estén siempre entre 0 y 1.
+
+**Interpretación:**
+En lugar de modelar la probabilidad directamente, el Logit modela el **logaritmo de las odds (razón de probabilidades):**
+
+\[ \log\left(\frac{P(Y=1)}{1 - P(Y=1)}\right) = \beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k \]
+
+Cada coeficiente \(\beta_j\) indica cómo cambia el **log-odds** de éxito cuando \(X_j\) aumenta en una unidad.
+
+## Odds y log-odds: intuición práctica
+
+- **Odds (razón de probabilidades):**
+  \[
+  \text{odds} = \frac{P(Y=1)}{1 - P(Y=1)}
+  \]
+  Ejemplo: si \(P=0.8\), las odds son 4 a 1.
+
+- **Log-odds:** logaritmo natural de las odds.  
+  El modelo Logit asume que estas log-odds varían linealmente con las variables explicativas.
+
+::: callout-note
+**Nota:**  
+Las *odds* comparan la probabilidad de éxito frente a la de fracaso.  
+El logaritmo convierte esta razón en una escala continua, lo que permite aplicar un modelo lineal.
+:::
+
+## Interpretación de los coeficientes
+
+Cada parámetro \(\beta_j\) se interpreta como el cambio en el log-odds de éxito por un aumento unitario en \(X_j\).
+
+- Si \( \beta_j > 0 \): \(X_j\) aumenta la probabilidad de éxito.  
+- Si \( \beta_j < 0 \): \(X_j\) reduce la probabilidad de éxito.
+
+Para una interpretación más intuitiva se usa el **odds ratio (e^{\beta_j})**, que indica **cuánto se multiplican las odds** al aumentar \(X_j\) en una unidad.
+
+::: callout-tip
+**Ejemplo interpretativo:**  
+Si \(e^{\beta_1} = 1.5\), un aumento de una unidad en \(X_1\) incrementa las probabilidades de éxito en un **50 %**.
+:::
+
+## Evaluación del modelo
+
+Las métricas más comunes para evaluar modelos de clasificación incluyen:
+
+| Métrica | Descripción |
+|----------|--------------|
+| **Exactitud (Accuracy)** | Proporción de predicciones correctas sobre el total. |
+| **Sensibilidad (Recall)** | Capacidad del modelo para identificar correctamente los casos positivos. |
+| **Especificidad** | Capacidad del modelo para identificar correctamente los casos negativos. |
+| **Precisión (Precision)** | Proporción de verdaderos positivos entre todos los positivos predichos. |
+| **F1-Score** | Media armónica entre precisión y sensibilidad. |
+| **AUC-ROC** | Evalúa la capacidad del modelo para distinguir entre clases. |
+
+::: callout-note
+**Matriz de confusión:**  
+Muestra cómo el modelo clasifica los casos reales en comparación con los predichos.  
+Permite calcular todas las métricas anteriores.
+:::
+
+## Aplicaciones en Business Analytics
+
+- **Banca y microfinanzas:** modelos de *credit scoring* (probabilidad de incumplimiento).  
+- **Marketing:** predicción de cancelaciones o *churn*.  
+- **Salud:** diagnóstico temprano (presencia o ausencia de enfermedad).  
+- **Recursos Humanos:** predicción de rotación laboral o desempeño.
+
+**Idea clave:**  
+
+El modelo Logit permite traducir características observables en **probabilidades de ocurrencia de un evento**,  
+facilitando la **toma de decisiones basada en riesgo**.
+
+::: callout-tip
+**Resumen:**  
+El modelo Logit es el punto de partida de la analítica predictiva moderna. Permite estimar probabilidades y clasificar observaciones en grupos, combinando interpretabilidad y rigor estadístico.
+:::
+
+---
+
+# Aplicación en R
+
+Para ilustrar el uso de los **modelos de clasificación**, trabajaremos con una base sintética que representa a **estudiantes inscritos en un curso universitario**. Cada registro contiene información sobre el comportamiento académico y el desempeño del estudiante a lo largo del semestre, lo que nos permitirá **estimar la probabilidad de aprobar el curso** y analizar los factores que más influyen en ese resultado.
+
+En este contexto:
+
+- Cada **observación** corresponde a un estudiante.  
+- La **variable dependiente** es binaria: `aprueba` (1 = aprueba, 0 = reprueba).  
+- Las **variables explicativas** describen aspectos como el número de horas de estudio, la asistencia, la participación y la afinidad con la estadística.  
+
+El objetivo es construir un **modelo Logit** que nos permita responder preguntas como:
+
+- ¿Qué factores aumentan la probabilidad de aprobar el curso?  
+- ¿Cómo se interpreta el efecto de cada variable en términos de *odds ratio*?  
+- ¿Qué tan bien puede el modelo predecir los resultados académicos?  
+
+Este tipo de análisis es una herramienta clave en **Business Analytics**, ya que permite tomar decisiones basadas en datos —por ejemplo, identificar estudiantes en riesgo académico, diseñar estrategias de acompañamiento o evaluar la efectividad de las metodologías de enseñanza.
+
+::: callout-tip
+💡 **Cómo usar este material:**  
+Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR**, sin necesidad de instalar nada localmente.
+:::
+
+## Preparación del entorno
+
+El propósito de este bloque es asegurar un entorno **limpio, reproducible y funcional** antes de iniciar el análisis.  
+Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la **manipulación de datos**, la **visualización** y la **estimación del modelo Logit**.  
+
+Con esto, dejamos el entorno preparado para comenzar el análisis aplicado.
+
+```{webr-r}
+## Limpiar el entorno de trabajo
+rm(list = ls())
+
+## Instalar paquetes (solo si es necesario)
+install.packages("tidyverse")
+install.packages("broom")
+
+## Cargar librerías
+library(tidyverse)  # Manipulación y visualización de datos
+library(broom)      # Para resumir resultados de modelos
+
+## Fijar semilla para reproducibilidad
+set.seed(123)
+```
+
+::: callout-note
+Los paquetes `tidyverse` y `broom` son parte del ecosistema de análisis de datos en R:
+	•	`tidyverse` permite transformar y visualizar datos de manera eficiente.
+	•	`broom` facilita la conversión de resultados de modelos estadísticos en tablas ordenadas y listas para interpretar.
+:::
+
+## Ingesta de datos 
+
+En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo Logit.
+Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.
+
+La estructura de los datos es la siguiente:
+	•	horas_estudio: promedio semanal de horas dedicadas al curso.
+	•	asistencia: porcentaje de asistencia a clase.
+	•	participacion: nivel de participación en clase (0–100).
+	•	uso_de_R: nivel de dominio de R (1–5).
+	•	trabajos_entregados: cantidad de trabajos entregados (0–5).
+	•	afinidad_estadistica: gusto por la estadística (0–100).
+	•	aprueba: resultado final (1 = aprueba, 0 = reprueba).
+	•	retira: indica si el estudiante se retiró del curso antes de finalizar (1 = sí, 0 = no).
+
+Nuestro objetivo será estimar cómo cada una de estas variables influye en la probabilidad de aprobar el curso.
+
+```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r")
+
+## chuequear objeto
+ventas[1:5]
+```
+
+## Estimación del Modelo Logit
+
+En esta sección estimaremos un **modelo Logit** para predecir la probabilidad de que un estudiante **apruebe el curso**, utilizando las variables explicativas incluidas en la base de datos.
+
+El objetivo es cuantificar cómo influyen factores como las horas de estudio, la asistencia, la participación en clase o la afinidad con la estadística sobre la probabilidad de aprobar.
+
+### Formulación del modelo
+
+El modelo Logit se puede expresar como:
+
+$\log\left(\frac{P(\text{aprueba}=1)}{1 - P(\text{aprueba}=1)}\right) =$
+
+$f(\text{horas\_estudio},\text{asistencia},\text{participacion},\text{uso\_de\_R},\text{trabajos\_entregados},\text{afinidad\_estadistica})$
+
+Donde:
+
+- El término del lado izquierdo representa el **logaritmo de las odds** de aprobar.  
+- Los coeficientes \(\beta_j\) indican cómo cambia el log-odds de aprobar ante un cambio unitario en cada variable.
+
+
+
+### Estimación en R
+
+Usaremos la función `glm()` (Generalized Linear Model) especificando `family = binomial(link = "logit")` para estimar el modelo logístico.
+
+```{webr-r}
+# Estimar el modelo logit
+modelo_logit <- glm(aprueba ~ horas_estudio + asistencia + participacion + 
+                      uso_de_R + trabajos_entregados + afinidad_estadistica,
+                    data = datos,
+                    family = binomial(link = "logit"))
+
+# Resumen general
+summary(modelo_logit)
+```
+
+::: callout-note
+**Interpretación inicial:** Un coeficiente positivo indica que un aumento en la variable incrementa la probabilidad de aprobar, mientras que un coeficiente negativo la reduce. Sin embargo, los valores de los coeficientes están en escala log-odds, por lo que deben transformarse para interpretarse como odds ratios.
+:::
+
+### Interpretación de coeficientes
+
+Para obtener una interpretación más intuitiva, transformamos los coeficientes mediante la exponenciación:
+
+\text{odds ratio} = e^{\beta_j} 
+
+Un odds ratio mayor a 1 indica que un aumento en la variable incrementa la probabilidad de aprobar, mientras que un valor menor a 1 indica que la reduce.
+
+```{webr-r}
+# 1. Extraemos los resultados del modelo en formato ordenado usando broom::tidy()
+r_logit_1 <- tidy(modelo_logit)
+head(r_logit_1)
+```
+
+```{webr-r}
+# 2. Creamos una nueva columna 'odds_ratio' aplicando la función exponencial a los coeficientes
+#    Esto convierte los coeficientes en términos de cambio multiplicativo en las odds
+r_logit_2 <- mutate(r_logit_1, odds_ratio = exp(estimate))
+head(r_logit_2)
+```
+
+```{webr-r}
+# 3. Seleccionamos únicamente las columnas de interés:
+#    - term: nombre de la variable
+#    - estimate: coeficiente estimado (log-odds)
+#    - odds_ratio: razón de probabilidades
+#    - p.value: nivel de significancia estadística
+r_logit_3 <- select(r_logit_2, term, estimate, odds_ratio, p.value)
+
+# 4. Mostramos la tabla final con resultados listos para interpretación
+r_logit_3
+```
+
+::: callout-tip
+**Ejemplo de interpretación:** Si el odds ratio de horas_estudio es 1.3, significa que por cada hora adicional de estudio, las probabilidades de aprobar el curso se incrementan en un 30%, manteniendo las demás variables constantes.
+:::
+
+### Predicciones y evaluación del modelo
+
+Una vez estimado el modelo, podemos calcular la probabilidad predicha de aprobar para cada estudiante y evaluar el desempeño del modelo utilizando una matriz de confusión.
+
+```{webr-r}
+# Predicciones
+datos <- mutate(datos , prob_predicha = predict(modelo_logit, type = "response"),
+                aprueba_pred = if_else(prob_predicha > 0.5, 1, 0))
+
+# Matriz de confusión
+table(Prediccion = datos$aprueba_pred, Real = datos$aprueba)
+```
+
+::: callout-note
+El umbral de decisión (0.5) puede ajustarse según la aplicación práctica. Por ejemplo, si se desea identificar con mayor precisión a los estudiantes en riesgo de reprobar, podría usarse un umbral menor.
+:::
+
+### Visualización de resultados
+
+Finalmente, podemos representar la relación entre la probabilidad predicha de aprobar y alguna variable explicativa, como las horas de estudio.
+
+```{webr-r}
+geom_point(alpha = 0.4, color = "steelblue") +
+geom_smooth(method = "loess", se = FALSE, color = "black") +
+labs(title = "Probabilidad predicha de aprobar según horas de estudio",
+     x = "Horas de estudio por semana",
+     y = "Probabilidad estimada de aprobar") +
+theme_minimal()
+```
+  
+::: callout-tip
+**Interpretación visual:**
+La curva creciente refleja la naturaleza no lineal del modelo Logit. A medida que aumentan las horas de estudio, la probabilidad de aprobar se incrementa, pero a un ritmo decreciente: los beneficios marginales de estudiar más disminuyen.
+:::
+
+# Actividad en Clase
+
+## Instrucciones:
+
+1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).
+2. Observe los resultados obtenidos, especialmente las reglas de asociación generadas y sus métricas (soporte, confianza y lift).
+3. Genere un documento en **Word (.docx)** donde:
+   - Copie las preguntas que aparecen a continuación.
+   - Redacte sus interpretaciones y conclusiones con base en los resultados.
+   - **No copie el código ni las tablas**, solo redacte sus respuestas.
+4. Suba su documento a la plataforma **Intu**.
+
+```{webr-r}
+## Cargar datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r")
+
+## Crear objeto transaccional
+transa <- as(ventas, "transactions")
+
+## Generar reglas de asociación con umbrales iniciales
+reglas <- apriori(transa,
+                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))
+
+## Inspeccionar las primeras reglas encontradas
+inspect(head(reglas))
+```
+
+## Preguntas de interpretación:
+
+### Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:
+	•	¿Cuál de las reglas observadas consideras más relevante para el supermercado y por qué?
+	•	Interpreta en tus propias palabras la siguiente regla: `{Frutas} ⇒ {Azúcar}`
+	•	¿Qué nos dice sobre el comportamiento del consumidor?
+	•	¿Cómo podrías aprovechar esta información para proponer una promoción o disposición de góndolas?
+
+### Evaluación de la fuerza de asociación:
+	•	La regla {Mantequilla, Verduras} ⇒ {Queso} tiene una confianza del 0.588 y un lift de 1.47.
+	•	¿Cómo interpretarías esta relación?
+	•	¿Qué tan fuerte consideras la asociación?
+	•	¿Qué acción comercial podría sugerirse?
+
+### Análisis crítico:
+	•	Si el análisis se basara únicamente en datos de un mes de ventas, ¿qué limitaciones tendría la interpretación?
+	•	¿Qué otros factores o variables te gustaría incluir para obtener reglas más informativas (por ejemplo, tipo de cliente, día de la semana, temporada)?
+	•	Menciona un caso fuera del comercio minorista donde el análisis de reglas de asociación pueda ser útil (por ejemplo, en banca, educación o salud).
+
+::: callout-tip
+💡 Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 12 — Reglas de Asociación.
+:::
+
+
+
+
+
+

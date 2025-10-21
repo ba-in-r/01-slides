@@ -8,7 +8,7 @@
 
 <meta name="author" content="Eduard F. Martínez González">
 
-<title>Unidad 8 — Análisis de Canasta de Mercado</title>
+<title>Unidad 9 — Clasificación</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,17 +24,17 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="week-12_files/libs/clipboard/clipboard.min.js"></script>
-<script src="week-12_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="week-12_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="week-12_files/libs/quarto-html/popper.min.js"></script>
-<script src="week-12_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="week-12_files/libs/quarto-html/anchor.min.js"></script>
-<link href="week-12_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="week-12_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="week-12_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="week-12_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="week-12_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="week-13_files/libs/clipboard/clipboard.min.js"></script>
+<script src="week-13_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="week-13_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="week-13_files/libs/quarto-html/popper.min.js"></script>
+<script src="week-13_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="week-13_files/libs/quarto-html/anchor.min.js"></script>
+<link href="week-13_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="week-13_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="week-13_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="week-13_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="week-13_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/editor/editor.main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
@@ -313,7 +313,7 @@ iframe.qwebr-output-code-browse {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['tidyverse', 'arules', 'arulesViz'];
+globalThis.qwebrInstallRPackagesList = ['tidyverse', 'broom'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## instalar\ninstall.packages(\"arules\")\ninstall.packages(\"arulesViz\")\n\n## Cargar paquetes\nlibrary(tidyverse)   # Manipulación y transformación de datos\nlibrary(arules)      # Construcción y análisis de redes\nlibrary(arulesViz)      # Visualización avanzada de grafos\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## chuequear objeto\nventas[1:5]","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## class\nclass(ventas)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Conversión directa de la lista al formato transaccional\ntransa <- as(ventas, \"transactions\")\n\n## print\nprint(\"Listo!\")","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Resumen del objeto transaccional\nsummary(transa)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Visualizar las primeras transacciones\ninspect(head(transa, 5))","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Generar reglas de asociación\nreglas <- apriori(transa,\n                  parameter = list(supp=0.1 , conf=0.3 , minlen=2))","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Generar reglas de asociación\nreglas <- apriori(transa,\n                  parameter = list(supp=0.1 , conf=0.55 , minlen=2))","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Inspeccionar las primeras reglas\ninspect(head(reglas))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Identificar reglas redundantes\nreglas.reduntantes <- is.redundant(reglas)\n\n## Mostrar las reglas redundantes detectadas\ninspect(reglas[reglas.reduntantes])","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Eliminar reglas redundantes\nreglas <- reglas[!reglas.reduntantes]\ninspect(reglas)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ver resumen de reglas\nplot(reglas, measure = c(\"support\", \"confidence\"), shading = \"lift\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Cargar datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## Crear objeto transaccional\ntransa <- as(ventas, \"transactions\")\n\n## Generar reglas de asociación con umbrales iniciales\nreglas <- apriori(transa,\n                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))\n\n## Inspeccionar las primeras reglas encontradas\ninspect(head(reglas))","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\ninstall.packages(\"tidyverse\")\ninstall.packages(\"broom\")\n\n## Cargar librerías\nlibrary(tidyverse)  # Manipulación y visualización de datos\nlibrary(broom)      # Para resumir resultados de modelos\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## chuequear objeto\nventas[1:5]","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"# Estimar el modelo logit\nmodelo_logit <- glm(aprueba ~ horas_estudio + asistencia + participacion + \n                      uso_de_R + trabajos_entregados + afinidad_estadistica,\n                    data = datos,\n                    family = binomial(link = \"logit\"))\n\n# Resumen general\nsummary(modelo_logit)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 1. Extraemos los resultados del modelo en formato ordenado usando broom::tidy()\nr_logit_1 <- tidy(modelo_logit)\nhead(r_logit_1)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 2. Creamos una nueva columna 'odds_ratio' aplicando la función exponencial a los coeficientes\n#    Esto convierte los coeficientes en términos de cambio multiplicativo en las odds\nr_logit_2 <- mutate(r_logit_1, odds_ratio = exp(estimate))\nhead(r_logit_2)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 3. Seleccionamos únicamente las columnas de interés:\n#    - term: nombre de la variable\n#    - estimate: coeficiente estimado (log-odds)\n#    - odds_ratio: razón de probabilidades\n#    - p.value: nivel de significancia estadística\nr_logit_3 <- select(r_logit_2, term, estimate, odds_ratio, p.value)\n\n# 4. Mostramos la tabla final con resultados listos para interpretación\nr_logit_3","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Predicciones\ndatos <- mutate(datos , prob_predicha = predict(modelo_logit, type = \"response\"),\n                aprueba_pred = if_else(prob_predicha > 0.5, 1, 0))\n\n# Matriz de confusión\ntable(Prediccion = datos$aprueba_pred, Real = datos$aprueba)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"geom_point(alpha = 0.4, color = \"steelblue\") +\ngeom_smooth(method = \"loess\", se = FALSE, color = \"black\") +\nlabs(title = \"Probabilidad predicha de aprobar según horas de estudio\",\n     x = \"Horas de estudio por semana\",\n     y = \"Probabilidad estimada de aprobar\") +\ntheme_minimal()","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Cargar datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## Crear objeto transaccional\ntransa <- as(ventas, \"transactions\")\n\n## Generar reglas de asociación con umbrales iniciales\nreglas <- apriori(transa,\n                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))\n\n## Inspeccionar las primeras reglas encontradas\ninspect(head(reglas))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1630,23 +1630,26 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#análisis-de-canasta-de-mercado" id="toc-análisis-de-canasta-de-mercado" class="nav-link active" data-scroll-target="#análisis-de-canasta-de-mercado"><span class="header-section-number">1</span> Análisis de Canasta de Mercado</a>
+  <li><a href="#qué-es-un-problema-de-clasificación" id="toc-qué-es-un-problema-de-clasificación" class="nav-link active" data-scroll-target="#qué-es-un-problema-de-clasificación"><span class="header-section-number">1</span> ¿Qué es un problema de clasificación?</a>
   <ul class="collapse">
-  <li><a href="#conceptos-clave" id="toc-conceptos-clave" class="nav-link" data-scroll-target="#conceptos-clave"><span class="header-section-number">1.1</span> Conceptos clave</a></li>
-  <li><a href="#aplicaciones-típicas" id="toc-aplicaciones-típicas" class="nav-link" data-scroll-target="#aplicaciones-típicas"><span class="header-section-number">1.2</span> Aplicaciones típicas</a></li>
+  <li><a href="#limitaciones-del-modelo-lineal-clásico" id="toc-limitaciones-del-modelo-lineal-clásico" class="nav-link" data-scroll-target="#limitaciones-del-modelo-lineal-clásico"><span class="header-section-number">1.1</span> Limitaciones del modelo lineal clásico</a></li>
+  <li><a href="#el-modelo-logit" id="toc-el-modelo-logit" class="nav-link" data-scroll-target="#el-modelo-logit"><span class="header-section-number">1.2</span> El Modelo Logit</a></li>
+  <li><a href="#odds-y-log-odds-intuición-práctica" id="toc-odds-y-log-odds-intuición-práctica" class="nav-link" data-scroll-target="#odds-y-log-odds-intuición-práctica"><span class="header-section-number">1.3</span> Odds y log-odds: intuición práctica</a></li>
+  <li><a href="#interpretación-de-los-coeficientes" id="toc-interpretación-de-los-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-los-coeficientes"><span class="header-section-number">1.4</span> Interpretación de los coeficientes</a></li>
+  <li><a href="#evaluación-del-modelo" id="toc-evaluación-del-modelo" class="nav-link" data-scroll-target="#evaluación-del-modelo"><span class="header-section-number">1.5</span> Evaluación del modelo</a></li>
+  <li><a href="#aplicaciones-en-business-analytics" id="toc-aplicaciones-en-business-analytics" class="nav-link" data-scroll-target="#aplicaciones-en-business-analytics"><span class="header-section-number">1.6</span> Aplicaciones en Business Analytics</a></li>
   </ul></li>
   <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2</span> Aplicación en R</a>
   <ul class="collapse">
   <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</a></li>
   <li><a href="#ingesta-de-datos" id="toc-ingesta-de-datos" class="nav-link" data-scroll-target="#ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</a></li>
-  <li><a href="#conversión-al-formato-transaccional" id="toc-conversión-al-formato-transaccional" class="nav-link" data-scroll-target="#conversión-al-formato-transaccional"><span class="header-section-number">2.3</span> Conversión al formato transaccional</a></li>
-  <li><a href="#reglas-de-asociación" id="toc-reglas-de-asociación" class="nav-link" data-scroll-target="#reglas-de-asociación"><span class="header-section-number">2.4</span> Reglas de asociación</a>
+  <li><a href="#estimación-del-modelo-logit" id="toc-estimación-del-modelo-logit" class="nav-link" data-scroll-target="#estimación-del-modelo-logit"><span class="header-section-number">2.3</span> Estimación del Modelo Logit</a>
   <ul class="collapse">
-  <li><a href="#métricas-principales" id="toc-métricas-principales" class="nav-link" data-scroll-target="#métricas-principales"><span class="header-section-number">2.4.1</span> Métricas principales</a></li>
-  <li><a href="#obtener-las-métricas" id="toc-obtener-las-métricas" class="nav-link" data-scroll-target="#obtener-las-métricas"><span class="header-section-number">2.4.2</span> Obtener las métricas</a></li>
-  <li><a href="#generación-de-reglas-más-sólidas" id="toc-generación-de-reglas-más-sólidas" class="nav-link" data-scroll-target="#generación-de-reglas-más-sólidas"><span class="header-section-number">2.4.3</span> Generación de reglas más sólidas</a></li>
-  <li><a href="#reglas-redundantes" id="toc-reglas-redundantes" class="nav-link" data-scroll-target="#reglas-redundantes"><span class="header-section-number">2.4.4</span> Reglas redundantes</a></li>
-  <li><a href="#plotear-las-reglas" id="toc-plotear-las-reglas" class="nav-link" data-scroll-target="#plotear-las-reglas"><span class="header-section-number">2.4.5</span> Plotear las reglas</a></li>
+  <li><a href="#formulación-del-modelo" id="toc-formulación-del-modelo" class="nav-link" data-scroll-target="#formulación-del-modelo"><span class="header-section-number">2.3.1</span> Formulación del modelo</a></li>
+  <li><a href="#estimación-en-r" id="toc-estimación-en-r" class="nav-link" data-scroll-target="#estimación-en-r"><span class="header-section-number">2.3.2</span> Estimación en R</a></li>
+  <li><a href="#interpretación-de-coeficientes" id="toc-interpretación-de-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-coeficientes"><span class="header-section-number">2.3.3</span> Interpretación de coeficientes</a></li>
+  <li><a href="#predicciones-y-evaluación-del-modelo" id="toc-predicciones-y-evaluación-del-modelo" class="nav-link" data-scroll-target="#predicciones-y-evaluación-del-modelo"><span class="header-section-number">2.3.4</span> Predicciones y evaluación del modelo</a></li>
+  <li><a href="#visualización-de-resultados" id="toc-visualización-de-resultados" class="nav-link" data-scroll-target="#visualización-de-resultados"><span class="header-section-number">2.3.5</span> Visualización de resultados</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">3</span> Actividad en Clase</a>
@@ -1950,8 +1953,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unidad 8 — Análisis de Canasta de Mercado</h1>
-<p class="subtitle lead">Semana 12: Reglas de Asociación</p>
+<h1 class="title">Unidad 9 — Clasificación</h1>
+<p class="subtitle lead">Semana 12: Modelo Logit</p>
 </div>
 
 
@@ -1978,56 +1981,197 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p><a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"> eduard-martinez</a></p>
 <p><a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"> <span class="citation" data-cites="emartigo">@emartigo</span></a></p>
 <p><a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"> https://eduard-martinez.github.io</a></p>
-<section id="análisis-de-canasta-de-mercado" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Análisis de Canasta de Mercado</h1>
-<p>El <strong>análisis de canasta de mercado</strong> (Market Basket Analysis) es un conjunto de técnicas de <strong>minería de datos</strong> utilizadas para descubrir asociaciones entre productos comprados por los clientes.</p>
-<p>Es una herramienta fundamental en <strong>retail analytics</strong>, ya que permite a los minoristas identificar patrones de consumo, mejorar la disposición de productos, diseñar promociones cruzadas y aumentar las ventas.</p>
-<section id="conceptos-clave" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="conceptos-clave"><span class="header-section-number">1.1</span> Conceptos clave</h2>
-<p>Este análisis pertenece a la tarea de <strong>asociación</strong>, un tipo de <strong>aprendizaje no supervisado</strong> que busca identificar <strong>patrones frecuentes de co-ocurrencia</strong> entre ítems dentro de transacciones (también conocidas como <em>tirillas de compra</em> o <em>tickets de venta</em>).</p>
+<section id="qué-es-un-problema-de-clasificación" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> ¿Qué es un problema de clasificación?</h1>
+<p><img src="clasfication-gif.gif" class="img-fluid"></p>
+<p>En <em>Business Analytics</em>, los modelos de <strong>clasificación</strong> se utilizan cuando la <strong>variable de respuesta es categórica</strong> (por ejemplo, <em>acepta/no acepta</em>, <em>fraude/no fraude</em>, <em>compra/no compra</em>).<br>
+El objetivo es <strong>asignar observaciones a categorías</strong> con base en sus características observadas.</p>
+<p><strong>Ejemplos típicos:</strong></p>
 <ul>
-<li><p><strong>Antecedente:</strong> producto o conjunto de productos que provocan la compra de otros. Ejemplo: <code>{Leche} → {Pan}</code></p>
-<p>→ Si un cliente compra leche, es probable que también compre pan.</p></li>
-<li><p><strong>Consecuente:</strong> producto que resulta asociado al antecedente.<br>
-En el ejemplo anterior, el <em>pan</em> es el consecuente.</p></li>
+<li>Determinar si un cliente pagará su crédito o caerá en mora.<br>
+</li>
+<li>Identificar si una transacción es legítima o fraudulenta.<br>
+</li>
+<li>Predecir si un estudiante aprobará o no un curso.<br>
+</li>
+<li>Clasificar correos en “spam” o “no spam”.</li>
 </ul>
+<section id="limitaciones-del-modelo-lineal-clásico" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="limitaciones-del-modelo-lineal-clásico"><span class="header-section-number">1.1</span> Limitaciones del modelo lineal clásico</h2>
+<p>La <strong>regresión lineal</strong> no es apropiada para variables dicotómicas porque:</p>
+<ul>
+<li>Predice valores continuos fuera del rango [0,1].<br>
+</li>
+<li>Asume una relación lineal entre las variables explicativas y la probabilidad.<br>
+</li>
+<li>Viola la homocedasticidad y la normalidad de los errores.</li>
+</ul>
+<p><strong>Solución:</strong> usar un modelo que prediga directamente <strong>probabilidades entre 0 y 1</strong>: el <strong>Modelo Logit</strong>.</p>
 </section>
-<section id="aplicaciones-típicas" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="aplicaciones-típicas"><span class="header-section-number">1.2</span> Aplicaciones típicas</h2>
+<section id="el-modelo-logit" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="el-modelo-logit"><span class="header-section-number">1.2</span> El Modelo Logit</h2>
+<p>El modelo Logit relaciona las variables explicativas con la <strong>probabilidad de éxito</strong> ( P(Y=1) ) mediante una función no lineal llamada <strong>función logística</strong>:</p>
+<p>[ P(Y=1|X) = ]</p>
+<p>Esta transformación garantiza que las probabilidades estén siempre entre 0 y 1.</p>
+<p><strong>Interpretación:</strong> En lugar de modelar la probabilidad directamente, el Logit modela el <strong>logaritmo de las odds (razón de probabilidades):</strong></p>
+<p>[ () = _0 + _1 X_1 + + _k X_k ]</p>
+<p>Cada coeficiente (_j) indica cómo cambia el <strong>log-odds</strong> de éxito cuando (X_j) aumenta en una unidad.</p>
+</section>
+<section id="odds-y-log-odds-intuición-práctica" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="odds-y-log-odds-intuición-práctica"><span class="header-section-number">1.3</span> Odds y log-odds: intuición práctica</h2>
 <ul>
-<li><strong>Comercio minorista:</strong> identificar productos que se venden juntos (leche y cereales).<br>
-</li>
-<li><strong>Marketing digital:</strong> recomendaciones tipo “los clientes que compraron este producto también compraron…”.<br>
-</li>
-<li><strong>Bancos:</strong> detección de co-uso de productos financieros (cuenta de ahorros + tarjeta).<br>
-</li>
-<li><strong>Streaming:</strong> recomendación de contenidos según consumo conjunto.</li>
+<li><p><strong>Odds (razón de probabilidades):</strong> [ = ] Ejemplo: si (P=0.8), las odds son 4 a 1.</p></li>
+<li><p><strong>Log-odds:</strong> logaritmo natural de las odds.<br>
+El modelo Logit asume que estas log-odds varían linealmente con las variables explicativas.</p></li>
 </ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Nota:</strong><br>
+Las <em>odds</em> comparan la probabilidad de éxito frente a la de fracaso.<br>
+El logaritmo convierte esta razón en una escala continua, lo que permite aplicar un modelo lineal.</p>
+</div>
+</div>
+</section>
+<section id="interpretación-de-los-coeficientes" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="interpretación-de-los-coeficientes"><span class="header-section-number">1.4</span> Interpretación de los coeficientes</h2>
+<p>Cada parámetro (_j) se interpreta como el cambio en el log-odds de éxito por un aumento unitario en (X_j).</p>
+<ul>
+<li>Si ( _j &gt; 0 ): (X_j) aumenta la probabilidad de éxito.<br>
+</li>
+<li>Si ( _j &lt; 0 ): (X_j) reduce la probabilidad de éxito.</li>
+</ul>
+<p>Para una interpretación más intuitiva se usa el **odds ratio (e^{_j})<strong>, que indica </strong>cuánto se multiplican las odds** al aumentar (X_j) en una unidad.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Ejemplo interpretativo:</strong><br>
+Si (e^{_1} = 1.5), un aumento de una unidad en (X_1) incrementa las probabilidades de éxito en un <strong>50 %</strong>.</p>
+</div>
+</div>
+</section>
+<section id="evaluación-del-modelo" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="evaluación-del-modelo"><span class="header-section-number">1.5</span> Evaluación del modelo</h2>
+<p>Las métricas más comunes para evaluar modelos de clasificación incluyen:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Métrica</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Exactitud (Accuracy)</strong></td>
+<td>Proporción de predicciones correctas sobre el total.</td>
+</tr>
+<tr class="even">
+<td><strong>Sensibilidad (Recall)</strong></td>
+<td>Capacidad del modelo para identificar correctamente los casos positivos.</td>
+</tr>
+<tr class="odd">
+<td><strong>Especificidad</strong></td>
+<td>Capacidad del modelo para identificar correctamente los casos negativos.</td>
+</tr>
+<tr class="even">
+<td><strong>Precisión (Precision)</strong></td>
+<td>Proporción de verdaderos positivos entre todos los positivos predichos.</td>
+</tr>
+<tr class="odd">
+<td><strong>F1-Score</strong></td>
+<td>Media armónica entre precisión y sensibilidad.</td>
+</tr>
+<tr class="even">
+<td><strong>AUC-ROC</strong></td>
+<td>Evalúa la capacidad del modelo para distinguir entre clases.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Matriz de confusión:</strong><br>
+Muestra cómo el modelo clasifica los casos reales en comparación con los predichos.<br>
+Permite calcular todas las métricas anteriores.</p>
+</div>
+</div>
+</section>
+<section id="aplicaciones-en-business-analytics" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="aplicaciones-en-business-analytics"><span class="header-section-number">1.6</span> Aplicaciones en Business Analytics</h2>
+<ul>
+<li><strong>Banca y microfinanzas:</strong> modelos de <em>credit scoring</em> (probabilidad de incumplimiento).<br>
+</li>
+<li><strong>Marketing:</strong> predicción de cancelaciones o <em>churn</em>.<br>
+</li>
+<li><strong>Salud:</strong> diagnóstico temprano (presencia o ausencia de enfermedad).<br>
+</li>
+<li><strong>Recursos Humanos:</strong> predicción de rotación laboral o desempeño.</li>
+</ul>
+<p><strong>Idea clave:</strong></p>
+<p>El modelo Logit permite traducir características observables en <strong>probabilidades de ocurrencia de un evento</strong>,<br>
+facilitando la <strong>toma de decisiones basada en riesgo</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Resumen:</strong><br>
+El modelo Logit es el punto de partida de la analítica predictiva moderna. Permite estimar probabilidades y clasificar observaciones en grupos, combinando interpretabilidad y rigor estadístico.</p>
+</div>
+</div>
+<hr>
 </section>
 </section>
 <section id="aplicación-en-r" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Aplicación en R</h1>
-<p>Para ilustrar el <strong>análisis de canasta de mercado</strong>, trabajaremos con un conjunto de transacciones que representa las <strong>compras realizadas por los clientes de un supermercado</strong> durante un periodo determinado.<br>
-Cada transacción contiene uno o más productos adquiridos en la misma compra, lo que nos permitirá identificar <strong>patrones de asociación</strong> entre ellos.</p>
+<p>Para ilustrar el uso de los <strong>modelos de clasificación</strong>, trabajaremos con una base sintética que representa a <strong>estudiantes inscritos en un curso universitario</strong>. Cada registro contiene información sobre el comportamiento académico y el desempeño del estudiante a lo largo del semestre, lo que nos permitirá <strong>estimar la probabilidad de aprobar el curso</strong> y analizar los factores que más influyen en ese resultado.</p>
 <p>En este contexto:</p>
 <ul>
-<li>Cada <strong>ítem</strong> corresponde a un producto individual.<br>
+<li>Cada <strong>observación</strong> corresponde a un estudiante.<br>
 </li>
-<li>Cada <strong>transacción</strong> agrupa los productos comprados por un mismo cliente.<br>
+<li>La <strong>variable dependiente</strong> es binaria: <code>aprueba</code> (1 = aprueba, 0 = reprueba).<br>
 </li>
-<li>El objetivo es descubrir <strong>reglas del tipo</strong>:<br>
-<code>{Leche} → {Pan}</code> e interpreta como:<br>
-<em>“Los clientes que compran leche y pan tienden también a comprar mantequilla.”</em></li>
+<li>Las <strong>variables explicativas</strong> describen aspectos como el número de horas de estudio, la asistencia, la participación y la afinidad con la estadística.</li>
 </ul>
-<p>A partir de este ejercicio podremos responder preguntas como:</p>
+<p>El objetivo es construir un <strong>modelo Logit</strong> que nos permita responder preguntas como:</p>
 <ul>
-<li>¿Qué productos suelen comprarse juntos con mayor frecuencia?<br>
+<li>¿Qué factores aumentan la probabilidad de aprobar el curso?<br>
 </li>
-<li>¿Qué asociaciones son más fuertes en términos de confianza y soporte?<br>
+<li>¿Cómo se interpreta el efecto de cada variable en términos de <em>odds ratio</em>?<br>
 </li>
-<li>¿Qué reglas podrían usarse para diseñar promociones o estrategias de recomendación?</li>
+<li>¿Qué tan bien puede el modelo predecir los resultados académicos?</li>
 </ul>
-<p>Este tipo de análisis tiene múltiples aplicaciones prácticas en <strong>marketing, retail y comportamiento del consumidor</strong>, y se basa en los mismos principios de aprendizaje no supervisado que utilizamos en técnicas como clustering o análisis de redes.</p>
+<p>Este tipo de análisis es una herramienta clave en <strong>Business Analytics</strong>, ya que permite tomar decisiones basadas en datos —por ejemplo, identificar estudiantes en riesgo académico, diseñar estrategias de acompañamiento o evaluar la efectividad de las metodologías de enseñanza.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2044,7 +2188,9 @@ Puedes ejecutar los <em>chunks</em> de R directamente en el navegador gracias a 
 </div>
 <section id="preparación-del-entorno" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</h2>
-<p>El propósito de este bloque es asegurar un entorno <strong>limpio, reproducible y funcional</strong> antes de iniciar el análisis. Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la <strong>manipulación de datos</strong>, la <strong>construcción de transacciones</strong> y la <strong>generación de reglas de asociación</strong>. Con esto, dejamos el entorno preparado para comenzar el análisis de canasta de mercado.</p>
+<p>El propósito de este bloque es asegurar un entorno <strong>limpio, reproducible y funcional</strong> antes de iniciar el análisis.<br>
+Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la <strong>manipulación de datos</strong>, la <strong>visualización</strong> y la <strong>estimación del modelo Logit</strong>.</p>
+<p>Con esto, dejamos el entorno preparado para comenzar el análisis aplicado.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2057,33 +2203,37 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Los paquetes <code>arules</code> y <code>arulesViz</code> pertenecen al ecosistema de data mining en R. • <code>arules</code> permite aplicar el algoritmo Apriori, que identifica combinaciones frecuentes de productos. • <code>arulesViz</code> facilita la visualización interactiva de las reglas y sus métricas (soporte, confianza y lift).</p>
+<p>Los paquetes <code>tidyverse</code> y <code>broom</code> son parte del ecosistema de análisis de datos en R: • <code>tidyverse</code> permite transformar y visualizar datos de manera eficiente. • <code>broom</code> facilita la conversión de resultados de modelos estadísticos en tablas ordenadas y listas para interpretar.</p>
 </div>
 </div>
 </section>
 <section id="ingesta-de-datos" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</h2>
-<p>En esta sección realizamos la <strong>ingesta de datos</strong>, es decir, el proceso de cargar o generar la base que utilizaremos para construir la <strong>canasta de mercado</strong>. Cada registro representa una <strong>transacción individual</strong>, es decir, el conjunto de productos que un cliente compró en una misma visita al supermercado. Nuestro objetivo será analizar estos datos para descubrir <strong>patrones de compra conjunta</strong> y <strong>reglas de asociación</strong> entre productos.</p>
-<p>La estructura de datos es la siguiente:</p>
-<ul>
-<li><p>Cada <strong>ítem</strong> corresponde a un producto (por ejemplo: <em>Leche</em>, <em>Pan</em>, <em>Huevos</em>).<br>
-</p></li>
-<li><p>Cada <strong>transacción</strong> es una lista de productos comprados juntos.</p></li>
-<li><p>El <strong>conjunto de todas las transacciones</strong> conforma la base que usaremos para aplicar el algoritmo <em>Apriori</em> y encontrar asociaciones significativas.</p></li>
-</ul>
+<p>En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo Logit. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.</p>
+<p>La estructura de los datos es la siguiente: • horas_estudio: promedio semanal de horas dedicadas al curso. • asistencia: porcentaje de asistencia a clase. • participacion: nivel de participación en clase (0–100). • uso_de_R: nivel de dominio de R (1–5). • trabajos_entregados: cantidad de trabajos entregados (0–5). • afinidad_estadistica: gusto por la estadística (0–100). • aprueba: resultado final (1 = aprueba, 0 = reprueba). • retira: indica si el estudiante se retiró del curso antes de finalizar (1 = sí, 0 = no).</p>
+<p>Nuestro objetivo será estimar cómo cada una de estas variables influye en la probabilidad de aprobar el curso.</p>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Cada elemento de la lista ventas representa una compra única: un conjunto de productos adquiridos por un cliente. Por ejemplo:</p>
-<p>Esto significa que:</p>
-<pre><code>•   En la transacción 1, el cliente compró mantequilla, pan, queso y verduras. 
-•   En la transacción 2, compró cereal, queso, leche, pan, mantequilla y huevos.</code></pre>
-<p>Esta estructura servirá como punto de partida para convertir las listas en objetos transaccionales y aplicar el algoritmo Apriori, que nos permitirá descubrir qué productos se compran juntos con mayor frecuencia.</p>
 </section>
-<section id="conversión-al-formato-transaccional" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="conversión-al-formato-transaccional"><span class="header-section-number">2.3</span> Conversión al formato transaccional</h2>
-<p>Antes de aplicar técnicas de análisis de cesta de mercado, es fundamental que los datos se encuentren en un formato adecuado para este tipo de estudio. En particular, los algoritmos de reglas de asociación, como Apriori o Eclat, requieren que la información esté organizada en formato transaccional, donde cada observación representa una transacción individual y contiene el conjunto de ítems comprados conjuntamente.</p>
-<p>Para lograr esto, se deben agrupar los productos por el identificador de la transacción (ID), de modo que cada registro muestre la lista de artículos adquiridos en una misma compra o canasta. En R, esta conversión puede realizarse fácilmente utilizando la función split(), que permite crear una lista de ítems por transacción. Posteriormente, dicha lista se transforma en un objeto de clase transactions, el cual es compatible con los paquetes de análisis de asociaciones como arules.</p>
-<p>A continuación, verificamos la estructura del objeto <code>ventas</code> para conocer su tipo de datos y asegurarnos de que puede convertirse correctamente al formato transaccional.</p>
+<section id="estimación-del-modelo-logit" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="estimación-del-modelo-logit"><span class="header-section-number">2.3</span> Estimación del Modelo Logit</h2>
+<p>En esta sección estimaremos un <strong>modelo Logit</strong> para predecir la probabilidad de que un estudiante <strong>apruebe el curso</strong>, utilizando las variables explicativas incluidas en la base de datos.</p>
+<p>El objetivo es cuantificar cómo influyen factores como las horas de estudio, la asistencia, la participación en clase o la afinidad con la estadística sobre la probabilidad de aprobar.</p>
+<section id="formulación-del-modelo" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="formulación-del-modelo"><span class="header-section-number">2.3.1</span> Formulación del modelo</h3>
+<p>El modelo Logit se puede expresar como:</p>
+<p><span class="math inline">\(\log\left(\frac{P(\text{aprueba}=1)}{1 - P(\text{aprueba}=1)}\right) =\)</span></p>
+<p><span class="math inline">\(f(\text{horas\_estudio},\text{asistencia},\text{participacion},\text{uso\_de\_R},\text{trabajos\_entregados},\text{afinidad\_estadistica})\)</span></p>
+<p>Donde:</p>
+<ul>
+<li>El término del lado izquierdo representa el <strong>logaritmo de las odds</strong> de aprobar.<br>
+</li>
+<li>Los coeficientes (_j) indican cómo cambia el log-odds de aprobar ante un cambio unitario en cada variable.</li>
+</ul>
+</section>
+<section id="estimación-en-r" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="estimación-en-r"><span class="header-section-number">2.3.2</span> Estimación en R</h3>
+<p>Usaremos la función <code>glm()</code> (Generalized Linear Model) especificando <code>family = binomial(link = "logit")</code> para estimar el modelo logístico.</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2096,188 +2246,72 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>En este caso, el objeto se presenta como una lista, lo que significa que cada elemento ya corresponde a una transacción (es decir, un conjunto de ítems comprados juntos). Por tanto, no es necesario aplicar la función split(), ya que los datos ya están organizados en el formato requerido.</p>
+<p><strong>Interpretación inicial:</strong> Un coeficiente positivo indica que un aumento en la variable incrementa la probabilidad de aprobar, mientras que un coeficiente negativo la reduce. Sin embargo, los valores de los coeficientes están en escala log-odds, por lo que deben transformarse para interpretarse como odds ratios.</p>
 </div>
 </div>
-<p>Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función <code>as()</code> del paquete <code>arules.</code> Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.</p>
+</section>
+<section id="interpretación-de-coeficientes" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="interpretación-de-coeficientes"><span class="header-section-number">2.3.3</span> Interpretación de coeficientes</h3>
+<p>Para obtener una interpretación más intuitiva, transformamos los coeficientes mediante la exponenciación:</p>
+<p> = e^{_j}</p>
+<p>Un odds ratio mayor a 1 indica que un aumento en la variable incrementa la probabilidad de aprobar, mientras que un valor menor a 1 indica que la reduce.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de <code>transa</code>, como el número total de ítems y transacciones.</p>
 <div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>El resumen muestra que el conjunto de datos contiene <code>100</code> transacciones y <code>10</code> productos únicos, almacenados en una matriz dispersa (sparse matrix). La densidad de <code>0.401</code> indica que, en promedio, cada compra incluye unos cuatro productos, lo cual coincide con la distribución de tamaños de las canastas. Los ítems más frecuentes son <code>Azúcar</code>, <code>Café</code>, <code>Cereal</code>, <code>Frutas</code> y <code>Mantequilla</code>, que aparecen en la mayoría de las transacciones y probablemente formarán parte de las reglas más relevantes en el análisis posterior.</p>
-<p>Una vez confirmada la estructura del objeto, inspeccionamos las primeras transacciones para observar cómo están representadas internamente dentro del formato <code>transactions.</code></p>
 <div id="qwebr-insertion-location-6"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
-<section id="reglas-de-asociación" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="reglas-de-asociación"><span class="header-section-number">2.4</span> Reglas de asociación</h2>
-<p>Con el objeto <code>transa</code> ya creado, podemos comenzar a descubrir patrones de compra aplicando la función <code>apriori()</code> del paquete <code>arules</code>. Este algoritmo busca relaciones del tipo:</p>
-<p><code>{Producto A, Producto B} =&gt; {Producto C}</code></p>
-<p>que nos permiten identificar qué productos tienden a comprarse juntos dentro de las transacciones.</p>
-<p><strong>Estructura de una regla:</strong></p>
-<ul>
-<li><p><strong>LHS (Left Hand Side)</strong> → <em>Antecedente</em>: conjunto de productos que originan o influyen en la compra de otros.</p></li>
-<li><p><strong>RHS (Right Hand Side)</strong> → <em>Consecuente</em>: producto asociado al antecedente, es decir, el que se compra después o junto.</p></li>
-</ul>
-<p>Ejemplo: <code>{Leche, Pan} =&gt; {Mantequilla}</code></p>
-<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Note
+Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Interpretación:</strong> Los clientes que compran <em>Leche</em> y <em>Pan</em> tienden también a comprar <em>Mantequilla</em>. Esto sugiere una oportunidad de <em>promoción cruzada</em> o de <em>diseño estratégico de góndolas</em>.</p>
+<p><strong>Ejemplo de interpretación:</strong> Si el odds ratio de horas_estudio es 1.3, significa que por cada hora adicional de estudio, las probabilidades de aprobar el curso se incrementan en un 30%, manteniendo las demás variables constantes.</p>
 </div>
 </div>
-<section id="métricas-principales" class="level3" data-number="2.4.1">
-<h3 data-number="2.4.1" class="anchored" data-anchor-id="métricas-principales"><span class="header-section-number">2.4.1</span> Métricas principales</h3>
-<p><strong>Soporte (Support):</strong> Mide la frecuencia con que aparece un conjunto de ítems en todas las transacciones: <span class="math display">\[supp(Y) = \frac{freq(Y)}{N}\]</span></p>
-<p>Donde: <span class="math inline">\(freq(Y)\)</span> es el número de transacciones que contienen el conjunto <span class="math inline">\(Y\)</span> y <span class="math inline">\(N\)</span> es el número total de transacciones.</p>
-<p><strong>Confianza (Confidence):</strong> Mide la probabilidad de que el consecuente (RHS) sea comprado dado que el antecedente (LHS) fue comprado:</p>
-<p><span class="math display">\[conf(A \Rightarrow B) = \frac{supp(A \cup B)}{supp(A)}\]</span></p>
-<p><strong>Cobertura (Coverage):</strong> Número de veces que aparece el <strong>antecedente (LHS)</strong> en las transacciones. Representa el soporte del ítem que origina la regla.</p>
-<p><strong>Lift (Elevación):</strong> Evalúa la fuerza de la relación entre productos, comparando la frecuencia observada con la esperada si fueran independientes:</p>
-<p><span class="math display">\[lift(A \Rightarrow B) = \frac{conf(A \Rightarrow B)}{supp(B)}\]</span></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Interpretación:</strong> <span class="math inline">\(lift &gt; 1\)</span>: asociación positiva (la compra de A aumenta la probabilidad de comprar B). <span class="math inline">\(lift = 1\)</span>: independencia. <span class="math inline">\(lift &lt; 1\)</span>: asociación negativa (la compra de A reduce la probabilidad de comprar B).</p>
-</div>
-</div>
-<p><strong>Count:</strong> Número total de transacciones que cumplen la regla.</p>
 </section>
-<section id="obtener-las-métricas" class="level3" data-number="2.4.2">
-<h3 data-number="2.4.2" class="anchored" data-anchor-id="obtener-las-métricas"><span class="header-section-number">2.4.2</span> Obtener las métricas</h3>
-<p>La función <code>apriori()</code> utiliza una lista de parámetros para controlar cómo se generan las reglas. Estos parámetros se definen dentro de <code>parameter = list()</code>.</p>
-<p><strong>Support:</strong> Umbral mínimo de soporte. Es la proporción mínima de transacciones en las que debe aparecer una combinación de productos. <code>supp = 0.1</code> solo se considerarán combinaciones de productos que aparezcan en al menos 10 % de las transacciones (en este caso, 10 de las 100 compras).</p>
-<p><strong>Confidence:</strong> Nivel mínimo de confianza. Es la probabilidad de que el consecuente ocurra dado el antecedente. <code>conf = 0.3</code> las reglas deben cumplirse al menos en el 30 % de los casos en que se cumple el antecedente.</p>
-<p><strong>Minimum length:</strong> Longitud mínima de la regla (número de ítems involucrados). <code>minlen = 2</code> evita reglas triviales con un solo producto, asegurando que las reglas tengan al menos un antecedente y un consecuente.</p>
+<section id="predicciones-y-evaluación-del-modelo" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="predicciones-y-evaluación-del-modelo"><span class="header-section-number">2.3.4</span> Predicciones y evaluación del modelo</h3>
+<p>Una vez estimado el modelo, podemos calcular la probabilidad predicha de aprobar para cada estudiante y evaluar el desempeño del modelo utilizando una matriz de confusión.</p>
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Este objeto (reglas) contiene:</p>
-<pre><code>•   Los ítems involucrados.
-•   Las métricas (support, confidence, lift, count, etc.).
-•   El formato necesario para exploración y visualización.</code></pre>
-<p>Este resultado significa que:</p>
-<pre><code>•   El algoritmo analizó 100 compras que incluyen 10 productos diferentes.
-•   Aplicó los filtros definidos (soporte ≥ 0.1, confianza ≥ 0.3).
-•   Encontró 110 combinaciones de productos que cumplen esas condiciones.</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El umbral de decisión (0.5) puede ajustarse según la aplicación práctica. Por ejemplo, si se desea identificar con mayor precisión a los estudiantes en riesgo de reprobar, podría usarse un umbral menor.</p>
+</div>
+</div>
 </section>
-<section id="generación-de-reglas-más-sólidas" class="level3" data-number="2.4.3">
-<h3 data-number="2.4.3" class="anchored" data-anchor-id="generación-de-reglas-más-sólidas"><span class="header-section-number">2.4.3</span> Generación de reglas más sólidas</h3>
-<p>En este paso ajustamos los parámetros del algoritmo <em>Apriori</em> para obtener <em>reglas de asociación más precisas</em>, es decir, aquellas que representan relaciones fuertes y consistentes entre productos.</p>
+<section id="visualización-de-resultados" class="level3" data-number="2.3.5">
+<h3 data-number="2.3.5" class="anchored" data-anchor-id="visualización-de-resultados"><span class="header-section-number">2.3.5</span> Visualización de resultados</h3>
+<p>Finalmente, podemos representar la relación entre la probabilidad predicha de aprobar y alguna variable explicativa, como las horas de estudio.</p>
 <div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 31%">
-<col style="width: 22%">
-<col style="width: 45%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Concepto</th>
-<th>Valor</th>
-<th>Interpretación</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Número de reglas encontradas</strong></td>
-<td>3</td>
-<td>Solo 3 asociaciones cumplen simultáneamente los criterios de soporte ≥ 0.1 y confianza ≥ 0.6.</td>
-</tr>
-<tr class="even">
-<td><strong>Soporte mínimo (<code>supp = 0.1</code>)</strong></td>
-<td>10 transacciones</td>
-<td>Una combinación debe aparecer en al menos 10 de las 100 compras.</td>
-</tr>
-<tr class="odd">
-<td><strong>Confianza mínima (<code>conf = 0.55</code>)</strong></td>
-<td>55 %</td>
-<td>Solo se conservan reglas que predicen el consecuente con al menos un 55 % de probabilidad.</td>
-</tr>
-<tr class="even">
-<td><strong>Longitud mínima (<code>minlen = 2</code>)</strong></td>
-<td>2 productos</td>
-<td>Cada regla debe tener al menos un antecedente y un consecuente.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>¿Por qué ahora hay menos reglas?:</strong> El algoritmo <em>filtra más agresivamente</em> las combinaciones de productos: Las asociaciones débiles (con confianza &lt; 0.6) fueron eliminadas. En otras palabras: Ahora el modelo solo muestra relaciones que ocurren con alta probabilidad cuando se cumple el antecedente.</p>
-<div id="qwebr-insertion-location-9"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><code>{Frutas} ⇒ {Azúcar}</code></p>
-<ul>
-<li>Aparece en el <strong>23 %</strong> de las compras, lo que la convierte en una de las asociaciones más frecuentes.<br>
-</li>
-<li>En el <strong>57.5 %</strong> de las ocasiones en que los clientes compran <em>Frutas</em>, también adquieren <em>Azúcar</em>.<br>
-</li>
-<li>Con un <strong>lift = 1.25</strong>, la relación es <strong>positiva pero moderada</strong>: ocurre un 25 % más de lo esperado si las compras fueran independientes.</li>
-</ul>
-<p><code>{Mantequilla, Verduras} ⇒ {Queso}</code></p>
-<ul>
-<li>Ocurre en el <strong>10 %</strong> de las transacciones.<br>
-</li>
-<li>En el <strong>58.8 %</strong> de las veces que los clientes compran <em>Mantequilla</em> y <em>Verduras</em>, también se llevan <em>Queso</em>.<br>
-</li>
-<li>El <strong>lift = 1.47</strong> indica una <strong>asociación positiva clara</strong>, aunque no extremadamente fuerte.</li>
-</ul>
-<p><code>{Frutas, Queso} ⇒ {Azúcar}</code></p>
-<ul>
-<li>Aparece en el <strong>11 %</strong> de las transacciones.<br>
-</li>
-<li>En casi el <strong>58 %</strong> de los casos donde se compran <em>Frutas</em> y <em>Queso</em>, también se incluye <em>Azúcar</em>.<br>
-</li>
-<li>Con un <strong>lift = 1.26</strong>, la asociación es <strong>ligeramente superior a lo esperado por azar</strong>.</li>
-</ul>
-</section>
-<section id="reglas-redundantes" class="level3" data-number="2.4.4">
-<h3 data-number="2.4.4" class="anchored" data-anchor-id="reglas-redundantes"><span class="header-section-number">2.4.4</span> Reglas redundantes</h3>
-<p>Al generar reglas de asociación con <code>apriori()</code>, es común que aparezcan <strong>reglas redundantes</strong>, es decir, reglas que <strong>no aportan nueva información</strong> porque describen un patrón ya representado por otra más general o equivalente.</p>
-<p>Por ejemplo:</p>
-<ul>
-<li><code>{Frutas, Azúcar} ⇒ {Queso}</code><br>
-</li>
-<li><code>{Frutas, Azúcar, Mantequilla} ⇒ {Queso}</code></li>
-</ul>
-<p>La segunda regla incluye la primera dentro de su antecedente, pero no mejora las métricas (soporte, confianza, lift).<br>
-En estos casos, la segunda es <strong>redundante</strong> y puede eliminarse.</p>
-<p><strong>Identificación de reglas redundantes:</strong> Podemos detectar y visualizar qué reglas son redundantes usando la función <code>is.redundant()</code>:</p>
-<div id="qwebr-insertion-location-10"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Una vez identificadas, eliminamos las redundantes y conservamos únicamente las reglas más informativas:</p>
-<div id="qwebr-insertion-location-11"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones.</p>
-</section>
-<section id="plotear-las-reglas" class="level3" data-number="2.4.5">
-<h3 data-number="2.4.5" class="anchored" data-anchor-id="plotear-las-reglas"><span class="header-section-number">2.4.5</span> Plotear las reglas</h3>
-<p>Una vez generadas las reglas y revisadas sus métricas, es útil <em>visualizar los resultados</em> para identificar rápidamente <em>qué asociaciones son más fuertes y frecuentes</em>.</p>
-<p>El paquete <em>arulesViz</em> permite crear distintos tipos de gráficos interactivos.<br>
-En este caso, utilizaremos un <em>diagrama de dispersión (scatterplot)</em> que representa cada regla en función de sus medidas principales:</p>
-<ul>
-<li><strong>Eje X:</strong> Soporte (frecuencia con que ocurre la regla).<br>
-</li>
-<li><strong>Eje Y:</strong> Confianza (probabilidad de que ocurra el consecuente).<br>
-</li>
-<li><strong>Color (sombreado):</strong> Valor del <em>lift</em>, que mide la fuerza de la asociación.</li>
-</ul>
-<p>De esta forma, podremos observar visualmente <em>qué reglas combinan alta frecuencia, alta confianza y alta fuerza de relación</em>.</p>
-<div id="qwebr-insertion-location-12"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Interpretación visual:</strong> La curva creciente refleja la naturaleza no lineal del modelo Logit. A medida que aumentan las horas de estudio, la probabilidad de aprobar se incrementa, pero a un ritmo decreciente: los beneficios marginales de estudiar más disminuyen.</p>
+</div>
+</div>
 </section>
 </section>
 </section>
@@ -2296,7 +2330,7 @@ En este caso, utilizaremos un <em>diagrama de dispersión (scatterplot)</em> que
 </ul></li>
 <li>Suba su documento a la plataforma <strong>Intu</strong>.</li>
 </ol>
-<div id="qwebr-insertion-location-13"></div>
+<div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="preguntas-de-interpretación" class="level2" data-number="3.2">
