@@ -199,7 +199,7 @@ Nuestro objetivo será estimar cómo cada una de estas variables influye en la p
 source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r")
 
 ## chuequear objeto
-ventas[1:5]
+head(datos)
 ```
 
 ## Estimación del Modelo Logit
