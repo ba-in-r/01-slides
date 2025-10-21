@@ -313,7 +313,7 @@ iframe.qwebr-output-code-browse {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['tidyverse', 'broom'];
+globalThis.qwebrInstallRPackagesList = ['tidyverse', 'broom', 'pROC'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\ninstall.packages(\"tidyverse\")\ninstall.packages(\"broom\")\n\n## Cargar librerías\nlibrary(tidyverse)  # Manipulación y visualización de datos\nlibrary(broom)      # Para resumir resultados de modelos\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## chuequear objeto\nhead(datos)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"# Estimar el modelo logit\nmodelo_logit <- glm(aprueba ~ horas_estudio + asistencia + participacion + \n                      uso_de_R + trabajos_entregados + afinidad_estadistica,\n                    data = datos,\n                    family = binomial(link = \"logit\"))\n\n# Resumen general\nsummary(modelo_logit)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 1. Extraemos los resultados del modelo en formato ordenado usando broom::tidy()\nr_logit_1 <- tidy(modelo_logit)\nhead(r_logit_1)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 2. Creamos una nueva columna 'odds_ratio' aplicando la función exponencial a los coeficientes\n#    Esto convierte los coeficientes en términos de cambio multiplicativo en las odds\nr_logit_2 <- mutate(r_logit_1, odds_ratio = exp(estimate))\nhead(r_logit_2)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 3. Seleccionamos únicamente las columnas de interés:\n#    - term: nombre de la variable\n#    - estimate: coeficiente estimado (log-odds)\n#    - odds_ratio: razón de probabilidades\n#    - p.value: nivel de significancia estadística\nr_logit_3 <- select(r_logit_2, term, estimate, odds_ratio, p.value)\n\n# 4. Mostramos la tabla final con resultados listos para interpretación\nr_logit_3","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Predicciones\ndatos <- mutate(datos , prob_predicha = predict(modelo_logit, type = \"response\"),\n                aprueba_pred = if_else(prob_predicha > 0.5, 1, 0))\n\n# Matriz de confusión\ntable(Prediccion = datos$aprueba_pred, Real = datos$aprueba)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"geom_point(alpha = 0.4, color = \"steelblue\") +\ngeom_smooth(method = \"loess\", se = FALSE, color = \"black\") +\nlabs(title = \"Probabilidad predicha de aprobar según horas de estudio\",\n     x = \"Horas de estudio por semana\",\n     y = \"Probabilidad estimada de aprobar\") +\ntheme_minimal()","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Cargar datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## Crear objeto transaccional\ntransa <- as(ventas, \"transactions\")\n\n## Generar reglas de asociación con umbrales iniciales\nreglas <- apriori(transa,\n                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))\n\n## Inspeccionar las primeras reglas encontradas\ninspect(head(reglas))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\ninstall.packages(\"tidyverse\")\ninstall.packages(\"broom\")\ninstall.packages(\"pROC\") \n\n\n## Cargar librerías\nlibrary(tidyverse)  # Manipulación y visualización de datos\nlibrary(broom)      # Para resumir resultados de modelos\nlibrary(pROC)       # Calcular la curva ROC y el AUC\n \n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## chuequear objeto\nhead(datos)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"# Estimar el modelo logit\nmodelo_logit <- glm(aprueba ~ horas_estudio + asistencia + participacion + \n                      uso_de_R + trabajos_entregados + afinidad_estadistica,\n                    data = datos,\n                    family = binomial(link = \"logit\"))\n\n# Resumen general\nsummary(modelo_logit)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 1. Extraemos los resultados del modelo en formato ordenado usando broom::tidy()\nr_logit_1 <- tidy(modelo_logit)\nhead(r_logit_1)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 2. Creamos una nueva columna 'odds_ratio' aplicando la función exponencial a los coeficientes\n#    Esto convierte los coeficientes en términos de cambio multiplicativo en las odds\nr_logit_2 <- mutate(r_logit_1, odds_ratio = exp(estimate))\nhead(r_logit_2)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# 3. Seleccionamos únicamente las columnas de interés:\n#    - term: nombre de la variable\n#    - estimate: coeficiente estimado (log-odds)\n#    - odds_ratio: razón de probabilidades\n#    - p.value: nivel de significancia estadística\nr_logit_3 <- select(r_logit_2, term, estimate, odds_ratio, p.value)\n\n# 4. Mostramos la tabla final con resultados listos para interpretación\nr_logit_3","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Generar predicciones\ndatos <- mutate(datos,\n                prob_predicha = predict(modelo_logit, type = \"response\"),\n                aprueba_pred = if_else(prob_predicha > 0.5, 1, 0))\n\n# Verificar las primeras observaciones\nhead(select(datos, aprueba, prob_predicha, aprueba_pred))","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Matriz de confusión\ntable(Prediccion = datos$aprueba_pred, Real = datos$aprueba)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Calcular métricas de desempeño\nVP <- sum(datos$aprueba_pred == 1 & datos$aprueba == 1)\nVN <- sum(datos$aprueba_pred == 0 & datos$aprueba == 0)\nFP <- sum(datos$aprueba_pred == 1 & datos$aprueba == 0)\nFN <- sum(datos$aprueba_pred == 0 & datos$aprueba == 1)\n\n## Metricas\naccuracy <- (VP + VN) / (VP + VN + FP + FN)\nsensibilidad <- VP / (VP + FN)\nespecificidad <- VN / (VN + FP)\nprecision <- VP / (VP + FP)\n\n## Metricas del modelo\ntibble(accuracy = round(accuracy, 3),\nsensibilidad = round(sensibilidad, 3),\nespecificidad = round(especificidad, 3),\nprecision = round(precision, 3))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Calcular la curva ROC y el AUC\nroc_obj <- roc(datos$aprueba, datos$prob_predicha)\n\n# Mostrar AUC\nauc(roc_obj)\n\n# Graficar la curva ROC\nplot(roc_obj, col = \"blue\", lwd = 2, main = \"Curva ROC — Modelo Logit\")\nabline(a = 0, b = 1, lty = 2, col = \"gray\")","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"geom_point(alpha = 0.4, color = \"steelblue\") +\ngeom_smooth(method = \"loess\", se = FALSE, color = \"black\") +\nlabs(title = \"Probabilidad predicha de aprobar según horas de estudio\",\n     x = \"Horas de estudio por semana\",\n     y = \"Probabilidad estimada de aprobar\") +\ntheme_minimal()","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Estimar el modelo logit\nmodelo_logit <- glm(retira ~ horas_estudio + asistencia + participacion + \n                    uso_de_R + trabajos_entregados + afinidad_estadistica,\n                    data = datos,\n                    family = binomial(link = \"logit\"))\n\n# Resumen general\nsummary(modelo_logit)","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1648,19 +1648,24 @@ window.Quarto = {
   <li><a href="#formulación-del-modelo" id="toc-formulación-del-modelo" class="nav-link" data-scroll-target="#formulación-del-modelo"><span class="header-section-number">2.3.1</span> Formulación del modelo</a></li>
   <li><a href="#estimación-en-r" id="toc-estimación-en-r" class="nav-link" data-scroll-target="#estimación-en-r"><span class="header-section-number">2.3.2</span> Estimación en R</a></li>
   <li><a href="#interpretación-de-coeficientes" id="toc-interpretación-de-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-coeficientes"><span class="header-section-number">2.3.3</span> Interpretación de coeficientes</a></li>
-  <li><a href="#predicciones-y-evaluación-del-modelo" id="toc-predicciones-y-evaluación-del-modelo" class="nav-link" data-scroll-target="#predicciones-y-evaluación-del-modelo"><span class="header-section-number">2.3.4</span> Predicciones y evaluación del modelo</a></li>
-  <li><a href="#visualización-de-resultados" id="toc-visualización-de-resultados" class="nav-link" data-scroll-target="#visualización-de-resultados"><span class="header-section-number">2.3.5</span> Visualización de resultados</a></li>
+  </ul></li>
+  <li><a href="#evaluación-del-modelo-logit" id="toc-evaluación-del-modelo-logit" class="nav-link" data-scroll-target="#evaluación-del-modelo-logit"><span class="header-section-number">2.4</span> Evaluación del Modelo Logit</a>
+  <ul class="collapse">
+  <li><a href="#predicciones-del-modelo" id="toc-predicciones-del-modelo" class="nav-link" data-scroll-target="#predicciones-del-modelo"><span class="header-section-number">2.4.1</span> Predicciones del modelo</a></li>
+  <li><a href="#matriz-de-confusión" id="toc-matriz-de-confusión" class="nav-link" data-scroll-target="#matriz-de-confusión"><span class="header-section-number">2.4.2</span> Matriz de confusión</a></li>
+  <li><a href="#métricas-de-desempeño" id="toc-métricas-de-desempeño" class="nav-link" data-scroll-target="#métricas-de-desempeño"><span class="header-section-number">2.4.3</span> Métricas de desempeño</a></li>
+  <li><a href="#curva-roc-y-auc" id="toc-curva-roc-y-auc" class="nav-link" data-scroll-target="#curva-roc-y-auc"><span class="header-section-number">2.4.4</span> Curva ROC y AUC</a></li>
+  <li><a href="#visualización-de-resultados" id="toc-visualización-de-resultados" class="nav-link" data-scroll-target="#visualización-de-resultados"><span class="header-section-number">2.4.5</span> Visualización de resultados</a></li>
   </ul></li>
   </ul></li>
   <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">3</span> Actividad en Clase</a>
   <ul class="collapse">
-  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</a></li>
-  <li><a href="#preguntas-de-interpretación" id="toc-preguntas-de-interpretación" class="nav-link" data-scroll-target="#preguntas-de-interpretación"><span class="header-section-number">3.2</span> Preguntas de interpretación:</a>
+  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</a>
   <ul class="collapse">
-  <li><a href="#interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior" id="toc-interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior" class="nav-link" data-scroll-target="#interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior"><span class="header-section-number">3.2.1</span> Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:</a></li>
-  <li><a href="#evaluación-de-la-fuerza-de-asociación" id="toc-evaluación-de-la-fuerza-de-asociación" class="nav-link" data-scroll-target="#evaluación-de-la-fuerza-de-asociación"><span class="header-section-number">3.2.2</span> Evaluación de la fuerza de asociación:</a></li>
-  <li><a href="#análisis-crítico" id="toc-análisis-crítico" class="nav-link" data-scroll-target="#análisis-crítico"><span class="header-section-number">3.2.3</span> Análisis crítico:</a></li>
+  <li><a href="#estimación-del-modelo-logit-1" id="toc-estimación-del-modelo-logit-1" class="nav-link" data-scroll-target="#estimación-del-modelo-logit-1"><span class="header-section-number">3.1.1</span> Estimación del modelo Logit</a></li>
+  <li><a href="#evaluación-del-modelo-logit-1" id="toc-evaluación-del-modelo-logit-1" class="nav-link" data-scroll-target="#evaluación-del-modelo-logit-1"><span class="header-section-number">3.1.2</span> Evaluación del Modelo Logit</a></li>
   </ul></li>
+  <li><a href="#preguntas-para-el-informe" id="toc-preguntas-para-el-informe" class="nav-link" data-scroll-target="#preguntas-para-el-informe"><span class="header-section-number">3.2</span> Preguntas para el informe</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2271,13 +2276,18 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Ejemplo de interpretación:</strong> Si el odds ratio de horas_estudio es 1.3, significa que por cada hora adicional de estudio, las probabilidades de aprobar el curso se incrementan en un 30%, manteniendo las demás variables constantes.</p>
+<p><strong>Ejemplo de interpretación:</strong> Si el odds ratio de horas_estudio es 1.27, significa que por cada hora adicional de estudio, las probabilidades de aprobar el curso se incrementan en un 27%, manteniendo las demás variables constantes.</p>
 </div>
 </div>
 </section>
-<section id="predicciones-y-evaluación-del-modelo" class="level3" data-number="2.3.4">
-<h3 data-number="2.3.4" class="anchored" data-anchor-id="predicciones-y-evaluación-del-modelo"><span class="header-section-number">2.3.4</span> Predicciones y evaluación del modelo</h3>
-<p>Una vez estimado el modelo, podemos calcular la probabilidad predicha de aprobar para cada estudiante y evaluar el desempeño del modelo utilizando una matriz de confusión.</p>
+</section>
+<section id="evaluación-del-modelo-logit" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="evaluación-del-modelo-logit"><span class="header-section-number">2.4</span> Evaluación del Modelo Logit</h2>
+<p>Una vez estimado el modelo Logit, necesitamos <strong>evaluar su capacidad predictiva</strong>:¿qué tan bien logra distinguir entre los estudiantes que aprueban y los que no?</p>
+<p>En esta sección construiremos una <strong>matriz de confusión</strong>, calcularemos <strong>métricas de desempeño</strong> y visualizaremos la <strong>curva ROC</strong> (<em>Receiver Operating Characteristic</em>) para medir el poder discriminatorio del modelo.</p>
+<section id="predicciones-del-modelo" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="predicciones-del-modelo"><span class="header-section-number">2.4.1</span> Predicciones del modelo</h3>
+<p>Usamos la función <code>predict()</code> para calcular la <strong>probabilidad estimada de aprobar</strong> (<code>prob_predicha</code>) y clasificamos a cada estudiante según un umbral de 0.5 (es decir, si la probabilidad es mayor a 0.5, se predice que aprueba).</p>
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2290,14 +2300,70 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>El umbral de decisión (0.5) puede ajustarse según la aplicación práctica. Por ejemplo, si se desea identificar con mayor precisión a los estudiantes en riesgo de reprobar, podría usarse un umbral menor.</p>
+<p><strong>Nota:</strong> El valor 0.5 es un umbral arbitrario. Podemos ajustarlo según los objetivos del análisis: • Usar un umbral menor (p.&nbsp;ej. 0.4) si queremos detectar más estudiantes en riesgo (aunque aumenten los falsos positivos). • Usar un umbral mayor (p.&nbsp;ej. 0.6) si preferimos mayor precisión en las predicciones positivas.</p>
 </div>
 </div>
 </section>
-<section id="visualización-de-resultados" class="level3" data-number="2.3.5">
-<h3 data-number="2.3.5" class="anchored" data-anchor-id="visualización-de-resultados"><span class="header-section-number">2.3.5</span> Visualización de resultados</h3>
-<p>Finalmente, podemos representar la relación entre la probabilidad predicha de aprobar y alguna variable explicativa, como las horas de estudio.</p>
+<section id="matriz-de-confusión" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="matriz-de-confusión"><span class="header-section-number">2.4.2</span> Matriz de confusión</h3>
+<p>La matriz de confusión compara las predicciones del modelo con los valores reales y permite visualizar los aciertos y errores de clasificación.</p>
 <div id="qwebr-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Interpretación de los resultados:</p>
+<pre><code>•   Verdaderos positivos (VP): el modelo predice aprobar y el estudiante aprueba.
+•   Verdaderos negativos (VN): el modelo predice reprobar y el estudiante reprueba.
+•   Falsos positivos (FP): el modelo predice aprobar pero el estudiante reprueba.
+•   Falsos negativos (FN): el modelo predice reprobar pero el estudiante aprueba.</code></pre>
+</section>
+<section id="métricas-de-desempeño" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="métricas-de-desempeño"><span class="header-section-number">2.4.3</span> Métricas de desempeño</h3>
+<p>A partir de la matriz de confusión calculamos las métricas más comunes para evaluar un modelo de clasificación:</p>
+<p><span class="math inline">\(\text{Accuracy} = \frac{VP + VN}{VP + VN + FP + FN}\)</span></p>
+<p><span class="math inline">\(\text{Sensibilidad (Recall)} = \frac{VP}{VP + FN}\)</span></p>
+<p><span class="math inline">\(\text{Especificidad} = \frac{VN}{VN + FP}\)</span></p>
+<p><span class="math inline">\(\text{Precisión (Precision)} = \frac{VP}{VP + FP}\)</span></p>
+<div id="qwebr-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>💡 Interpretación práctica: • Exactitud (Accuracy): proporción de predicciones correctas. • Sensibilidad: qué tan bien el modelo identifica a quienes aprueban. • Especificidad: qué tan bien identifica a quienes reprueban. • Precisión: de los que el modelo predice como aprobados, cuántos realmente aprueban.</p>
+</div>
+</div>
+</section>
+<section id="curva-roc-y-auc" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="curva-roc-y-auc"><span class="header-section-number">2.4.4</span> Curva ROC y AUC</h3>
+<p>La curva ROC muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1 - especificidad) para distintos umbrales de decisión.</p>
+<p>El Área Bajo la Curva (AUC) mide el desempeño general del modelo:</p>
+<pre><code>•   AUC = 0.5 → el modelo no discrimina (como lanzar una moneda).
+•   AUC = 1 → el modelo clasifica perfectamente.</code></pre>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras que valores superiores a 0.9 suelen considerarse excelentes. Si el AUC está cerca de 0.5, el modelo no está capturando patrones útiles.</p>
+</div>
+</div>
+</section>
+<section id="visualización-de-resultados" class="level3" data-number="2.4.5">
+<h3 data-number="2.4.5" class="anchored" data-anchor-id="visualización-de-resultados"><span class="header-section-number">2.4.5</span> Visualización de resultados</h3>
+<p>Finalmente, podemos representar la relación entre la probabilidad predicha de aprobar y alguna variable explicativa, como las horas de estudio.</p>
+<div id="qwebr-insertion-location-11"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2320,40 +2386,47 @@ Tip
 <section id="instrucciones" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</h2>
 <ol type="1">
-<li>Ejecute los <em>chunks</em> de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).</li>
-<li>Observe los resultados obtenidos, especialmente las reglas de asociación generadas y sus métricas (soporte, confianza y lift).</li>
+<li>Ejecute los <em>chunks</em> de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).<br>
+</li>
+<li>Observe los resultados obtenidos en cada sección.<br>
+</li>
 <li>Genere un documento en <strong>Word (.docx)</strong> donde:
 <ul>
-<li>Copie las preguntas que aparecen a continuación.</li>
-<li>Redacte sus interpretaciones y conclusiones con base en los resultados.</li>
-<li><strong>No copie el código ni las tablas</strong>, solo redacte sus respuestas.</li>
+<li>Copie las preguntas que aparecen al final.<br>
+</li>
+<li>Redacte sus interpretaciones y conclusiones con base en los resultados.<br>
+</li>
+<li><strong>No copie el código ni las tablas</strong>, solo redacte sus respuestas.<br>
+</li>
 </ul></li>
-<li>Suba su documento a la plataforma <strong>Intu</strong>.</li>
+<li>Suba su documento a la plataforma <strong>Intu</strong>, en la actividad correspondiente a la <strong>Semana 13 — Modelo Logit (Predicción de Retiro)</strong>.</li>
 </ol>
-<div id="qwebr-insertion-location-9"></div>
+<section id="estimación-del-modelo-logit-1" class="level3" data-number="3.1.1">
+<h3 data-number="3.1.1" class="anchored" data-anchor-id="estimación-del-modelo-logit-1"><span class="header-section-number">3.1.1</span> Estimación del modelo Logit</h3>
+<p>Ejecute el siguiente código para estimar un modelo Logit que prediga la <strong>probabilidad de que un estudiante se retire del curso</strong>, usando las variables explicativas relacionadas con esfuerzo y participación.<br>
+⚠️ No incluya la variable <code>aprueba</code> en el modelo.</p>
+<div id="qwebr-insertion-location-12"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="preguntas-de-interpretación" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="preguntas-de-interpretación"><span class="header-section-number">3.2</span> Preguntas de interpretación:</h2>
-<section id="interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior"><span class="header-section-number">3.2.1</span> Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:</h3>
-<pre><code>•   ¿Cuál de las reglas observadas consideras más relevante para el supermercado y por qué?
-•   Interpreta en tus propias palabras la siguiente regla: `{Frutas} ⇒ {Azúcar}`
-•   ¿Qué nos dice sobre el comportamiento del consumidor?
-•   ¿Cómo podrías aprovechar esta información para proponer una promoción o disposición de góndolas?</code></pre>
+<section id="evaluación-del-modelo-logit-1" class="level3" data-number="3.1.2">
+<h3 data-number="3.1.2" class="anchored" data-anchor-id="evaluación-del-modelo-logit-1"><span class="header-section-number">3.1.2</span> Evaluación del Modelo Logit</h3>
+<p>Una vez estimado el modelo, evalúe su capacidad predictiva. A partir de los resultados, analice qué tan bien el modelo distingue entre los estudiantes que se retiran y los que no.</p>
+<ul>
+<li>Predicciones del modelo: Genere las probabilidades predichas y clasifique a cada estudiante según un umbral de 0.5.</li>
+<li>Genere la matriz de confusión para comparar las predicciones con los valores reales.</li>
+<li>Calcule las métricas básicas del modelo: exactitud, sensibilidad, especificidad y precisión.</li>
+<li>Calcule el Área Bajo la Curva (AUC) para medir el poder discriminatorio del modelo.</li>
+<li>Visualice la relación entre la probabilidad predicha de retiro y una variable explicativa (por ejemplo, las horas de estudio).</li>
+</ul>
 </section>
-<section id="evaluación-de-la-fuerza-de-asociación" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="evaluación-de-la-fuerza-de-asociación"><span class="header-section-number">3.2.2</span> Evaluación de la fuerza de asociación:</h3>
-<pre><code>•   La regla {Mantequilla, Verduras} ⇒ {Queso} tiene una confianza del 0.588 y un lift de 1.47.
-•   ¿Cómo interpretarías esta relación?
-•   ¿Qué tan fuerte consideras la asociación?
-•   ¿Qué acción comercial podría sugerirse?</code></pre>
 </section>
-<section id="análisis-crítico" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="análisis-crítico"><span class="header-section-number">3.2.3</span> Análisis crítico:</h3>
-<pre><code>•   Si el análisis se basara únicamente en datos de un mes de ventas, ¿qué limitaciones tendría la interpretación?
-•   ¿Qué otros factores o variables te gustaría incluir para obtener reglas más informativas (por ejemplo, tipo de cliente, día de la semana, temporada)?
-•   Menciona un caso fuera del comercio minorista donde el análisis de reglas de asociación pueda ser útil (por ejemplo, en banca, educación o salud).</code></pre>
+<section id="preguntas-para-el-informe" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="preguntas-para-el-informe"><span class="header-section-number">3.2</span> Preguntas para el informe</h2>
+<ol type="1">
+<li><p>Interpretación general • ¿Qué variables parecen tener mayor influencia en la probabilidad de retiro según el resumen del modelo (summary(modelo_logit))? • ¿Cuál es el signo del coeficiente asociado a horas_estudio y cómo lo interpretarías? • ¿Qué significa que una variable tenga un p-valor alto (mayor a 0.05)?</p></li>
+<li><p>Evaluación del desempeño • ¿Qué tan bien clasifica el modelo según las métricas de desempeño calculadas? • Si la exactitud (accuracy) es del 75 %, ¿cómo interpretarías este resultado en un contexto académico? • ¿El modelo tiende a cometer más falsos positivos o falsos negativos? ¿Qué implicaciones tendría eso?</p></li>
+<li><p>Curva ROC y visualización • ¿Qué valor obtuvo el AUC y qué indica sobre el poder predictivo del modelo? • ¿Cómo se interpreta la relación entre las horas de estudio y la probabilidad de retiro en el gráfico final? • ¿Qué estrategias institucionales podrían derivarse de estos resultados?</p></li>
+</ol>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2364,10 +2437,9 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>💡 Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 12 — Reglas de Asociación.</p>
+<p>💡 Entrega: Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 13 — Modelo Logit. Y suba el script con el que realizo el proedimiento. Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del modelo y su capacidad para proponer acciones basadas en los hallazgos.</p>
 </div>
 </div>
-</section>
 </section>
 </section>
 

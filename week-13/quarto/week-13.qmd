@@ -159,11 +159,14 @@ rm(list = ls())
 ## Instalar paquetes (solo si es necesario)
 install.packages("tidyverse")
 install.packages("broom")
+install.packages("pROC") 
+
 
 ## Cargar librerías
 library(tidyverse)  # Manipulación y visualización de datos
 library(broom)      # Para resumir resultados de modelos
-
+library(pROC)       # Calcular la curva ROC y el AUC
+ 
 ## Fijar semilla para reproducibilidad
 set.seed(123)
 ```
@@ -176,8 +179,7 @@ Los paquetes `tidyverse` y `broom` son parte del ecosistema de análisis de dato
 
 ## Ingesta de datos 
 
-En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo Logit.
-Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.
+En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo Logit. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.
 
 La estructura de los datos es la siguiente:
 	•	horas_estudio: promedio semanal de horas dedicadas al curso.
@@ -220,8 +222,6 @@ Donde:
 
 - El término del lado izquierdo representa el **logaritmo de las odds** de aprobar.  
 - Los coeficientes \(\beta_j\) indican cómo cambia el log-odds de aprobar ante un cambio unitario en cada variable.
-
-
 
 ### Estimación en R
 
@@ -276,24 +276,118 @@ r_logit_3
 ```
 
 ::: callout-tip
-**Ejemplo de interpretación:** Si el odds ratio de horas_estudio es 1.3, significa que por cada hora adicional de estudio, las probabilidades de aprobar el curso se incrementan en un 30%, manteniendo las demás variables constantes.
+**Ejemplo de interpretación:** Si el odds ratio de horas_estudio es 1.27, significa que por cada hora adicional de estudio, las probabilidades de aprobar el curso se incrementan en un 27%, manteniendo las demás variables constantes.
 :::
 
-### Predicciones y evaluación del modelo
+## Evaluación del Modelo Logit
 
-Una vez estimado el modelo, podemos calcular la probabilidad predicha de aprobar para cada estudiante y evaluar el desempeño del modelo utilizando una matriz de confusión.
+Una vez estimado el modelo Logit, necesitamos **evaluar su capacidad predictiva**:¿qué tan bien logra distinguir entre los estudiantes que aprueban y los que no? 
+
+En esta sección construiremos una **matriz de confusión**, calcularemos **métricas de desempeño** y visualizaremos la **curva ROC** (*Receiver Operating Characteristic*) para medir el poder discriminatorio del modelo.
+
+### Predicciones del modelo
+
+Usamos la función `predict()` para calcular la **probabilidad estimada de aprobar** (`prob_predicha`) y clasificamos a cada estudiante según un umbral de 0.5 (es decir, si la probabilidad es mayor a 0.5, se predice que aprueba).
 
 ```{webr-r}
-# Predicciones
-datos <- mutate(datos , prob_predicha = predict(modelo_logit, type = "response"),
+# Generar predicciones
+datos <- mutate(datos,
+                prob_predicha = predict(modelo_logit, type = "response"),
                 aprueba_pred = if_else(prob_predicha > 0.5, 1, 0))
 
+# Verificar las primeras observaciones
+head(select(datos, aprueba, prob_predicha, aprueba_pred))
+```
+
+::: callout-note
+**Nota:** El valor 0.5 es un umbral arbitrario.
+Podemos ajustarlo según los objetivos del análisis:
+	•	Usar un umbral menor (p. ej. 0.4) si queremos detectar más estudiantes en riesgo (aunque aumenten los falsos positivos).
+	•	Usar un umbral mayor (p. ej. 0.6) si preferimos mayor precisión en las predicciones positivas.
+:::
+
+### Matriz de confusión
+
+La matriz de confusión compara las predicciones del modelo con los valores reales y permite visualizar los aciertos y errores de clasificación.
+
+```{webr-r}
 # Matriz de confusión
 table(Prediccion = datos$aprueba_pred, Real = datos$aprueba)
 ```
 
+Interpretación de los resultados:
+
+	•	Verdaderos positivos (VP): el modelo predice aprobar y el estudiante aprueba.
+	•	Verdaderos negativos (VN): el modelo predice reprobar y el estudiante reprueba.
+	•	Falsos positivos (FP): el modelo predice aprobar pero el estudiante reprueba.
+	•	Falsos negativos (FN): el modelo predice reprobar pero el estudiante aprueba.
+
+### Métricas de desempeño
+
+A partir de la matriz de confusión calculamos las métricas más comunes para evaluar un modelo de clasificación:
+
+$\text{Accuracy} = \frac{VP + VN}{VP + VN + FP + FN}$
+
+$\text{Sensibilidad (Recall)} = \frac{VP}{VP + FN}$
+
+$\text{Especificidad} = \frac{VN}{VN + FP}$
+
+$\text{Precisión (Precision)} = \frac{VP}{VP + FP}$
+
+
+
+```{webr-r}
+## Calcular métricas de desempeño
+VP <- sum(datos$aprueba_pred == 1 & datos$aprueba == 1)
+VN <- sum(datos$aprueba_pred == 0 & datos$aprueba == 0)
+FP <- sum(datos$aprueba_pred == 1 & datos$aprueba == 0)
+FN <- sum(datos$aprueba_pred == 0 & datos$aprueba == 1)
+
+## Metricas
+accuracy <- (VP + VN) / (VP + VN + FP + FN)
+sensibilidad <- VP / (VP + FN)
+especificidad <- VN / (VN + FP)
+precision <- VP / (VP + FP)
+
+## Metricas del modelo
+tibble(accuracy = round(accuracy, 3),
+sensibilidad = round(sensibilidad, 3),
+especificidad = round(especificidad, 3),
+precision = round(precision, 3))
+```
+
+::: callout-tip
+💡 Interpretación práctica:
+	•	Exactitud (Accuracy): proporción de predicciones correctas.
+	•	Sensibilidad: qué tan bien el modelo identifica a quienes aprueban.
+	•	Especificidad: qué tan bien identifica a quienes reprueban.
+	•	Precisión: de los que el modelo predice como aprobados, cuántos realmente aprueban.
+:::
+
+
+### Curva ROC y AUC
+
+La curva ROC muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1 - especificidad) para distintos umbrales de decisión.
+
+El Área Bajo la Curva (AUC) mide el desempeño general del modelo:
+
+	•	AUC = 0.5 → el modelo no discrimina (como lanzar una moneda).
+	•	AUC = 1 → el modelo clasifica perfectamente.
+
+```{webr-r}
+# Calcular la curva ROC y el AUC
+roc_obj <- roc(datos$aprueba, datos$prob_predicha)
+
+# Mostrar AUC
+auc(roc_obj)
+
+# Graficar la curva ROC
+plot(roc_obj, col = "blue", lwd = 2, main = "Curva ROC — Modelo Logit")
+abline(a = 0, b = 1, lty = 2, col = "gray")
+```
+
 ::: callout-note
-El umbral de decisión (0.5) puede ajustarse según la aplicación práctica. Por ejemplo, si se desea identificar con mayor precisión a los estudiantes en riesgo de reprobar, podría usarse un umbral menor.
+Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras que valores superiores a 0.9 suelen considerarse excelentes. Si el AUC está cerca de 0.5, el modelo no está capturando patrones útiles.
 :::
 
 ### Visualización de resultados
@@ -318,50 +412,59 @@ La curva creciente refleja la naturaleza no lineal del modelo Logit. A medida qu
 
 ## Instrucciones:
 
-1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).
-2. Observe los resultados obtenidos, especialmente las reglas de asociación generadas y sus métricas (soporte, confianza y lift).
-3. Genere un documento en **Word (.docx)** donde:
-   - Copie las preguntas que aparecen a continuación.
-   - Redacte sus interpretaciones y conclusiones con base en los resultados.
-   - **No copie el código ni las tablas**, solo redacte sus respuestas.
-4. Suba su documento a la plataforma **Intu**.
+1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).  
+2. Observe los resultados obtenidos en cada sección.  
+3. Genere un documento en **Word (.docx)** donde:  
+   - Copie las preguntas que aparecen al final.  
+   - Redacte sus interpretaciones y conclusiones con base en los resultados.  
+   - **No copie el código ni las tablas**, solo redacte sus respuestas.  
+4. Suba su documento a la plataforma **Intu**, en la actividad correspondiente a la **Semana 13 — Modelo Logit (Predicción de Retiro)**.
+
+### Estimación del modelo Logit
+
+Ejecute el siguiente código para estimar un modelo Logit que prediga la **probabilidad de que un estudiante se retire del curso**, usando las variables explicativas relacionadas con esfuerzo y participación.  
+⚠️ No incluya la variable `aprueba` en el modelo.
 
 ```{webr-r}
-## Cargar datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r")
+# Estimar el modelo logit
+modelo_logit <- glm(retira ~ horas_estudio + asistencia + participacion + 
+                    uso_de_R + trabajos_entregados + afinidad_estadistica,
+                    data = datos,
+                    family = binomial(link = "logit"))
 
-## Crear objeto transaccional
-transa <- as(ventas, "transactions")
-
-## Generar reglas de asociación con umbrales iniciales
-reglas <- apriori(transa,
-                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))
-
-## Inspeccionar las primeras reglas encontradas
-inspect(head(reglas))
+# Resumen general
+summary(modelo_logit)
 ```
 
-## Preguntas de interpretación:
+### Evaluación del Modelo Logit
 
-### Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:
-	•	¿Cuál de las reglas observadas consideras más relevante para el supermercado y por qué?
-	•	Interpreta en tus propias palabras la siguiente regla: `{Frutas} ⇒ {Azúcar}`
-	•	¿Qué nos dice sobre el comportamiento del consumidor?
-	•	¿Cómo podrías aprovechar esta información para proponer una promoción o disposición de góndolas?
+Una vez estimado el modelo, evalúe su capacidad predictiva. A partir de los resultados, analice qué tan bien el modelo distingue entre los estudiantes que se retiran y los que no.
 
-### Evaluación de la fuerza de asociación:
-	•	La regla {Mantequilla, Verduras} ⇒ {Queso} tiene una confianza del 0.588 y un lift de 1.47.
-	•	¿Cómo interpretarías esta relación?
-	•	¿Qué tan fuerte consideras la asociación?
-	•	¿Qué acción comercial podría sugerirse?
+  + Predicciones del modelo: Genere las probabilidades predichas y clasifique a cada estudiante según un umbral de 0.5.
+  + Genere la matriz de confusión para comparar las predicciones con los valores reales.
+  + Calcule las métricas básicas del modelo: exactitud, sensibilidad, especificidad y precisión.
+  + Calcule el Área Bajo la Curva (AUC) para medir el poder discriminatorio del modelo.
+  + Visualice la relación entre la probabilidad predicha de retiro y una variable explicativa (por ejemplo, las horas de estudio).
 
-### Análisis crítico:
-	•	Si el análisis se basara únicamente en datos de un mes de ventas, ¿qué limitaciones tendría la interpretación?
-	•	¿Qué otros factores o variables te gustaría incluir para obtener reglas más informativas (por ejemplo, tipo de cliente, día de la semana, temporada)?
-	•	Menciona un caso fuera del comercio minorista donde el análisis de reglas de asociación pueda ser útil (por ejemplo, en banca, educación o salud).
+## Preguntas para el informe
+
+1. Interpretación general
+	•	¿Qué variables parecen tener mayor influencia en la probabilidad de retiro según el resumen del modelo (summary(modelo_logit))?
+	•	¿Cuál es el signo del coeficiente asociado a horas_estudio y cómo lo interpretarías?
+	•	¿Qué significa que una variable tenga un p-valor alto (mayor a 0.05)?
+
+2. Evaluación del desempeño
+	•	¿Qué tan bien clasifica el modelo según las métricas de desempeño calculadas?
+	•	Si la exactitud (accuracy) es del 75 %, ¿cómo interpretarías este resultado en un contexto académico?
+	•	¿El modelo tiende a cometer más falsos positivos o falsos negativos? ¿Qué implicaciones tendría eso?
+
+3. Curva ROC y visualización
+	•	¿Qué valor obtuvo el AUC y qué indica sobre el poder predictivo del modelo?
+	•	¿Cómo se interpreta la relación entre las horas de estudio y la probabilidad de retiro en el gráfico final?
+	•	¿Qué estrategias institucionales podrían derivarse de estos resultados?
 
 ::: callout-tip
-💡 Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 12 — Reglas de Asociación.
+💡 Entrega: Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 13 — Modelo Logit. Y suba el script con el que realizo el proedimiento. Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del modelo y su capacidad para proponer acciones basadas en los hallazgos.
 :::
 
 

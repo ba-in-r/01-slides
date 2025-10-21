@@ -16,7 +16,7 @@ filters:
   - webr
 
 webr:
-    packages: [tidyverse , broom]
+    packages: [tidyverse , broom , pROC]
 
 
 
