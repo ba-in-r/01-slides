@@ -340,25 +340,24 @@ Antes de aplicar la ley, la variable debe cumplir ciertas condiciones:
 
 El primer paso es verificar si la variable cumple con los criterios de magnitud. Para esto se calculan dos indicadores: `OOM` (Order of Magnitude): logaritmo de la razón entre el valor máximo y el mínimo. `ROM` (Robust Order of Magnitude): logaritmo de la razón entre los percentiles 99 y 1. Si ambos son mayores que 3, la Ley de Benford puede aplicarse de manera confiable.
 
-# Actividad en clase
+# Actividad en clase — Detección de Anomalías
 
-	•	En grupos, aplicar tres métodos de detección a una variable.
-	•	Comparar resultados y discutir cuál método es más confiable.
-	•	Relacionar resultados con casos reales (fraude, errores de captura, comportamiento anómalo).
+En esta actividad práctica, los estudiantes trabajarán en grupos aplicando **tres métodos de detección de outliers** sobre una base de datos simulada que contiene calificaciones y variables de desempeño académico. El objetivo es comparar los resultados, discutir cuál método es más confiable y reflexionar sobre qué tipo de comportamiento o error podría explicar cada anomalía.
 
-## Instrucciones:
+## Instrucciones
 
-1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).  
-2. Observe los resultados obtenidos en cada sección.  
-3. Genere un documento en Word (.docx) donde:  
-   - Copie las preguntas que aparecen al final.  
-   - Redacte sus interpretaciones y conclusiones con base en los resultados.  
-   - **No copie el código**, solo redacte sus respuestas.  
-4. Suba su documento y su **script en R** a la plataforma **Intu**, en la actividad correspondiente a la **Semana 14 — Modelo kNN (Predicción de Retiro)**.
+1. Ejecute los *chunks* de código proporcionados en **R** (puede hacerlo directamente en el navegador o desde **RStudio**).  
+2. Observe los resultados obtenidos en cada bloque y registre las observaciones más relevantes.  
+3. Genere un documento en **Word (.docx)** donde:
+   - Copie las **preguntas** que aparecen al final.  
+   - Redacte sus **interpretaciones y conclusiones** con base en los resultados del análisis.  
+   - **No copie el código ni las tablas**, solo las respuestas explicativas.  
+4. Suba su documento y su **script en R (.R)** a la plataforma **Intu**, en la actividad correspondiente a la  
+   **Semana 15 — Detección de Anomalías (Outliers y Ley de Benford)**.
 
-## Estimación del modelo kNN
+## Ingesta de Datos
 
-Ejecute el siguiente código para estimar un modelo **k-Nearest Neighbors (kNN)** que prediga la **probabilidad de que un estudiante se retire del curso**, usando las variables explicativas relacionadas con esfuerzo y participación.  ⚠️ No incluya la variable `aprueba` en el modelo.
+Ejecute el siguiente bloque de código para crear una base llamada `notas_grupo`. Esta base contiene **250 registros** que simulan notas de estudiantes, con algunos valores **atípicos intencionales** (como notas negativas, mayores que 5 o inconsistentes con la asistencia).  Cada registro representa un estudiante e incluye variables como participación, trabajos, quizzes, proyecto final y promedio.
 
 ```{webr-r}
 ##==: 1. Preparar Entorno
@@ -371,47 +370,28 @@ if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
 
 ## Cargar librerías
 p_load(tidyverse)  # Manipulación y visualización de datos
-p_load(class)      # Implementación del algoritmo kNN
-p_load(caret)      # Métricas y matriz de confusión
-p_load(pROC)       # Calcular la curva ROC y el AUC
 
 ##==: 2. Ingesta de Datos
 
 ## Leer datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/task-15.r")
 
-## Preparar los datos
-vars <- select(datos, horas_estudio:afinidad_estadistica)
-datos_scaled <- as.data.frame(scale(vars))
-datos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c("No", "Sí"))
-
-## Ver datos 
-head(datos_scaled)
+## check data
+summary(notas_grupo)
 ``` 
 
 ## Preguntas para el informe
 
-**1. Comparación entre modelos:**
-
-•	¿Cómo cambia la matriz de confusión al pasar de k = 5 a k = 10 y k = 20?
-
-**2. Evaluación de desempeño:**
-
-•	Calcule la exactitud (accuracy) para cada modelo (k = 5, k = 10, k = 20).
-
-•	¿Cuál de los tres modelos presenta la mayor exactitud?
-
-**3. Curva ROC y poder discriminatorio**
-
-•	¿Qué valor de AUC obtuvo para k = 5?
-
-•	¿Qué indica este valor sobre la capacidad del modelo para distinguir entre estudiantes que se retiran y los que no?
-
-•	¿Esperarías que el AUC mejore, empeore o se mantenga al aumentar k? ¿Por qué?
-
-**4. Reflexión final:** Si tuvieras que elegir uno de los tres modelos, ¿cuál seleccionarías y por qué?
+	1.	¿Qué valores o registros fueron identificados como outliers por cada método aplicado?
+	2.	¿Coincidieron los métodos en los mismos casos detectados?
+	3.	¿Qué método consideran más confiable para este tipo de datos? Justifiquen su respuesta.
+	4.	¿Qué tipo de comportamiento o error podría explicar las anomalías encontradas (error de digitación, fraude, caso excepcional, etc.)?
+	5.	Si ustedes fueran analistas de datos, ¿qué harían con esos valores?
+	•	¿Los eliminarían, imputarían o conservarían?
+	•	¿Por qué?
 
 ::: callout-tip
-💡 Entrega: Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 14 — Modelo kNN (Predicción de Retiro). Y suba el script con el que realizó el procedimiento. Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del modelo y su capacidad para proponer acciones basadas en los hallazgos.
+**Entrega:** Suba su documento con las respuestas a la plataforma Intu, en la actividad Semana 15 — Detección de Anomalías.
+Incluya también el script en R con el que realizó el procedimiento.
+Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del análisis y su capacidad para proponer acciones basadas en los hallazgos.
 :::
-

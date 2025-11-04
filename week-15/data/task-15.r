@@ -43,4 +43,4 @@ notas_grupo$asistencia[sample(1:n, 2)] <- c(1.0, 0.95)
 notas_grupo$promedio[sample(1:n, 2)] <- c(0.9, 0.7)  # muy bajo con alta asistencia
 
 ## Revisar estructura
-summary(notas_grupo)
+rm(n)
