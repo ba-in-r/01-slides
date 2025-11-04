@@ -6,7 +6,7 @@ rm(list = ls())
 ## ==========================================================
 
 # Paquetes
-if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
+require("pacman")
 p_load(tidyverse, janitor, rio)
 
 # Fijar semilla para reproducibilidad

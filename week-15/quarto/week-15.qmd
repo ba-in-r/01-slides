@@ -122,24 +122,24 @@ Nuestro objetivo será **identificar observaciones que se desvíen del patrón g
 ## generar los datos
 source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/week-15.r")
 
+## check data
+print("listo")
+```
+
+## Exploratory Data Analysis (EDA)
+
+Antes de aplicar pruebas estadísticas, el primer paso es **visualizar** y **resumir** los datos.  Esto nos permite entender la distribución de una variable y detectar visualmente valores atípicos. **Objetivos del EDA:**
+
+- Explorar la forma de la distribución.  
+- Identificar asimetrías, colas largas o valores extremos.  
+- Calcular estadísticas descriptivas básicas: Medidas de tendencia central (media, mediana); Medidas de dispersión (rango, desviación estándar, IQR); Medidas de forma (asimetría y curtosis).
+
+```{webr-r}
 ## Vista previa
 glimpse(notas)
 summary(notas)
 ```
 
-## Exploratory Data Analysis (EDA)
-
-Antes de aplicar pruebas estadísticas, el primer paso es **visualizar** y **resumir** los datos.  Esto nos permite entender la distribución de una variable y detectar visualmente valores atípicos.
-
-### Objetivos del EDA
-
-- Explorar la **forma** de la distribución.  
-- Identificar **asimetrías**, **colas largas** o **valores extremos**.  
-- Calcular estadísticas descriptivas básicas:
-  - Medidas de **tendencia central** (media, mediana).
-  - Medidas de **dispersión** (rango, desviación estándar, IQR).
-  - Medidas de **forma** (asimetría y curtosis).
-  
 ### Visualización de anomalías
 
 El análisis gráfico es el punto de partida. Para empezar, utilizaremos histogramas y boxplots que nos ayuden a visualizar la dispersión de las notas y detectar gráficamente los posibles valores atípicos.
