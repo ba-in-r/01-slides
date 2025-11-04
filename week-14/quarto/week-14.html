@@ -8,7 +8,7 @@
 
 <meta name="author" content="Eduard F. Martínez González">
 
-<title>Unidad 8 — Análisis de Canasta de Mercado</title>
+<title>Unidad 9 — Clasificación</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -24,17 +24,17 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="week-12_files/libs/clipboard/clipboard.min.js"></script>
-<script src="week-12_files/libs/quarto-html/quarto.js" type="module"></script>
-<script src="week-12_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="week-12_files/libs/quarto-html/popper.min.js"></script>
-<script src="week-12_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="week-12_files/libs/quarto-html/anchor.min.js"></script>
-<link href="week-12_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="week-12_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="week-12_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="week-12_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="week-12_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="week-14_files/libs/clipboard/clipboard.min.js"></script>
+<script src="week-14_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="week-14_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="week-14_files/libs/quarto-html/popper.min.js"></script>
+<script src="week-14_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="week-14_files/libs/quarto-html/anchor.min.js"></script>
+<link href="week-14_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="week-14_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="week-14_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="week-14_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="week-14_files/libs/bootstrap/bootstrap-ff7067f47e26017551bec3c0280d8ab3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.47.0/min/vs/editor/editor.main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   
@@ -313,7 +313,7 @@ iframe.qwebr-output-code-browse {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['tidyverse', 'arules', 'arulesViz'];
+globalThis.qwebrInstallRPackagesList = ['tidyverse', 'caret', 'class', 'pROC'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## instalar\ninstall.packages(\"arules\")\ninstall.packages(\"arulesViz\")\n\n## Cargar paquetes\nlibrary(tidyverse)   # Manipulación y transformación de datos\nlibrary(arules)      # Construcción y análisis de redes\nlibrary(arulesViz)      # Visualización avanzada de grafos\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## chuequear objeto\nventas[1:5]","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## class\nclass(ventas)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Conversión directa de la lista al formato transaccional\ntransa <- as(ventas, \"transactions\")\n\n## print\nprint(\"Listo!\")","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Resumen del objeto transaccional\nsummary(transa)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Visualizar las primeras transacciones\ninspect(head(transa, 5))","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Generar reglas de asociación\nreglas <- apriori(transa,\n                  parameter = list(supp=0.1 , conf=0.3 , minlen=2))","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Generar reglas de asociación\nreglas <- apriori(transa,\n                  parameter = list(supp=0.1 , conf=0.55 , minlen=2))","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Inspeccionar las primeras reglas\ninspect(head(reglas))","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Identificar reglas redundantes\nreglas.reduntantes <- is.redundant(reglas)\n\n## Mostrar las reglas redundantes detectadas\ninspect(reglas[reglas.reduntantes])","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Eliminar reglas redundantes\nreglas <- reglas[!reglas.reduntantes]\ninspect(reglas)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ver resumen de reglas\nplot(reglas, measure = c(\"support\", \"confidence\"), shading = \"lift\")","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Cargar datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r\")\n\n## Crear objeto transaccional\ntransa <- as(ventas, \"transactions\")\n\n## Generar reglas de asociación con umbrales iniciales\nreglas <- apriori(transa,\n                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))\n\n## Inspeccionar las primeras reglas encontradas\ninspect(head(reglas))","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n \n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## chuequear objeto\nnames(datos)\nhead(datos)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## Seleccionamos solo las variables numéricas\nvars <- select(datos, horas_estudio:afinidad_estadistica)\n\n## Escalamos (centrar y escalar)\ndatos_scaled <- as.data.frame(scale(vars))\n\n## Combinamos nuevamente con la variable objetivo\ndatos_scaled$aprueba <- datos$aprueba\n\n## check datos\nhead(datos_scaled)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## separar datos\nset.seed(123)\ntrain_idx <- sample(1:nrow(datos_scaled), 0.7*nrow(datos_scaled))\n\n## datos de entrenamiento\ntrain_x <- datos_scaled[train_idx, 1:6]\n\n## datos de prueba\ntest_x  <- datos_scaled[-train_idx, 1:6]\n\n## variables de resultado\ntrain_y <- datos_scaled$aprueba[train_idx]\ntest_y  <- datos_scaled$aprueba[-train_idx]\n\n## inspect data\nhead(train_x)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ajustamos con k = 5 vecinos\npred_knn <- knn(train=train_x , test=test_x , cl=train_y , k=5)\n\n## Visualizamos las primeras predicciones\nresultados <- data.frame(Real=test_y , Predicho=pred_knn)\nhead(resultados , 20)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## obtener matrix\nconf_matrix <- table(Predicho = pred_knn, Real = test_y)\nconf_matrix","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Calcular la curva ROC y el AUC\nroc_obj <- roc(test_y , as.numeric(pred_knn))\n\n## Mostrar AUC\nauc(roc_obj)\n\n## Graficar la curva ROC\nplot(roc_obj, col = \"blue\", lwd = 2, main = \"Curva ROC — Modelo Logit\")\nabline(a = 0, b = 1, lty = 2, col = \"gray\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"ks <- seq(1, 21, 2)  # valores impares de k\naccuracy <- map_dbl(ks, function(k) {\n                    pred <- knn(train = train_x, test = test_x, cl = train_y, k = k)\n                    mean(pred == test_y)\n                  })\n\n# Tabla resumen\ntibble(k=ks , accuracy=accuracy)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Gráfico de precisión según k\ntibble(k = ks, accuracy = accuracy) %>%\nggplot(aes(x = k, y = accuracy)) +\ngeom_line(color = \"steelblue\") +\ngeom_point(size = 2) +\nlabs(title = \"Precisión del modelo según número de vecinos (k)\",\n     x = \"Número de vecinos (k)\", y = \"Exactitud (Accuracy)\") +\ntheme_minimal()","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 1. Preparar Entorno\n\n## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n\n##==: 2. Ingesta de Datos\n\n## Leer datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## Preparar los datos\nvars <- select(datos, horas_estudio:afinidad_estadistica)\ndatos_scaled <- as.data.frame(scale(vars))\ndatos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c(\"No\", \"Sí\"))\n\n## Ver datos \nhead(datos_scaled)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 3. Modelar para K=5\n\n## Modelo kNN con k = 5\npred_knn_5 <- knn(train = datos_scaled[, 1:6],\n                  test  = datos_scaled[, 1:6],\n                  cl = datos_scaled$retira,\n                  k = 5)\n\n## Matriz de confusión\nconf_5 <- table(Predicho = pred_knn_5, Real = datos_scaled$retira)\nconf_5\n\n## Exactitud del modelo con k = 5\nVP <- conf_5[\"Sí\", \"Sí\"]\nVN <- conf_5[\"No\", \"No\"]\nFP <- conf_5[\"Sí\", \"No\"]\nFN <- conf_5[\"No\", \"Sí\"]\n\n## Accuracy\naccuracy_5 <- (VP + VN) / sum(conf_5)\naccuracy_5\n\n## Curva ROC y el AUC\nroc_5 <- roc(datos_scaled$retira, as.numeric(pred_knn_5))\nauc(roc_5)\n\nplot(roc_5, col = \"blue\", lwd = 2, main = \"Curva ROC — k = 5\")","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1630,34 +1630,34 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#análisis-de-canasta-de-mercado" id="toc-análisis-de-canasta-de-mercado" class="nav-link active" data-scroll-target="#análisis-de-canasta-de-mercado"><span class="header-section-number">1</span> Análisis de Canasta de Mercado</a>
+  <li><a href="#recordemos-la-clase-anterior" id="toc-recordemos-la-clase-anterior" class="nav-link active" data-scroll-target="#recordemos-la-clase-anterior"><span class="header-section-number">1</span> Recordemos la clase anterior</a>
   <ul class="collapse">
-  <li><a href="#conceptos-clave" id="toc-conceptos-clave" class="nav-link" data-scroll-target="#conceptos-clave"><span class="header-section-number">1.1</span> Conceptos clave</a></li>
-  <li><a href="#aplicaciones-típicas" id="toc-aplicaciones-típicas" class="nav-link" data-scroll-target="#aplicaciones-típicas"><span class="header-section-number">1.2</span> Aplicaciones típicas</a></li>
+  <li><a href="#el-modelo-k-nearest-neighbors-knn" id="toc-el-modelo-k-nearest-neighbors-knn" class="nav-link" data-scroll-target="#el-modelo-k-nearest-neighbors-knn"><span class="header-section-number">1.1</span> El modelo k-Nearest Neighbors (kNN)</a>
+  <ul class="collapse">
+  <li><a href="#elección-del-parámetro-k" id="toc-elección-del-parámetro-k" class="nav-link" data-scroll-target="#elección-del-parámetro-k"><span class="header-section-number">1.1.1</span> Elección del parámetro <em>k</em></a></li>
+  <li><a href="#medidas-de-distancia" id="toc-medidas-de-distancia" class="nav-link" data-scroll-target="#medidas-de-distancia"><span class="header-section-number">1.1.2</span> Medidas de distancia</a></li>
+  </ul></li>
+  <li><a href="#evaluación-del-modelo" id="toc-evaluación-del-modelo" class="nav-link" data-scroll-target="#evaluación-del-modelo"><span class="header-section-number">1.2</span> Evaluación del modelo</a></li>
   </ul></li>
   <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2</span> Aplicación en R</a>
   <ul class="collapse">
   <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</a></li>
   <li><a href="#ingesta-de-datos" id="toc-ingesta-de-datos" class="nav-link" data-scroll-target="#ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</a></li>
-  <li><a href="#conversión-al-formato-transaccional" id="toc-conversión-al-formato-transaccional" class="nav-link" data-scroll-target="#conversión-al-formato-transaccional"><span class="header-section-number">2.3</span> Conversión al formato transaccional</a></li>
-  <li><a href="#reglas-de-asociación" id="toc-reglas-de-asociación" class="nav-link" data-scroll-target="#reglas-de-asociación"><span class="header-section-number">2.4</span> Reglas de asociación</a>
+  <li><a href="#preparación-de-los-datos" id="toc-preparación-de-los-datos" class="nav-link" data-scroll-target="#preparación-de-los-datos"><span class="header-section-number">2.3</span> Preparación de los Datos</a>
   <ul class="collapse">
-  <li><a href="#métricas-principales" id="toc-métricas-principales" class="nav-link" data-scroll-target="#métricas-principales"><span class="header-section-number">2.4.1</span> Métricas principales</a></li>
-  <li><a href="#obtener-las-métricas" id="toc-obtener-las-métricas" class="nav-link" data-scroll-target="#obtener-las-métricas"><span class="header-section-number">2.4.2</span> Obtener las métricas</a></li>
-  <li><a href="#generación-de-reglas-más-sólidas" id="toc-generación-de-reglas-más-sólidas" class="nav-link" data-scroll-target="#generación-de-reglas-más-sólidas"><span class="header-section-number">2.4.3</span> Generación de reglas más sólidas</a></li>
-  <li><a href="#reglas-redundantes" id="toc-reglas-redundantes" class="nav-link" data-scroll-target="#reglas-redundantes"><span class="header-section-number">2.4.4</span> Reglas redundantes</a></li>
-  <li><a href="#plotear-las-reglas" id="toc-plotear-las-reglas" class="nav-link" data-scroll-target="#plotear-las-reglas"><span class="header-section-number">2.4.5</span> Plotear las reglas</a></li>
+  <li><a href="#escalar-variables" id="toc-escalar-variables" class="nav-link" data-scroll-target="#escalar-variables"><span class="header-section-number">2.3.1</span> Escalar Variables</a></li>
+  <li><a href="#división-en-entrenamiento-y-prueba" id="toc-división-en-entrenamiento-y-prueba" class="nav-link" data-scroll-target="#división-en-entrenamiento-y-prueba"><span class="header-section-number">2.3.2</span> División en entrenamiento y prueba</a></li>
   </ul></li>
+  <li><a href="#entrenamiento-del-modelo-knn" id="toc-entrenamiento-del-modelo-knn" class="nav-link" data-scroll-target="#entrenamiento-del-modelo-knn"><span class="header-section-number">2.4</span> Entrenamiento del Modelo kNN</a></li>
+  <li><a href="#matriz-de-confusión" id="toc-matriz-de-confusión" class="nav-link" data-scroll-target="#matriz-de-confusión"><span class="header-section-number">2.5</span> Matriz de confusión</a></li>
+  <li><a href="#curva-roc-y-auc" id="toc-curva-roc-y-auc" class="nav-link" data-scroll-target="#curva-roc-y-auc"><span class="header-section-number">2.6</span> Curva ROC y AUC</a></li>
+  <li><a href="#evaluación-con-distintos-valores-de-k" id="toc-evaluación-con-distintos-valores-de-k" class="nav-link" data-scroll-target="#evaluación-con-distintos-valores-de-k"><span class="header-section-number">2.7</span> Evaluación con distintos valores de k</a></li>
   </ul></li>
   <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">3</span> Actividad en Clase</a>
   <ul class="collapse">
   <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</a></li>
-  <li><a href="#preguntas-de-interpretación" id="toc-preguntas-de-interpretación" class="nav-link" data-scroll-target="#preguntas-de-interpretación"><span class="header-section-number">3.2</span> Preguntas de interpretación:</a>
-  <ul class="collapse">
-  <li><a href="#interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior" id="toc-interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior" class="nav-link" data-scroll-target="#interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior"><span class="header-section-number">3.2.1</span> Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:</a></li>
-  <li><a href="#evaluación-de-la-fuerza-de-asociación" id="toc-evaluación-de-la-fuerza-de-asociación" class="nav-link" data-scroll-target="#evaluación-de-la-fuerza-de-asociación"><span class="header-section-number">3.2.2</span> Evaluación de la fuerza de asociación:</a></li>
-  <li><a href="#análisis-crítico" id="toc-análisis-crítico" class="nav-link" data-scroll-target="#análisis-crítico"><span class="header-section-number">3.2.3</span> Análisis crítico:</a></li>
-  </ul></li>
+  <li><a href="#estimación-del-modelo-knn" id="toc-estimación-del-modelo-knn" class="nav-link" data-scroll-target="#estimación-del-modelo-knn"><span class="header-section-number">3.2</span> Estimación del modelo kNN</a></li>
+  <li><a href="#preguntas-para-el-informe" id="toc-preguntas-para-el-informe" class="nav-link" data-scroll-target="#preguntas-para-el-informe"><span class="header-section-number">3.3</span> Preguntas para el informe</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1950,8 +1950,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Unidad 8 — Análisis de Canasta de Mercado</h1>
-<p class="subtitle lead">Semana 12: Reglas de Asociación</p>
+<h1 class="title">Unidad 9 — Clasificación</h1>
+<p class="subtitle lead">Semana 14: Modelo kNN (k-Near Neighbors)</p>
 </div>
 
 
@@ -1978,56 +1978,208 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p><a href="https://github.com/eduard-martinez" style="color:black;"> <img src="pic/github.png" alt="Qries" width="20" height="20"> eduard-martinez</a></p>
 <p><a href="https://twitter.com/emartigo" style="color:black;"> <img src="pic/twitter.jpg" alt="Qries" width="20" height="20"> <span class="citation" data-cites="emartigo">@emartigo</span></a></p>
 <p><a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"> https://eduard-martinez.github.io</a></p>
-<section id="análisis-de-canasta-de-mercado" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Análisis de Canasta de Mercado</h1>
-<p>El <strong>análisis de canasta de mercado</strong> (Market Basket Analysis) es un conjunto de técnicas de <strong>minería de datos</strong> utilizadas para descubrir asociaciones entre productos comprados por los clientes.</p>
-<p>Es una herramienta fundamental en <strong>retail analytics</strong>, ya que permite a los minoristas identificar patrones de consumo, mejorar la disposición de productos, diseñar promociones cruzadas y aumentar las ventas.</p>
-<section id="conceptos-clave" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="conceptos-clave"><span class="header-section-number">1.1</span> Conceptos clave</h2>
-<p>Este análisis pertenece a la tarea de <strong>asociación</strong>, un tipo de <strong>aprendizaje no supervisado</strong> que busca identificar <strong>patrones frecuentes de co-ocurrencia</strong> entre ítems dentro de transacciones (también conocidas como <em>tirillas de compra</em> o <em>tickets de venta</em>).</p>
+<section id="recordemos-la-clase-anterior" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Recordemos la clase anterior</h1>
+<p>En la sesión pasada introdujimos los <strong>modelos de clasificación paramétricos</strong>, usando como ejemplo la <strong>Regresión Logística (Logit)</strong>. Allí aprendimos que:</p>
 <ul>
-<li><p><strong>Antecedente:</strong> producto o conjunto de productos que provocan la compra de otros. Ejemplo: <code>{Leche} → {Pan}</code></p>
-<p>→ Si un cliente compra leche, es probable que también compre pan.</p></li>
-<li><p><strong>Consecuente:</strong> producto que resulta asociado al antecedente.<br>
-En el ejemplo anterior, el <em>pan</em> es el consecuente.</p></li>
+<li>El objetivo era <strong>predecir una variable categórica</strong>, como <em>acepta/no acepta</em> o <em>mora/no mora</em>.<br>
+</li>
+<li>La regresión logística estimaba una <strong>probabilidad</strong> <span class="math inline">\(P(Y = 1 | X)\)</span> a partir de una <strong>relación funcional específica</strong> entre las variables.<br>
+</li>
+<li>La interpretación se centraba en los <strong>coeficientes</strong> y los <strong>odds ratios</strong>, útiles para explicar el efecto de cada variable.</li>
 </ul>
+<p>Sin embargo, este enfoque tiene limitaciones: - Supone una <strong>forma funcional fija</strong> (sigmoide).<br>
+- Puede perder precisión si la relación entre variables es <strong>no lineal o compleja</strong>.</p>
+<p><strong>Motivación de la clase de hoy:</strong> Modelos como la <strong>regresión logística</strong> suponen una relación funcional específica entre las variables <span class="math inline">\(X\)</span> y la probabilidad de pertenecer a una clase <span class="math inline">\(P(Y=1)\)</span>. Sin embargo, en muchos casos esta relación puede ser <strong>no lineal o desconocida</strong>, y el modelo puede perder capacidad predictiva.</p>
+<section id="el-modelo-k-nearest-neighbors-knn" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="el-modelo-k-nearest-neighbors-knn"><span class="header-section-number">1.1</span> El modelo k-Nearest Neighbors (kNN)</h2>
+<p>El algoritmo kNN clasifica una observación <strong>según las clases de sus vecinos más cercanos</strong> en el espacio de características.</p>
+<ol type="1">
+<li>Calcula la <strong>distancia</strong> entre la observación nueva y todas las observaciones del conjunto de entrenamiento.<br>
+</li>
+<li>Selecciona los <strong>k vecinos más cercanos</strong> (por ejemplo, los 5 más próximos).<br>
+</li>
+<li>Asigna la observación a la <strong>clase mayoritaria</strong> entre esos vecinos.</li>
+</ol>
+<p><img src="figures/knn.gif" class="img-fluid"> <strong>Intuición práctica:</strong> La idea central es que observaciones similares tienden a tener comportamientos similares. Si la mayoría de los estudiantes con características parecidas a un nuevo estudiante se retiraron del curso, el modelo predecirá que probablemente ese estudiante también se retire. Por ejemplo, si un estudiante asiste poco, estudia pocas horas y entrega pocos trabajos, y entre sus 7 vecinos más parecidos el <em>80%</em> se retiró, el modelo clasificará al nuevo estudiante como <em>retirado</em>.</p>
+<section id="elección-del-parámetro-k" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="elección-del-parámetro-k"><span class="header-section-number">1.1.1</span> Elección del parámetro <em>k</em></h3>
+<p>El valor de <strong>k</strong> determina cuántos vecinos se toman en cuenta para clasificar una nueva observación. Este parámetro controla el equilibrio entre <em>precisión local</em> y <em>estabilidad general</em> del modelo.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 43%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Valor de k</th>
+<th>Características</th>
+<th>Riesgo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Pequeño (k = 1–3)</strong></td>
+<td>Modelo muy sensible al ruido (alta varianza).</td>
+<td>Sobreajuste (<em>overfitting</em>).</td>
+</tr>
+<tr class="even">
+<td><strong>Grande (k = 20–50)</strong></td>
+<td>Promedia muchos vecinos, suaviza la frontera.</td>
+<td>Subajuste (<em>underfitting</em>).</td>
+</tr>
+</tbody>
+</table>
+<p>En la práctica, si <span class="math inline">\(k\)</span> es muy pequeño, el modelo puede reaccionar exageradamente a casos atípicos. Si <span class="math inline">\(k\)</span> es demasiado grande, la predicción se vuelve genérica, mezclando grupos distintos. En un contexto de <em>Business Analytics</em>, elegir un <em>k</em> adecuado equivale a decidir <strong>cuánto contexto</strong> se usa para tomar decisiones:</p>
+<ul>
+<li>Un <em>k</em> pequeño = decisiones altamente personalizadas (pero más arriesgadas).<br>
+</li>
+<li>Un <em>k</em> grande = decisiones más estables, pero menos sensibles a diferencias individuales.</li>
+</ul>
+<p><strong>¿Cómo elegir el mejor k?:</strong> En la práctica, se prueban varios valores de <em>k</em> y para cada valor, se calcula el error de clasificación (porcentaje de predicciones incorrectas). Finalmente se elige el <em>k</em> que minimiza el error en los datos de validación.</p>
 </section>
-<section id="aplicaciones-típicas" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="aplicaciones-típicas"><span class="header-section-number">1.2</span> Aplicaciones típicas</h2>
-<ul>
-<li><strong>Comercio minorista:</strong> identificar productos que se venden juntos (leche y cereales).<br>
-</li>
-<li><strong>Marketing digital:</strong> recomendaciones tipo “los clientes que compraron este producto también compraron…”.<br>
-</li>
-<li><strong>Bancos:</strong> detección de co-uso de productos financieros (cuenta de ahorros + tarjeta).<br>
-</li>
-<li><strong>Streaming:</strong> recomendación de contenidos según consumo conjunto.</li>
-</ul>
+<section id="medidas-de-distancia" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="medidas-de-distancia"><span class="header-section-number">1.1.2</span> Medidas de distancia</h3>
+<p>El algoritmo depende de cómo se define la “cercanía” entre observaciones. Las distancias más comunes son:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 35%">
+<col style="width: 29%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Distancia</th>
+<th>Fórmula</th>
+<th>Uso típico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Euclidiana</strong></td>
+<td>( d(x,y)= )</td>
+<td>Variables numéricas continuas</td>
+</tr>
+<tr class="even">
+<td><strong>Manhattan</strong></td>
+<td>( d(x,y)=_i</td>
+<td>x_i-y_i</td>
+</tr>
+<tr class="odd">
+<td><strong>Minkowski / Coseno</strong></td>
+<td>Generalizaciones útiles en texto o redes</td>
+<td>Casos avanzados</td>
+</tr>
+</tbody>
+</table>
+<p>Es fundamental <strong>escalar las variables</strong> antes de aplicar kNN para evitar que las variables con valores grandes dominen la distancia.</p>
+</section>
+</section>
+<section id="evaluación-del-modelo" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="evaluación-del-modelo"><span class="header-section-number">1.2</span> Evaluación del modelo</h2>
+<p>Las métricas de evaluación son las mismas utilizadas en otros modelos de clasificación, como la regresión logística. Sin embargo, en el caso del <strong>kNN</strong>, estas métricas permiten analizar qué tan bien el modelo está reconociendo patrones en función de la <em>similitud entre observaciones</em>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Métrica</th>
+<th>Descripción</th>
+<th>Interpretación práctica</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Exactitud (Accuracy)</strong></td>
+<td>Proporción de clasificaciones correctas sobre el total.</td>
+<td>Evalúa el desempeño global del modelo. Útil cuando las clases están balanceadas.</td>
+</tr>
+<tr class="even">
+<td><strong>Sensibilidad (Recall)</strong></td>
+<td>Capacidad del modelo para identificar correctamente los <strong>casos positivos</strong>.</td>
+<td>Mide cuántos clientes en riesgo (<em>mora = sí</em>) fueron detectados correctamente.</td>
+</tr>
+<tr class="odd">
+<td><strong>Especificidad</strong></td>
+<td>Capacidad del modelo para identificar correctamente los <strong>casos negativos</strong>.</td>
+<td>Evalúa qué tan bien clasifica los clientes “buenos pagadores”.</td>
+</tr>
+<tr class="even">
+<td><strong>Precisión (Precision)</strong></td>
+<td>Proporción de verdaderos positivos entre los predichos como positivos.</td>
+<td>Indica qué tan confiables son las alertas del modelo (por ejemplo, clientes en mora realmente en mora).</td>
+</tr>
+<tr class="odd">
+<td><strong>F1-Score</strong></td>
+<td>Media armónica entre precisión y sensibilidad.</td>
+<td>Equilibrio entre detectar y no generar falsas alarmas.</td>
+</tr>
+<tr class="even">
+<td><strong>AUC-ROC</strong></td>
+<td>Área bajo la curva ROC; mide el poder discriminatorio del modelo.</td>
+<td>Cuanto más se acerque a 1, mejor separa las clases.</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Matriz de confusión:</strong> Resume los aciertos y errores del modelo de clasificación. Permite calcular todas las métricas anteriores y visualizar cómo se distribuyen las predicciones.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Predicho: Sí</strong></th>
+<th><strong>Predicho: No</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Real: Sí</strong></td>
+<td>Verdadero Positivo (TP)</td>
+<td>Falso Negativo (FN)</td>
+</tr>
+<tr class="even">
+<td><strong>Real: No</strong></td>
+<td>Falso Positivo (FP)</td>
+<td>Verdadero Negativo (TN)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </section>
 </section>
 <section id="aplicación-en-r" class="level1" data-number="2">
 <h1 data-number="2"><span class="header-section-number">2</span> Aplicación en R</h1>
-<p>Para ilustrar el <strong>análisis de canasta de mercado</strong>, trabajaremos con un conjunto de transacciones que representa las <strong>compras realizadas por los clientes de un supermercado</strong> durante un periodo determinado.<br>
-Cada transacción contiene uno o más productos adquiridos en la misma compra, lo que nos permitirá identificar <strong>patrones de asociación</strong> entre ellos.</p>
+<p>Para ilustrar el uso de los <strong>modelos de clasificación no paramétricos</strong>, trabajaremos con una base sintética que representa a <strong>estudiantes inscritos en un curso universitario</strong>. Cada registro contiene información sobre el comportamiento académico y el desempeño del estudiante a lo largo del semestre, lo que nos permitirá <strong>predecir si un estudiante aprobará o no el curso</strong> utilizando el modelo <strong>k-Nearest Neighbors (kNN)</strong>.</p>
 <p>En este contexto:</p>
 <ul>
-<li>Cada <strong>ítem</strong> corresponde a un producto individual.<br>
+<li>Cada <strong>observación</strong> corresponde a un estudiante.<br>
 </li>
-<li>Cada <strong>transacción</strong> agrupa los productos comprados por un mismo cliente.<br>
+<li>La <strong>variable dependiente</strong> es categórica (<code>aprueba</code>: <em>Sí</em> / <em>No</em>).<br>
 </li>
-<li>El objetivo es descubrir <strong>reglas del tipo</strong>:<br>
-<code>{Leche} → {Pan}</code> e interpreta como:<br>
-<em>“Los clientes que compran leche y pan tienden también a comprar mantequilla.”</em></li>
+<li>Las <strong>variables explicativas</strong> describen aspectos como las horas de estudio, asistencia, participación, uso de R, trabajos entregados y afinidad con la estadística.</li>
 </ul>
-<p>A partir de este ejercicio podremos responder preguntas como:</p>
+<p>El objetivo de este ejercicio es aplicar el algoritmo kNN para responder preguntas como:</p>
 <ul>
-<li>¿Qué productos suelen comprarse juntos con mayor frecuencia?<br>
+<li>¿Podemos predecir si un estudiante aprobará el curso a partir de su perfil académico?<br>
 </li>
-<li>¿Qué asociaciones son más fuertes en términos de confianza y soporte?<br>
+<li>¿Qué tan precisa es la clasificación según el número de vecinos (<em>k</em>) considerados?<br>
 </li>
-<li>¿Qué reglas podrían usarse para diseñar promociones o estrategias de recomendación?</li>
+<li>¿Cómo cambia la calidad de las predicciones al variar <em>k</em> o al escalar las variables?</li>
 </ul>
-<p>Este tipo de análisis tiene múltiples aplicaciones prácticas en <strong>marketing, retail y comportamiento del consumidor</strong>, y se basa en los mismos principios de aprendizaje no supervisado que utilizamos en técnicas como clustering o análisis de redes.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2044,7 +2196,8 @@ Puedes ejecutar los <em>chunks</em> de R directamente en el navegador gracias a 
 </div>
 <section id="preparación-del-entorno" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</h2>
-<p>El propósito de este bloque es asegurar un entorno <strong>limpio, reproducible y funcional</strong> antes de iniciar el análisis. Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la <strong>manipulación de datos</strong>, la <strong>construcción de transacciones</strong> y la <strong>generación de reglas de asociación</strong>. Con esto, dejamos el entorno preparado para comenzar el análisis de canasta de mercado.</p>
+<p>El propósito de este bloque es asegurar un entorno limpio, reproducible y funcional antes de iniciar el análisis.<br>
+Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la manipulación de datos, la implementación del algoritmo k-Nearest Neighbors (kNN), la evaluación del modelo y la visualización de resultados. Con esto, dejamos el entorno preparado para comenzar el análisis aplicado de clasificación no paramétrica.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2057,33 +2210,32 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Los paquetes <code>arules</code> y <code>arulesViz</code> pertenecen al ecosistema de data mining en R. • <code>arules</code> permite aplicar el algoritmo Apriori, que identifica combinaciones frecuentes de productos. • <code>arulesViz</code> facilita la visualización interactiva de las reglas y sus métricas (soporte, confianza y lift).</p>
+<p><code>tidyverse</code>: facilita la transformación, manipulación y visualización de datos. <code>class</code>: contiene la función <code>knn()</code> que implementa el algoritmo k-Nearest Neighbors. <code>caret</code>: permite calcular métricas de desempeño, generar matrices de confusión y realizar validaciones cruzadas. <code>pROC</code>: se emplea para evaluar el poder discriminatorio del modelo mediante la curva ROC y el área bajo la curva (AUC).</p>
 </div>
 </div>
 </section>
 <section id="ingesta-de-datos" class="level2" data-number="2.2">
 <h2 data-number="2.2" class="anchored" data-anchor-id="ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</h2>
-<p>En esta sección realizamos la <strong>ingesta de datos</strong>, es decir, el proceso de cargar o generar la base que utilizaremos para construir la <strong>canasta de mercado</strong>. Cada registro representa una <strong>transacción individual</strong>, es decir, el conjunto de productos que un cliente compró en una misma visita al supermercado. Nuestro objetivo será analizar estos datos para descubrir <strong>patrones de compra conjunta</strong> y <strong>reglas de asociación</strong> entre productos.</p>
-<p>La estructura de datos es la siguiente:</p>
-<ul>
-<li><p>Cada <strong>ítem</strong> corresponde a un producto (por ejemplo: <em>Leche</em>, <em>Pan</em>, <em>Huevos</em>).<br>
-</p></li>
-<li><p>Cada <strong>transacción</strong> es una lista de productos comprados juntos.</p></li>
-<li><p>El <strong>conjunto de todas las transacciones</strong> conforma la base que usaremos para aplicar el algoritmo <em>Apriori</em> y encontrar asociaciones significativas.</p></li>
-</ul>
+<p>En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo KNN. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.</p>
+<p>La estructura de los datos es la siguiente:</p>
+<pre><code>•   horas_estudio: promedio semanal de horas dedicadas al curso.
+•   asistencia: porcentaje de asistencia a clase.
+•   participacion: nivel de participación en clase (0–100).
+•   uso_de_R: nivel de dominio de R (1–5).
+•   trabajos_entregados: cantidad de trabajos entregados (0–5).
+•   afinidad_estadistica: gusto por la estadística (0–100).
+•   aprueba: resultado final (1 = aprueba, 0 = reprueba).
+•   retira: indica si el estudiante se retiró del curso antes de finalizar (1 = sí, 0 = no).</code></pre>
+<p>Nuestro objetivo será estimar cómo cada una de estas variables influye en la probabilidad de aprobar el curso.</p>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><strong>Interpretación:</strong> Cada elemento de la lista ventas representa una compra única: un conjunto de productos adquiridos por un cliente. Por ejemplo:</p>
-<p>Esto significa que:</p>
-<pre><code>•   En la transacción 1, el cliente compró mantequilla, pan, queso y verduras. 
-•   En la transacción 2, compró cereal, queso, leche, pan, mantequilla y huevos.</code></pre>
-<p>Esta estructura servirá como punto de partida para convertir las listas en objetos transaccionales y aplicar el algoritmo Apriori, que nos permitirá descubrir qué productos se compran juntos con mayor frecuencia.</p>
 </section>
-<section id="conversión-al-formato-transaccional" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="conversión-al-formato-transaccional"><span class="header-section-number">2.3</span> Conversión al formato transaccional</h2>
-<p>Antes de aplicar técnicas de análisis de cesta de mercado, es fundamental que los datos se encuentren en un formato adecuado para este tipo de estudio. En particular, los algoritmos de reglas de asociación, como Apriori o Eclat, requieren que la información esté organizada en formato transaccional, donde cada observación representa una transacción individual y contiene el conjunto de ítems comprados conjuntamente.</p>
-<p>Para lograr esto, se deben agrupar los productos por el identificador de la transacción (ID), de modo que cada registro muestre la lista de artículos adquiridos en una misma compra o canasta. En R, esta conversión puede realizarse fácilmente utilizando la función split(), que permite crear una lista de ítems por transacción. Posteriormente, dicha lista se transforma en un objeto de clase transactions, el cual es compatible con los paquetes de análisis de asociaciones como arules.</p>
-<p>A continuación, verificamos la estructura del objeto <code>ventas</code> para conocer su tipo de datos y asegurarnos de que puede convertirse correctamente al formato transaccional.</p>
+<section id="preparación-de-los-datos" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="preparación-de-los-datos"><span class="header-section-number">2.3</span> Preparación de los Datos</h2>
+<p>Antes de aplicar el modelo <strong>k-Nearest Neighbors (kNN)</strong>, es fundamental preparar adecuadamente los datos.</p>
+<section id="escalar-variables" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="escalar-variables"><span class="header-section-number">2.3.1</span> Escalar Variables</h3>
+<p>A diferencia de la regresión logística, donde las variables se utilizan directamente dentro de una función matemática, el kNN <strong>se basa en distancias entre observaciones</strong>. Por esta razón, las variables deben estar en una <strong>misma escala</strong> para que ninguna domine el cálculo de distancia. Por ejemplo, si una variable se mide en porcentajes (0–100) y otra en horas (0–10), la de mayor rango influirá desproporcionadamente en la predicción. Para evitarlo, aplicamos un proceso de <strong>escalamiento y centrado</strong>, que transforma todas las variables numéricas de manera que tengan <strong>media 0 y desviación estándar 1</strong>. A continuación seleccionamos las variables numéricas relevantes. Posteriormente aplicamos el escalamiento con <code>scale()</code> y finalmente volvemos a unir la variable objetivo (<code>aprueba</code>) para mantener la estructura original de la base.</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2096,189 +2248,73 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>En este caso, el objeto se presenta como una lista, lo que significa que cada elemento ya corresponde a una transacción (es decir, un conjunto de ítems comprados juntos). Por tanto, no es necesario aplicar la función split(), ya que los datos ya están organizados en el formato requerido.</p>
+<p><strong>Importancia del escalamiento:</strong> El kNN calcula distancias entre observaciones (por defecto, euclidianas). Si las variables no se escalan, las que tienen rangos mayores (por ejemplo, asistencia = 0–100) dominarán el cálculo, distorsionando la noción de “vecindad”. El escalamiento garantiza que todas las variables contribuyan de manera equilibrada al proceso de clasificación.</p>
 </div>
 </div>
-<p>Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función <code>as()</code> del paquete <code>arules.</code> Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.</p>
+</section>
+<section id="división-en-entrenamiento-y-prueba" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="división-en-entrenamiento-y-prueba"><span class="header-section-number">2.3.2</span> División en entrenamiento y prueba</h3>
+<p>Antes de entrenar el modelo, dividimos la base de datos en dos subconjuntos: uno para <strong>entrenamiento</strong> y otro para <strong>prueba</strong>. Esta separación es fundamental en el aprendizaje supervisado, ya que permite <strong>evaluar la capacidad de generalización del modelo</strong> —es decir, qué tan bien predice sobre casos nuevos que no ha “visto” durante el entrenamiento.</p>
+<ul>
+<li>El conjunto de <strong>entrenamiento</strong> se usa para ajustar el modelo (70% de las observaciones).<br>
+</li>
+<li>El conjunto de <strong>prueba</strong> se utiliza para evaluar su desempeño (30% restante).</li>
+</ul>
+<p>Esta práctica evita el <strong>sobreajuste (overfitting)</strong>, que ocurre cuando el modelo aprende demasiado bien los datos de entrenamiento, pero falla al aplicarse a nuevas observaciones.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de <code>transa</code>, como el número total de ítems y transacciones.</p>
+</section>
+</section>
+<section id="entrenamiento-del-modelo-knn" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="entrenamiento-del-modelo-knn"><span class="header-section-number">2.4</span> Entrenamiento del Modelo kNN</h2>
+<p>En este paso aplicamos el algoritmo <strong>k-Nearest Neighbors (kNN)</strong> utilizando los conjuntos de entrenamiento (<code>train_x</code>, <code>train_y</code>) y de prueba (<code>test_x</code>). El modelo se entrena con los datos conocidos (estudiantes cuyo resultado ya sabemos) y luego <strong>clasifica los nuevos casos</strong> según sus <em>vecinos más cercanos</em>.</p>
+<p>El parámetro <strong>k = 5</strong> indica que para cada observación en el conjunto de prueba, el algoritmo buscará los <strong>5 estudiantes más similares</strong> (en términos de distancia) dentro del conjunto de entrenamiento. Luego asignará la clase mayoritaria (<em>Sí</em> o <em>No</em>) entre esos vecinos.</p>
 <div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>El resumen muestra que el conjunto de datos contiene <code>100</code> transacciones y <code>10</code> productos únicos, almacenados en una matriz dispersa (sparse matrix). La densidad de <code>0.401</code> indica que, en promedio, cada compra incluye unos cuatro productos, lo cual coincide con la distribución de tamaños de las canastas. Los ítems más frecuentes son <code>Azúcar</code>, <code>Café</code>, <code>Cereal</code>, <code>Frutas</code> y <code>Mantequilla</code>, que aparecen en la mayoría de las transacciones y probablemente formarán parte de las reglas más relevantes en el análisis posterior.</p>
-<p>Una vez confirmada la estructura del objeto, inspeccionamos las primeras transacciones para observar cómo están representadas internamente dentro del formato <code>transactions.</code></p>
+</section>
+<section id="matriz-de-confusión" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="matriz-de-confusión"><span class="header-section-number">2.5</span> Matriz de confusión</h2>
+<p>La matriz de confusión compara las predicciones del modelo con los valores reales y permite visualizar los aciertos y errores de clasificación.</p>
 <div id="qwebr-insertion-location-6"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>Interpretación de los resultados:</p>
+<pre><code>•   Verdaderos positivos (VP): el modelo predice aprobar y el estudiante aprueba.
+•   Verdaderos negativos (VN): el modelo predice reprobar y el estudiante reprueba.
+•   Falsos positivos (FP): el modelo predice aprobar pero el estudiante reprueba.
+•   Falsos negativos (FN): el modelo predice reprobar pero el estudiante aprueba.</code></pre>
 </section>
-<section id="reglas-de-asociación" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="reglas-de-asociación"><span class="header-section-number">2.4</span> Reglas de asociación</h2>
-<p>Con el objeto <code>transa</code> ya creado, podemos comenzar a descubrir patrones de compra aplicando la función <code>apriori()</code> del paquete <code>arules</code>. Este algoritmo busca relaciones del tipo:</p>
-<p><code>{Producto A, Producto B} =&gt; {Producto C}</code></p>
-<p>que nos permiten identificar qué productos tienden a comprarse juntos dentro de las transacciones.</p>
-<p><strong>Estructura de una regla:</strong></p>
-<ul>
-<li><p><strong>LHS (Left Hand Side)</strong> → <em>Antecedente</em>: conjunto de productos que originan o influyen en la compra de otros.</p></li>
-<li><p><strong>RHS (Right Hand Side)</strong> → <em>Consecuente</em>: producto asociado al antecedente, es decir, el que se compra después o junto.</p></li>
-</ul>
-<p>Ejemplo: <code>{Leche, Pan} =&gt; {Mantequilla}</code></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Interpretación:</strong> Los clientes que compran <em>Leche</em> y <em>Pan</em> tienden también a comprar <em>Mantequilla</em>. Esto sugiere una oportunidad de <em>promoción cruzada</em> o de <em>diseño estratégico de góndolas</em>.</p>
-</div>
-</div>
-<section id="métricas-principales" class="level3" data-number="2.4.1">
-<h3 data-number="2.4.1" class="anchored" data-anchor-id="métricas-principales"><span class="header-section-number">2.4.1</span> Métricas principales</h3>
-<p><strong>Soporte (Support):</strong> Mide la frecuencia con que aparece un conjunto de ítems en todas las transacciones: <span class="math display">\[supp(Y) = \frac{freq(Y)}{N}\]</span></p>
-<p>Donde: <span class="math inline">\(freq(Y)\)</span> es el número de transacciones que contienen el conjunto <span class="math inline">\(Y\)</span> y <span class="math inline">\(N\)</span> es el número total de transacciones.</p>
-<p><strong>Confianza (Confidence):</strong> Mide la probabilidad de que el consecuente (RHS) sea comprado dado que el antecedente (LHS) fue comprado:</p>
-<p><span class="math display">\[conf(A \Rightarrow B) = \frac{supp(A \cup B)}{supp(A)}\]</span></p>
-<p><strong>Cobertura (Coverage):</strong> Número de veces que aparece el <strong>antecedente (LHS)</strong> en las transacciones. Representa el soporte del ítem que origina la regla.</p>
-<p><strong>Lift (Elevación):</strong> Evalúa la fuerza de la relación entre productos, comparando la frecuencia observada con la esperada si fueran independientes:</p>
-<p><span class="math display">\[lift(A \Rightarrow B) = \frac{conf(A \Rightarrow B)}{supp(B)}\]</span></p>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Interpretación:</strong> <span class="math inline">\(lift &gt; 1\)</span>: asociación positiva (la compra de A aumenta la probabilidad de comprar B). <span class="math inline">\(lift = 1\)</span>: independencia. <span class="math inline">\(lift &lt; 1\)</span>: asociación negativa (la compra de A reduce la probabilidad de comprar B).</p>
-</div>
-</div>
-<p><strong>Count:</strong> Número total de transacciones que cumplen la regla.</p>
-</section>
-<section id="obtener-las-métricas" class="level3" data-number="2.4.2">
-<h3 data-number="2.4.2" class="anchored" data-anchor-id="obtener-las-métricas"><span class="header-section-number">2.4.2</span> Obtener las métricas</h3>
-<p>La función <code>apriori()</code> utiliza una lista de parámetros para controlar cómo se generan las reglas. Estos parámetros se definen dentro de <code>parameter = list()</code>.</p>
-<p><strong>Support:</strong> Umbral mínimo de soporte. Es la proporción mínima de transacciones en las que debe aparecer una combinación de productos. <code>supp = 0.1</code> solo se considerarán combinaciones de productos que aparezcan en al menos 10 % de las transacciones (en este caso, 10 de las 100 compras).</p>
-<p><strong>Confidence:</strong> Nivel mínimo de confianza. Es la probabilidad de que el consecuente ocurra dado el antecedente. <code>conf = 0.3</code> las reglas deben cumplirse al menos en el 30 % de los casos en que se cumple el antecedente.</p>
-<p><strong>Minimum length:</strong> Longitud mínima de la regla (número de ítems involucrados). <code>minlen = 2</code> evita reglas triviales con un solo producto, asegurando que las reglas tengan al menos un antecedente y un consecuente.</p>
+<section id="curva-roc-y-auc" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="curva-roc-y-auc"><span class="header-section-number">2.6</span> Curva ROC y AUC</h2>
+<p>La curva ROC muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1 - especificidad) para distintos umbrales de decisión.</p>
+<p>El Área Bajo la Curva (AUC) mide el desempeño general del modelo:</p>
+<pre><code>•   AUC = 0.5 → el modelo no discrimina (como lanzar una moneda).
+•   AUC = 1 → el modelo clasifica perfectamente.</code></pre>
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Este objeto (reglas) contiene:</p>
-<pre><code>•   Los ítems involucrados.
-•   Las métricas (support, confidence, lift, count, etc.).
-•   El formato necesario para exploración y visualización.</code></pre>
-<p>Este resultado significa que:</p>
-<pre><code>•   El algoritmo analizó 100 compras que incluyen 10 productos diferentes.
-•   Aplicó los filtros definidos (soporte ≥ 0.1, confianza ≥ 0.3).
-•   Encontró 110 combinaciones de productos que cumplen esas condiciones.</code></pre>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras que valores superiores a 0.9 suelen considerarse excelentes. Si el AUC está cerca de 0.5, el modelo no está capturando patrones útiles.</p>
+</div>
+</div>
 </section>
-<section id="generación-de-reglas-más-sólidas" class="level3" data-number="2.4.3">
-<h3 data-number="2.4.3" class="anchored" data-anchor-id="generación-de-reglas-más-sólidas"><span class="header-section-number">2.4.3</span> Generación de reglas más sólidas</h3>
-<p>En este paso ajustamos los parámetros del algoritmo <em>Apriori</em> para obtener <em>reglas de asociación más precisas</em>, es decir, aquellas que representan relaciones fuertes y consistentes entre productos.</p>
+<section id="evaluación-con-distintos-valores-de-k" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="evaluación-con-distintos-valores-de-k"><span class="header-section-number">2.7</span> Evaluación con distintos valores de k</h2>
+<p>El parámetro <strong>k</strong> es el elemento central del algoritmo <em>k-Nearest Neighbors</em>, ya que determina <strong>cuántos vecinos</strong> se consideran al clasificar una nueva observación. Valores de <em>k</em> pequeños hacen que el modelo sea <strong>más sensible al ruido</strong> (puede sobreajustarse), mientras que valores grandes lo vuelven <strong>más general</strong> (puede subajustarse).</p>
+<p>En esta sección exploramos cómo cambia la <strong>precisión del modelo (accuracy)</strong> al variar el número de vecinos considerados.<br>
+Para ello, probamos distintos valores impares de <em>k</em> —entre 1 y 21— y calculamos el porcentaje de clasificaciones correctas para cada uno.</p>
 <div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 31%">
-<col style="width: 22%">
-<col style="width: 45%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Concepto</th>
-<th>Valor</th>
-<th>Interpretación</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td><strong>Número de reglas encontradas</strong></td>
-<td>3</td>
-<td>Solo 3 asociaciones cumplen simultáneamente los criterios de soporte ≥ 0.1 y confianza ≥ 0.6.</td>
-</tr>
-<tr class="even">
-<td><strong>Soporte mínimo (<code>supp = 0.1</code>)</strong></td>
-<td>10 transacciones</td>
-<td>Una combinación debe aparecer en al menos 10 de las 100 compras.</td>
-</tr>
-<tr class="odd">
-<td><strong>Confianza mínima (<code>conf = 0.55</code>)</strong></td>
-<td>55 %</td>
-<td>Solo se conservan reglas que predicen el consecuente con al menos un 55 % de probabilidad.</td>
-</tr>
-<tr class="even">
-<td><strong>Longitud mínima (<code>minlen = 2</code>)</strong></td>
-<td>2 productos</td>
-<td>Cada regla debe tener al menos un antecedente y un consecuente.</td>
-</tr>
-</tbody>
-</table>
-<p><strong>¿Por qué ahora hay menos reglas?:</strong> El algoritmo <em>filtra más agresivamente</em> las combinaciones de productos: Las asociaciones débiles (con confianza &lt; 0.6) fueron eliminadas. En otras palabras: Ahora el modelo solo muestra relaciones que ocurren con alta probabilidad cuando se cumple el antecedente.</p>
+<p>El siguiente gráfico muestra cómo varía la exactitud del modelo conforme aumenta el número de vecinos k. Este tipo de análisis es útil para identificar el valor de k que ofrece un equilibrio entre precisión y estabilidad.</p>
 <div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p><code>{Frutas} ⇒ {Azúcar}</code></p>
-<ul>
-<li>Aparece en el <strong>23 %</strong> de las compras, lo que la convierte en una de las asociaciones más frecuentes.<br>
-</li>
-<li>En el <strong>57.5 %</strong> de las ocasiones en que los clientes compran <em>Frutas</em>, también adquieren <em>Azúcar</em>.<br>
-</li>
-<li>Con un <strong>lift = 1.25</strong>, la relación es <strong>positiva pero moderada</strong>: ocurre un 25 % más de lo esperado si las compras fueran independientes.</li>
-</ul>
-<p><code>{Mantequilla, Verduras} ⇒ {Queso}</code></p>
-<ul>
-<li>Ocurre en el <strong>10 %</strong> de las transacciones.<br>
-</li>
-<li>En el <strong>58.8 %</strong> de las veces que los clientes compran <em>Mantequilla</em> y <em>Verduras</em>, también se llevan <em>Queso</em>.<br>
-</li>
-<li>El <strong>lift = 1.47</strong> indica una <strong>asociación positiva clara</strong>, aunque no extremadamente fuerte.</li>
-</ul>
-<p><code>{Frutas, Queso} ⇒ {Azúcar}</code></p>
-<ul>
-<li>Aparece en el <strong>11 %</strong> de las transacciones.<br>
-</li>
-<li>En casi el <strong>58 %</strong> de los casos donde se compran <em>Frutas</em> y <em>Queso</em>, también se incluye <em>Azúcar</em>.<br>
-</li>
-<li>Con un <strong>lift = 1.26</strong>, la asociación es <strong>ligeramente superior a lo esperado por azar</strong>.</li>
-</ul>
-</section>
-<section id="reglas-redundantes" class="level3" data-number="2.4.4">
-<h3 data-number="2.4.4" class="anchored" data-anchor-id="reglas-redundantes"><span class="header-section-number">2.4.4</span> Reglas redundantes</h3>
-<p>Al generar reglas de asociación con <code>apriori()</code>, es común que aparezcan <strong>reglas redundantes</strong>, es decir, reglas que <strong>no aportan nueva información</strong> porque describen un patrón ya representado por otra más general o equivalente.</p>
-<p>Por ejemplo:</p>
-<ul>
-<li><code>{Frutas, Azúcar} ⇒ {Queso}</code><br>
-</li>
-<li><code>{Frutas, Azúcar, Mantequilla} ⇒ {Queso}</code></li>
-</ul>
-<p>La segunda regla incluye la primera dentro de su antecedente, pero no mejora las métricas (soporte, confianza, lift).<br>
-En estos casos, la segunda es <strong>redundante</strong> y puede eliminarse.</p>
-<p><strong>Identificación de reglas redundantes:</strong> Podemos detectar y visualizar qué reglas son redundantes usando la función <code>is.redundant()</code>:</p>
-<div id="qwebr-insertion-location-10"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Una vez identificadas, eliminamos las redundantes y conservamos únicamente las reglas más informativas:</p>
-<div id="qwebr-insertion-location-11"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones.</p>
-</section>
-<section id="plotear-las-reglas" class="level3" data-number="2.4.5">
-<h3 data-number="2.4.5" class="anchored" data-anchor-id="plotear-las-reglas"><span class="header-section-number">2.4.5</span> Plotear las reglas</h3>
-<p>Una vez generadas las reglas y revisadas sus métricas, es útil <em>visualizar los resultados</em> para identificar rápidamente <em>qué asociaciones son más fuertes y frecuentes</em>.</p>
-<p>El paquete <em>arulesViz</em> permite crear distintos tipos de gráficos interactivos.<br>
-En este caso, utilizaremos un <em>diagrama de dispersión (scatterplot)</em> que representa cada regla en función de sus medidas principales:</p>
-<ul>
-<li><strong>Eje X:</strong> Soporte (frecuencia con que ocurre la regla).<br>
-</li>
-<li><strong>Eje Y:</strong> Confianza (probabilidad de que ocurra el consecuente).<br>
-</li>
-<li><strong>Color (sombreado):</strong> Valor del <em>lift</em>, que mide la fuerza de la asociación.</li>
-</ul>
-<p>De esta forma, podremos observar visualmente <em>qué reglas combinan alta frecuencia, alta confianza y alta fuerza de relación</em>.</p>
-<div id="qwebr-insertion-location-12"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
 </section>
 </section>
 <section id="actividad-en-clase" class="level1" data-number="3">
@@ -2286,40 +2322,42 @@ En este caso, utilizaremos un <em>diagrama de dispersión (scatterplot)</em> que
 <section id="instrucciones" class="level2" data-number="3.1">
 <h2 data-number="3.1" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</h2>
 <ol type="1">
-<li>Ejecute los <em>chunks</em> de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).</li>
-<li>Observe los resultados obtenidos, especialmente las reglas de asociación generadas y sus métricas (soporte, confianza y lift).</li>
+<li>Ejecute los <em>chunks</em> de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).<br>
+</li>
+<li>Observe los resultados obtenidos en cada sección.<br>
+</li>
 <li>Genere un documento en <strong>Word (.docx)</strong> donde:
 <ul>
-<li>Copie las preguntas que aparecen a continuación.</li>
-<li>Redacte sus interpretaciones y conclusiones con base en los resultados.</li>
-<li><strong>No copie el código ni las tablas</strong>, solo redacte sus respuestas.</li>
+<li>Copie las preguntas que aparecen al final.<br>
+</li>
+<li>Redacte sus interpretaciones y conclusiones con base en los resultados.<br>
+</li>
+<li><strong>No copie el código</strong>, solo redacte sus respuestas.<br>
+</li>
 </ul></li>
-<li>Suba su documento a la plataforma <strong>Intu</strong>.</li>
+<li>Suba su documento y su <strong>script en R</strong> a la plataforma <strong>Intu</strong>, en la actividad correspondiente a la <strong>Semana 14 — Modelo kNN (Predicción de Retiro)</strong>.</li>
 </ol>
-<div id="qwebr-insertion-location-13"></div>
+</section>
+<section id="estimación-del-modelo-knn" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="estimación-del-modelo-knn"><span class="header-section-number">3.2</span> Estimación del modelo kNN</h2>
+<p>Ejecute el siguiente código para estimar un modelo <strong>k-Nearest Neighbors (kNN)</strong> que prediga la <strong>probabilidad de que un estudiante se retire del curso</strong>, usando las variables explicativas relacionadas con esfuerzo y participación. ⚠️ No incluya la variable <code>aprueba</code> en el modelo.</p>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div id="qwebr-insertion-location-11"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="preguntas-de-interpretación" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="preguntas-de-interpretación"><span class="header-section-number">3.2</span> Preguntas de interpretación:</h2>
-<section id="interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="interpretación-de-resultados-con-base-en-las-primeras-reglas-obtenidas-mediante-el-código-anterior"><span class="header-section-number">3.2.1</span> Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:</h3>
-<pre><code>•   ¿Cuál de las reglas observadas consideras más relevante para el supermercado y por qué?
-•   Interpreta en tus propias palabras la siguiente regla: `{Frutas} ⇒ {Azúcar}`
-•   ¿Qué nos dice sobre el comportamiento del consumidor?
-•   ¿Cómo podrías aprovechar esta información para proponer una promoción o disposición de góndolas?</code></pre>
-</section>
-<section id="evaluación-de-la-fuerza-de-asociación" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="evaluación-de-la-fuerza-de-asociación"><span class="header-section-number">3.2.2</span> Evaluación de la fuerza de asociación:</h3>
-<pre><code>•   La regla {Mantequilla, Verduras} ⇒ {Queso} tiene una confianza del 0.588 y un lift de 1.47.
-•   ¿Cómo interpretarías esta relación?
-•   ¿Qué tan fuerte consideras la asociación?
-•   ¿Qué acción comercial podría sugerirse?</code></pre>
-</section>
-<section id="análisis-crítico" class="level3" data-number="3.2.3">
-<h3 data-number="3.2.3" class="anchored" data-anchor-id="análisis-crítico"><span class="header-section-number">3.2.3</span> Análisis crítico:</h3>
-<pre><code>•   Si el análisis se basara únicamente en datos de un mes de ventas, ¿qué limitaciones tendría la interpretación?
-•   ¿Qué otros factores o variables te gustaría incluir para obtener reglas más informativas (por ejemplo, tipo de cliente, día de la semana, temporada)?
-•   Menciona un caso fuera del comercio minorista donde el análisis de reglas de asociación pueda ser útil (por ejemplo, en banca, educación o salud).</code></pre>
+<section id="preguntas-para-el-informe" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="preguntas-para-el-informe"><span class="header-section-number">3.3</span> Preguntas para el informe</h2>
+<p><strong>1. Comparación entre modelos:</strong></p>
+<p>• ¿Cómo cambia la matriz de confusión al pasar de k = 5 a k = 10 y k = 20?</p>
+<p><strong>2. Evaluación de desempeño:</strong></p>
+<p>• Calcule la exactitud (accuracy) para cada modelo (k = 5, k = 10, k = 20).</p>
+<p>• ¿Cuál de los tres modelos presenta la mayor exactitud?</p>
+<p><strong>3. Curva ROC y poder discriminatorio</strong></p>
+<p>• ¿Qué valor de AUC obtuvo para k = 5?</p>
+<p>• ¿Qué indica este valor sobre la capacidad del modelo para distinguir entre estudiantes que se retiran y los que no?</p>
+<p>• ¿Esperarías que el AUC mejore, empeore o se mantenga al aumentar k? ¿Por qué?</p>
+<p><strong>4. Reflexión final:</strong> Si tuvieras que elegir uno de los tres modelos, ¿cuál seleccionarías y por qué?</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2330,10 +2368,9 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>💡 Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 12 — Reglas de Asociación.</p>
+<p>💡 Entrega: Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 14 — Modelo kNN (Predicción de Retiro). Y suba el script con el que realizó el procedimiento. Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del modelo y su capacidad para proponer acciones basadas en los hallazgos.</p>
 </div>
 </div>
-</section>
 </section>
 </section>
 

@@ -16,7 +16,7 @@ filters:
   - webr
 
 webr:
-    packages: [tidyverse , arules, arulesViz]
+    packages: [tidyverse , caret , class , pROC]
 
 
 

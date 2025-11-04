@@ -1,0 +1,268 @@
+---
+title: "Unidad 10 — Detección de Anomalías"
+subtitle: "Semana 15: Outliers y Ley de Benford"
+author: "Eduard F. Martínez González"
+---
+
+<a href="mailto:efmartinez@icesi.edu.co" style="color:black;">
+<img src="pic/correo.png" alt="Email" width="20" height="20"/> efmartinez@icesi.edu.co
+</a>
+
+<a href="https://github.com/eduard-martinez" style="color:black;"> 
+<img src="pic/github.png" alt="Qries" width="20" height="20"/> eduard-martinez
+</a>
+
+<a href="https://twitter.com/emartigo" style="color:black;"> 
+<img src="pic/twitter.jpg" alt="Qries" width="20" height="20"/> @emartigo
+</a>
+
+<a href="https://eduard-martinez.github.io" style="color:black;"> 
+<img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io
+</a>
+
+# ¿Qué es una anomalía?
+
+En análisis de datos, una **anomalía** (o *outlier*) es una observación que se aleja significativamente del patrón general del conjunto de datos. Detectar estas observaciones es clave, porque pueden revelar errores de registro, fenómenos raros o incluso fraudes.
+
+Ejemplos típicos:
+
+- Un cliente con un crédito inusualmente alto.  
+- Un estudiante con una calificación fuera del rango esperado.  
+- Una transacción con un valor que no se ajusta al comportamiento habitual.
+
+En Business Analytics, la detección de anomalías es un paso esencial del análisis exploratorio de datos (EDA) y una herramienta fundamental para la gestión del riesgo y la auditoría de datos.
+
+## Tipos de anomalías
+
+1. **Univariadas:** afectan a una sola variable (por ejemplo, edad, monto, ingreso).  
+2. **Multivariadas:** surgen de combinaciones inusuales entre variables (por ejemplo, clientes jóvenes con créditos altísimos).
+
+En esta clase nos centraremos en las anomalías univariadas, aquellas que pueden identificarse analizando cada variable individualmente.
+
+# Aplicación en R
+
+En este ejercicio aplicaremos técnicas de detección de anomalías sobre una base de datos que simula el comportamiento académico de un grupo de estudiantes. Cada observación representa a un estudiante inscrito en un curso, e incluye variables relacionadas con su desempeño y participación a lo largo del semestre.
+
+En este contexto:
+
+- Cada **estudiante** es una observación.  
+- Las **variables numéricas** incluyen indicadores como asistencia, participación, trabajos, quizzes y proyecto final.  
+- El **promedio final** refleja el desempeño global del estudiante.  
+- Algunas observaciones presentan **valores atípicos o inconsistentes**, como notas negativas, valores mayores a 5 o combinaciones poco realistas (por ejemplo, alta asistencia pero promedio bajo).
+
+El objetivo es aplicar un **análisis exploratorio y estadístico** que nos permita:
+
+- Identificar visual y numéricamente **valores extremos**.  
+- Comparar diferentes **métodos de detección de outliers** (gráficos, robustos y estadísticos).  
+- Reflexionar sobre cómo estas anomalías pueden afectar la interpretación y calidad de los datos académicos.
+
+::: callout-tip
+Este ejercicio replica una situación real en la que un profesor detecta irregularidades en las calificaciones de su grupo.  
+A partir de las herramientas estadísticas vistas en clase, aprenderemos cómo diagnosticar y documentar esos casos de manera objetiva.
+:::
+
+## Preparación del entorno
+
+Antes de comenzar, es importante asegurar que el entorno de trabajo esté limpio, reproducible y con todas las librerías necesarias cargadas.
+
+1. **Limpiamos** el entorno para evitar conflictos con objetos previos.  
+2. **Instalamos** (si es necesario) y **cargamos** los paquetes requeridos para la manipulación, visualización y detección de anomalías.  
+3. **Importamos** la base de datos simulada de notas estudiantiles, que contiene observaciones normales y algunas “notas raras” generadas intencionalmente.  
+4. Exploramos la estructura y primeras filas de la base para familiarizarnos con su contenido.
+
+```{webr-r}
+## Limpiar el entorno de trabajo
+rm(list = ls())
+
+## Instalar paquetes (solo si es necesario)
+if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
+
+## Cargar librerías
+p_load(tidyverse)  # Manipulación y visualización de datos
+p_load(outliers), 
+p_load(EnvStats, 
+p_load(robustbase, 
+p_load(univOutl)
+p_load(funModeling)
+
+## Fijar semilla para reproducibilidad
+set.seed(123)
+```
+
+::: callout-note
+`tidyverse`: facilita la transformación, manipulación y visualización de datos.
+`class`: contiene la función `knn()` que implementa el algoritmo k-Nearest Neighbors.
+`caret`: permite calcular métricas de desempeño, generar matrices de confusión y realizar validaciones cruzadas.
+`pROC`: se emplea para evaluar el poder discriminatorio del modelo mediante la curva ROC y el área bajo la curva (AUC).
+:::
+
+## Ingesta de datos 
+
+En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo KNN. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.
+
+La estructura de los datos es la siguiente:
+
+	•	horas_estudio: promedio semanal de horas dedicadas al curso.
+	•	asistencia: porcentaje de asistencia a clase.
+	•	participacion: nivel de participación en clase (0–100).
+	•	uso_de_R: nivel de dominio de R (1–5).
+	•	trabajos_entregados: cantidad de trabajos entregados (0–5).
+	•	afinidad_estadistica: gusto por la estadística (0–100).
+	•	aprueba: resultado final (1 = aprueba, 0 = reprueba).
+	•	retira: indica si el estudiante se retiró del curso antes de finalizar (1 = sí, 0 = no).
+
+Nuestro objetivo será estimar cómo cada una de estas variables influye en la probabilidad de aprobar el curso.
+
+```{webr-r}
+#| warning: false
+#| message: false
+
+## generar los datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/week-15.r")
+
+## chuequear objeto
+names(datos)
+head(datos)
+```
+
+## Exploratory Data Analysis (EDA)
+
+Antes de aplicar pruebas estadísticas, el primer paso es **visualizar** y **resumir** los datos.  Esto nos permite entender la distribución de una variable y detectar visualmente valores atípicos.
+
+### Objetivos del EDA
+
+- Explorar la **forma** de la distribución.  
+- Identificar **asimetrías**, **colas largas** o **valores extremos**.  
+- Calcular estadísticas descriptivas básicas:
+  - Medidas de **tendencia central** (media, mediana).
+  - Medidas de **dispersión** (rango, desviación estándar, IQR).
+  - Medidas de **forma** (asimetría y curtosis).
+  
+### Visualización de anomalías
+
+El análisis gráfico es el punto de partida. Comenzamos observando la variable monto.credito, para la cual generaremos tres visualizaciones:
+
+	1.	Histograma — para ver la forma general de la distribución.
+	2.	Boxplot clásico — para identificar outliers.
+	3.	Boxplot ajustado — que corrige el sesgo en distribuciones asimétricas.
+
+```{webr-r}
+ggplot(datos23, aes(x = monto.credito)) +
+  geom_histogram(bins = round(sqrt(length(datos23$monto.credito))), 
+                 fill = "purple", col = "black", alpha = 0.7) +
+  labs(title = "Distribución de los Montos de los Créditos",
+       x = "Monto de Crédito", 
+       y = "Número de Clientes", 
+       caption = "Fuente: Elaboración Propia") +
+  theme_bw()
+```
+  
+  
+  
+
+
+
+
+
+## Métodos de detección
+Aplica e interpreta:
+	•	Percentiles (p. ej. 1% y 99%)
+	•	Z-Score (|Z| > 3)
+	•	Rango intercuartílico (IQR)
+	•	MAD / Hampel
+	•	RRMS (varianza robusta)
+
+## Pruebas estadísticas
+	•	Grubbs test: un outlier.
+	•	Dixon test: muestra pequeña.
+	•	Rosner test: múltiples outliers.
+Explica las hipótesis y el sentido del p-value.
+
+## Verificación de normalidad
+	•	Usa Q-Q plots (qqplotr).
+	•	Explica por qué es necesario para algunas pruebas.
+	•	Compara distribuciones normales vs. no normales.
+
+## Ley de Benford
+	•	Introduce el concepto del primer dígito.
+	•	Verifica condiciones: variable numérica positiva, sin límites, con magnitud amplia.
+	•	Calcula OOM y ROM.
+	•	Aplica benford() y grafica resultados.
+	•	Revisa suspectsTable() y duplicatesTable().
+	•	Discute implicaciones en auditoría.
+
+# Actividad en clase
+
+	•	En grupos, aplicar tres métodos de detección a una variable.
+	•	Comparar resultados y discutir cuál método es más confiable.
+	•	Relacionar resultados con casos reales (fraude, errores de captura, comportamiento anómalo).
+
+## Instrucciones:
+
+1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).  
+2. Observe los resultados obtenidos en cada sección.  
+3. Genere un documento en **Word (.docx)** donde:  
+   - Copie las preguntas que aparecen al final.  
+   - Redacte sus interpretaciones y conclusiones con base en los resultados.  
+   - **No copie el código**, solo redacte sus respuestas.  
+4. Suba su documento y su **script en R** a la plataforma **Intu**, en la actividad correspondiente a la **Semana 14 — Modelo kNN (Predicción de Retiro)**.
+
+## Estimación del modelo kNN
+
+Ejecute el siguiente código para estimar un modelo **k-Nearest Neighbors (kNN)** que prediga la **probabilidad de que un estudiante se retire del curso**, usando las variables explicativas relacionadas con esfuerzo y participación.  ⚠️ No incluya la variable `aprueba` en el modelo.
+
+```{webr-r}
+##==: 1. Preparar Entorno
+
+## Limpiar el entorno de trabajo
+rm(list = ls())
+
+## Instalar paquetes (solo si es necesario)
+if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
+
+## Cargar librerías
+p_load(tidyverse)  # Manipulación y visualización de datos
+p_load(class)      # Implementación del algoritmo kNN
+p_load(caret)      # Métricas y matriz de confusión
+p_load(pROC)       # Calcular la curva ROC y el AUC
+
+##==: 2. Ingesta de Datos
+
+## Leer datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r")
+
+## Preparar los datos
+vars <- select(datos, horas_estudio:afinidad_estadistica)
+datos_scaled <- as.data.frame(scale(vars))
+datos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c("No", "Sí"))
+
+## Ver datos 
+head(datos_scaled)
+``` 
+
+## Preguntas para el informe
+
+**1. Comparación entre modelos:**
+
+•	¿Cómo cambia la matriz de confusión al pasar de k = 5 a k = 10 y k = 20?
+
+**2. Evaluación de desempeño:**
+
+•	Calcule la exactitud (accuracy) para cada modelo (k = 5, k = 10, k = 20).
+
+•	¿Cuál de los tres modelos presenta la mayor exactitud?
+
+**3. Curva ROC y poder discriminatorio**
+
+•	¿Qué valor de AUC obtuvo para k = 5?
+
+•	¿Qué indica este valor sobre la capacidad del modelo para distinguir entre estudiantes que se retiran y los que no?
+
+•	¿Esperarías que el AUC mejore, empeore o se mantenga al aumentar k? ¿Por qué?
+
+**4. Reflexión final:** Si tuvieras que elegir uno de los tres modelos, ¿cuál seleccionarías y por qué?
+
+::: callout-tip
+💡 Entrega: Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 14 — Modelo kNN (Predicción de Retiro). Y suba el script con el que realizó el procedimiento. Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del modelo y su capacidad para proponer acciones basadas en los hallazgos.
+:::
+

@@ -1,6 +1,6 @@
 ---
-title: "Unidad 8 — Análisis de Canasta de Mercado"
-subtitle: "Semana 12: Reglas de Asociación"
+title: "Unidad 9 — Clasificación"
+subtitle: "Semana 14: Modelo kNN (k-Near Neighbors)"
 author: "Eduard F. Martínez González"
 ---
 
@@ -14,50 +14,96 @@ author: "Eduard F. Martínez González"
 
 <a href="https://eduard-martinez.github.io" style="color:black;"> <img src="pic/link.png" alt="Qries" width="20" height="20"/> https://eduard-martinez.github.io</a>
 
-# Análisis de Canasta de Mercado
+# Recordemos la clase anterior
 
-El **análisis de canasta de mercado** (Market Basket Analysis) es un conjunto de técnicas de **minería de datos** utilizadas para descubrir asociaciones entre productos comprados por los clientes.  
+En la sesión pasada introdujimos los **modelos de clasificación paramétricos**, usando como ejemplo la **Regresión Logística (Logit)**. Allí aprendimos que:
 
-Es una herramienta fundamental en **retail analytics**, ya que permite a los minoristas identificar patrones de consumo, mejorar la disposición de productos, diseñar promociones cruzadas y aumentar las ventas.
+- El objetivo era **predecir una variable categórica**, como *acepta/no acepta* o *mora/no mora*.  
+- La regresión logística estimaba una **probabilidad** $P(Y = 1 | X)$ a partir de una **relación funcional específica** entre las variables.  
+- La interpretación se centraba en los **coeficientes** y los **odds ratios**, útiles para explicar el efecto de cada variable.
 
-## Conceptos clave
+Sin embargo, este enfoque tiene limitaciones:
+- Supone una **forma funcional fija** (sigmoide).  
+- Puede perder precisión si la relación entre variables es **no lineal o compleja**.  
 
-Este análisis pertenece a la tarea de **asociación**, un tipo de **aprendizaje no supervisado** que busca identificar **patrones frecuentes de co-ocurrencia** entre ítems dentro de transacciones (también conocidas como *tirillas de compra* o *tickets de venta*).
+**Motivación de la clase de hoy:** Modelos como la **regresión logística** suponen una relación funcional específica entre las variables $X$ y la probabilidad de pertenecer a una clase $P(Y=1)$. Sin embargo, en muchos casos esta relación puede ser **no lineal o desconocida**, y el modelo puede perder capacidad predictiva.
 
-- **Antecedente:** producto o conjunto de productos que provocan la compra de otros. Ejemplo: `{Leche} → {Pan}`  
+## El modelo k-Nearest Neighbors (kNN)
 
-  → Si un cliente compra leche, es probable que también compre pan. 
+El algoritmo kNN clasifica una observación **según las clases de sus vecinos más cercanos** en el espacio de características.
 
-- **Consecuente:** producto que resulta asociado al antecedente.  
-  En el ejemplo anterior, el *pan* es el consecuente.
+1. Calcula la **distancia** entre la observación nueva y todas las observaciones del conjunto de entrenamiento.  
+2. Selecciona los **k vecinos más cercanos** (por ejemplo, los 5 más próximos).  
+3. Asigna la observación a la **clase mayoritaria** entre esos vecinos.
 
-## Aplicaciones típicas
+![](figures/knn.gif)
+**Intuición práctica:** La idea central es que observaciones similares tienden a tener comportamientos similares. Si la mayoría de los estudiantes con características parecidas a un nuevo estudiante se retiraron del curso, el modelo predecirá que probablemente ese estudiante también se retire. Por ejemplo, si un estudiante asiste poco, estudia pocas horas y entrega pocos trabajos, y entre sus 7 vecinos más parecidos el *80%* se retiró, el modelo clasificará al nuevo estudiante como *retirado*.
 
-- **Comercio minorista:** identificar productos que se venden juntos (leche y cereales).  
-- **Marketing digital:** recomendaciones tipo “los clientes que compraron este producto también compraron…”.  
-- **Bancos:** detección de co-uso de productos financieros (cuenta de ahorros + tarjeta).  
-- **Streaming:** recomendación de contenidos según consumo conjunto.
+### Elección del parámetro *k*
+
+El valor de **k** determina cuántos vecinos se toman en cuenta para clasificar una nueva observación. Este parámetro controla el equilibrio entre *precisión local* y *estabilidad general* del modelo.
+
+| Valor de k | Características | Riesgo |
+|-------------|----------------|--------|
+| **Pequeño (k = 1–3)** | Modelo muy sensible al ruido (alta varianza). | Sobreajuste (*overfitting*). |
+| **Grande (k = 20–50)** | Promedia muchos vecinos, suaviza la frontera. | Subajuste (*underfitting*). |
+
+En la práctica, si $k$ es muy pequeño, el modelo puede reaccionar exageradamente a casos atípicos. Si $k$ es demasiado grande, la predicción se vuelve genérica, mezclando grupos distintos. En un contexto de *Business Analytics*, elegir un *k* adecuado equivale a decidir **cuánto contexto** se usa para tomar decisiones:
+
+ - Un *k* pequeño = decisiones altamente personalizadas (pero más arriesgadas).  
+ - Un *k* grande = decisiones más estables, pero menos sensibles a diferencias individuales.
+
+**¿Cómo elegir el mejor k?:** En la práctica, se prueban varios valores de *k* y para cada valor, se calcula el error de clasificación (porcentaje de predicciones incorrectas). Finalmente se elige el *k* que minimiza el error en los datos de validación.
+
+### Medidas de distancia
+
+El algoritmo depende de cómo se define la “cercanía” entre observaciones. Las distancias más comunes son:
+
+| Distancia | Fórmula | Uso típico |
+|------------|----------|------------|
+| **Euclidiana** | \( d(x,y)=\sqrt{\sum_i (x_i-y_i)^2} \) | Variables numéricas continuas |
+| **Manhattan** | \( d(x,y)=\sum_i |x_i-y_i| \) | Datos con escalas heterogéneas |
+| **Minkowski / Coseno** | Generalizaciones útiles en texto o redes | Casos avanzados |
+
+Es fundamental **escalar las variables** antes de aplicar kNN para evitar que las variables con valores grandes dominen la distancia.
+
+## Evaluación del modelo
+
+Las métricas de evaluación son las mismas utilizadas en otros modelos de clasificación, como la regresión logística. Sin embargo, en el caso del **kNN**, estas métricas permiten analizar qué tan bien el modelo está reconociendo patrones en función de la *similitud entre observaciones*.
+
+| Métrica | Descripción | Interpretación práctica |
+|----------|--------------|-------------------------|
+| **Exactitud (Accuracy)** | Proporción de clasificaciones correctas sobre el total. | Evalúa el desempeño global del modelo. Útil cuando las clases están balanceadas. |
+| **Sensibilidad (Recall)** | Capacidad del modelo para identificar correctamente los **casos positivos**. | Mide cuántos clientes en riesgo (*mora = sí*) fueron detectados correctamente. |
+| **Especificidad** | Capacidad del modelo para identificar correctamente los **casos negativos**. | Evalúa qué tan bien clasifica los clientes “buenos pagadores”. |
+| **Precisión (Precision)** | Proporción de verdaderos positivos entre los predichos como positivos. | Indica qué tan confiables son las alertas del modelo (por ejemplo, clientes en mora realmente en mora). |
+| **F1-Score** | Media armónica entre precisión y sensibilidad. | Equilibrio entre detectar y no generar falsas alarmas. |
+| **AUC-ROC** | Área bajo la curva ROC; mide el poder discriminatorio del modelo. | Cuanto más se acerque a 1, mejor separa las clases. |
+
+::: callout-note
+**Matriz de confusión:** Resume los aciertos y errores del modelo de clasificación. Permite calcular todas las métricas anteriores y visualizar cómo se distribuyen las predicciones.
+
+|                | **Predicho: Sí** | **Predicho: No** |
+|----------------|------------------|------------------|
+| **Real: Sí**   | Verdadero Positivo (TP) | Falso Negativo (FN) |
+| **Real: No**   | Falso Positivo (FP) | Verdadero Negativo (TN) |
+:::
 
 # Aplicación en R
 
-Para ilustrar el **análisis de canasta de mercado**, trabajaremos con un conjunto de transacciones que representa las **compras realizadas por los clientes de un supermercado** durante un periodo determinado.  
-Cada transacción contiene uno o más productos adquiridos en la misma compra, lo que nos permitirá identificar **patrones de asociación** entre ellos.
+Para ilustrar el uso de los **modelos de clasificación no paramétricos**, trabajaremos con una base sintética que representa a **estudiantes inscritos en un curso universitario**. Cada registro contiene información sobre el comportamiento académico y el desempeño del estudiante a lo largo del semestre, lo que nos permitirá **predecir si un estudiante aprobará o no el curso** utilizando el modelo **k-Nearest Neighbors (kNN)**.
 
 En este contexto:
 
-- Cada **ítem** corresponde a un producto individual.  
-- Cada **transacción** agrupa los productos comprados por un mismo cliente.  
-- El objetivo es descubrir **reglas del tipo**:  
-  `{Leche} → {Pan}`  e interpreta como:  
-  *“Los clientes que compran leche y pan tienden también a comprar mantequilla.”*
+- Cada **observación** corresponde a un estudiante.  
+- La **variable dependiente** es categórica (`aprueba`: *Sí* / *No*).  
+- Las **variables explicativas** describen aspectos como las horas de estudio, asistencia, participación, uso de R, trabajos entregados y afinidad con la estadística.  
 
-A partir de este ejercicio podremos responder preguntas como:
+El objetivo de este ejercicio es aplicar el algoritmo kNN para responder preguntas como:
 
-- ¿Qué productos suelen comprarse juntos con mayor frecuencia?  
-- ¿Qué asociaciones son más fuertes en términos de confianza y soporte?  
-- ¿Qué reglas podrían usarse para diseñar promociones o estrategias de recomendación?
-
-Este tipo de análisis tiene múltiples aplicaciones prácticas en **marketing, retail y comportamiento del consumidor**, y se basa en los mismos principios de aprendizaje no supervisado que utilizamos en técnicas como clustering o análisis de redes.
+- ¿Podemos predecir si un estudiante aprobará el curso a partir de su perfil académico?  
+- ¿Qué tan precisa es la clasificación según el número de vecinos (*k*) considerados?  
+- ¿Cómo cambia la calidad de las predicciones al variar *k* o al escalar las variables?
 
 ::: callout-tip
 💡 **Cómo usar este material:**  
@@ -66,316 +112,303 @@ Puedes ejecutar los _chunks_ de R directamente en el navegador gracias a **webR*
 
 ## Preparación del entorno
 
-El propósito de este bloque es asegurar un entorno **limpio, reproducible y funcional** antes de iniciar el análisis. Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la **manipulación de datos**, la **construcción de transacciones** y la **generación de reglas de asociación**. Con esto, dejamos el entorno preparado para comenzar el análisis de canasta de mercado.
+El propósito de este bloque es asegurar un entorno limpio, reproducible y funcional antes de iniciar el análisis.  
+Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la manipulación de datos, la implementación del algoritmo k-Nearest Neighbors (kNN), la evaluación del modelo y la visualización de resultados. Con esto, dejamos el entorno preparado para comenzar el análisis aplicado de clasificación no paramétrica.
 
 ```{webr-r}
 ## Limpiar el entorno de trabajo
 rm(list = ls())
 
-## instalar
-install.packages("arules")
-install.packages("arulesViz")
+## Instalar paquetes (solo si es necesario)
+if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
 
-## Cargar paquetes
-library(tidyverse)   # Manipulación y transformación de datos
-library(arules)      # Construcción y análisis de redes
-library(arulesViz)      # Visualización avanzada de grafos
-
+## Cargar librerías
+p_load(tidyverse)  # Manipulación y visualización de datos
+p_load(class)      # Implementación del algoritmo kNN
+p_load(caret)      # Métricas y matriz de confusión
+p_load(pROC)       # Calcular la curva ROC y el AUC
+ 
 ## Fijar semilla para reproducibilidad
 set.seed(123)
 ```
+
 ::: callout-note
-Los paquetes `arules` y `arulesViz` pertenecen al ecosistema de data mining en R.
-	•	`arules` permite aplicar el algoritmo Apriori, que identifica combinaciones frecuentes de productos.
-	•	`arulesViz` facilita la visualización interactiva de las reglas y sus métricas (soporte, confianza y lift).
+`tidyverse`: facilita la transformación, manipulación y visualización de datos.
+`class`: contiene la función `knn()` que implementa el algoritmo k-Nearest Neighbors.
+`caret`: permite calcular métricas de desempeño, generar matrices de confusión y realizar validaciones cruzadas.
+`pROC`: se emplea para evaluar el poder discriminatorio del modelo mediante la curva ROC y el área bajo la curva (AUC).
 :::
 
 ## Ingesta de datos 
 
-En esta sección realizamos la **ingesta de datos**, es decir, el proceso de cargar o generar la base que utilizaremos para construir la **canasta de mercado**. Cada registro representa una **transacción individual**, es decir, el conjunto de productos que un cliente compró en una misma visita al supermercado. Nuestro objetivo será analizar estos datos para descubrir **patrones de compra conjunta** y **reglas de asociación** entre productos.
+En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo KNN. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.
 
-La estructura de datos es la siguiente:
+La estructura de los datos es la siguiente:
 
-- Cada **ítem** corresponde a un producto (por ejemplo: *Leche*, *Pan*, *Huevos*).  
-- Cada **transacción** es una lista de productos comprados juntos.  
+	•	horas_estudio: promedio semanal de horas dedicadas al curso.
+	•	asistencia: porcentaje de asistencia a clase.
+	•	participacion: nivel de participación en clase (0–100).
+	•	uso_de_R: nivel de dominio de R (1–5).
+	•	trabajos_entregados: cantidad de trabajos entregados (0–5).
+	•	afinidad_estadistica: gusto por la estadística (0–100).
+	•	aprueba: resultado final (1 = aprueba, 0 = reprueba).
+	•	retira: indica si el estudiante se retiró del curso antes de finalizar (1 = sí, 0 = no).
 
-- El **conjunto de todas las transacciones** conforma la base que usaremos para aplicar el algoritmo *Apriori* y encontrar asociaciones significativas.
+Nuestro objetivo será estimar cómo cada una de estas variables influye en la probabilidad de aprobar el curso.
 
 ```{webr-r}
 #| warning: false
 #| message: false
 
 ## generar los datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r")
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r")
 
 ## chuequear objeto
-ventas[1:5]
+names(datos)
+head(datos)
 ```
 
-**Interpretación:** Cada elemento de la lista ventas representa una compra única: un conjunto de productos adquiridos por un cliente. Por ejemplo:
+## Preparación de los Datos
 
-Esto significa que:
+Antes de aplicar el modelo **k-Nearest Neighbors (kNN)**, es fundamental preparar adecuadamente los datos. 
 
-	•	En la transacción 1, el cliente compró mantequilla, pan, queso y verduras. 
-	•	En la transacción 2, compró cereal, queso, leche, pan, mantequilla y huevos.
+### Escalar Variables 
 
-Esta estructura servirá como punto de partida para convertir las listas en objetos transaccionales y aplicar el algoritmo Apriori, que nos permitirá descubrir qué productos se compran juntos con mayor frecuencia.
-
-## Conversión al formato transaccional
-
-Antes de aplicar técnicas de análisis de cesta de mercado, es fundamental que los datos se encuentren en un formato adecuado para este tipo de estudio. En particular, los algoritmos de reglas de asociación, como Apriori o Eclat, requieren que la información esté organizada en formato transaccional, donde cada observación representa una transacción individual y contiene el conjunto de ítems comprados conjuntamente.
-
-Para lograr esto, se deben agrupar los productos por el identificador de la transacción (ID), de modo que cada registro muestre la lista de artículos adquiridos en una misma compra o canasta. En R, esta conversión puede realizarse fácilmente utilizando la función split(), que permite crear una lista de ítems por transacción. Posteriormente, dicha lista se transforma en un objeto de clase transactions, el cual es compatible con los paquetes de análisis de asociaciones como arules.
-
-A continuación, verificamos la estructura del objeto `ventas` para conocer su tipo de datos y asegurarnos de que puede convertirse correctamente al formato transaccional. 
+A diferencia de la regresión logística, donde las variables se utilizan directamente dentro de una función matemática, el kNN **se basa en distancias entre observaciones**. Por esta razón, las variables deben estar en una **misma escala** para que ninguna domine el cálculo de distancia. Por ejemplo, si una variable se mide en porcentajes (0–100) y otra en horas (0–10), la de mayor rango influirá desproporcionadamente en la predicción. Para evitarlo, aplicamos un proceso de **escalamiento y centrado**, que transforma todas las variables numéricas de manera que tengan **media 0 y desviación estándar 1**. A continuación seleccionamos las variables numéricas relevantes. Posteriormente aplicamos el escalamiento con `scale()` y finalmente volvemos a unir la variable objetivo (`aprueba`) para mantener la estructura original de la base.
 
 ```{webr-r}
-## class
-class(ventas)
+## Seleccionamos solo las variables numéricas
+vars <- select(datos, horas_estudio:afinidad_estadistica)
+
+## Escalamos (centrar y escalar)
+datos_scaled <- as.data.frame(scale(vars))
+
+## Combinamos nuevamente con la variable objetivo
+datos_scaled$aprueba <- datos$aprueba
+
+## check datos
+head(datos_scaled)
 ```
-::: callout-note
-En este caso, el objeto se presenta como una lista, lo que significa que cada elemento ya corresponde a una transacción (es decir, un conjunto de ítems comprados juntos). Por tanto, no es necesario aplicar la función split(), ya que los datos ya están organizados en el formato requerido.
-:::
-
-Una vez confirmada la estructura de los datos, procedemos a convertir el objeto ventas al formato transactions utilizando la función `as()` del paquete `arules.`
-Este paso es esencial, ya que permite representar cada lista de productos como una transacción individual dentro de un objeto especializado que puede ser interpretado por los algoritmos de reglas de asociación.
-
-```{webr-r}
-## Conversión directa de la lista al formato transaccional
-transa <- as(ventas, "transactions")
-
-## print
-print("Listo!")
-```
-
-Posteriormente, se realiza una exploración inicial para verificar que la conversión fue exitosa y comprender las características básicas del conjunto de `transa`, como el número total de ítems y transacciones.
-
-```{webr-r}
-## Resumen del objeto transaccional
-summary(transa)
-```
-
-El resumen muestra que el conjunto de datos contiene `100` transacciones y `10` productos únicos, almacenados en una matriz dispersa (sparse matrix). La densidad de `0.401` indica que, en promedio, cada compra incluye unos cuatro productos, lo cual coincide con la distribución de tamaños de las canastas. Los ítems más frecuentes son `Azúcar`, `Café`, `Cereal`, `Frutas` y `Mantequilla`, que aparecen en la mayoría de las transacciones y probablemente formarán parte de las reglas más relevantes en el análisis posterior.
-
-Una vez confirmada la estructura del objeto, inspeccionamos las primeras transacciones para observar cómo están representadas internamente dentro del formato `transactions.`
-
-```{webr-r}
-## Visualizar las primeras transacciones
-inspect(head(transa, 5))
-```
-
-## Reglas de asociación
-
-Con el objeto `transa` ya creado, podemos comenzar a descubrir patrones de compra aplicando la función `apriori()` del paquete `arules`. Este algoritmo busca relaciones del tipo:
-
-`{Producto A, Producto B} => {Producto C}`
-
-que nos permiten identificar qué productos tienden a comprarse juntos dentro de las transacciones.
-
-**Estructura de una regla:**
-
-- **LHS (Left Hand Side)** → *Antecedente*: conjunto de productos que originan o influyen en la compra de otros.  
-
-- **RHS (Right Hand Side)** → *Consecuente*: producto asociado al antecedente, es decir, el que se compra después o junto.
-
-Ejemplo: `{Leche, Pan} => {Mantequilla}`  
 
 ::: callout-note
-**Interpretación:** Los clientes que compran *Leche* y *Pan* tienden también a comprar *Mantequilla*. Esto sugiere una oportunidad de *promoción cruzada* o de *diseño estratégico de góndolas*.
+**Importancia del escalamiento:** El kNN calcula distancias entre observaciones (por defecto, euclidianas).
+Si las variables no se escalan, las que tienen rangos mayores (por ejemplo, asistencia = 0–100) dominarán el cálculo, distorsionando la noción de “vecindad”. El escalamiento garantiza que todas las variables contribuyan de manera equilibrada al proceso de clasificación.
 :::
 
-### Métricas principales
+### División en entrenamiento y prueba
 
-**Soporte (Support):** Mide la frecuencia con que aparece un conjunto de ítems en todas las transacciones: $$supp(Y) = \frac{freq(Y)}{N}$$
+Antes de entrenar el modelo, dividimos la base de datos en dos subconjuntos: uno para **entrenamiento** y otro para **prueba**. Esta separación es fundamental en el aprendizaje supervisado, ya que permite **evaluar la capacidad de generalización del modelo** —es decir, qué tan bien predice sobre casos nuevos que no ha “visto” durante el entrenamiento.
 
-Donde: $freq(Y)$ es el número de transacciones que contienen el conjunto $Y$ y $N$ es el número total de transacciones.
+- El conjunto de **entrenamiento** se usa para ajustar el modelo (70% de las observaciones).  
+- El conjunto de **prueba** se utiliza para evaluar su desempeño (30% restante).
 
-**Confianza (Confidence):** Mide la probabilidad de que el consecuente (RHS) sea comprado dado que el antecedente (LHS) fue comprado:
+Esta práctica evita el **sobreajuste (overfitting)**, que ocurre cuando el modelo aprende demasiado bien los datos de entrenamiento, pero falla al aplicarse a nuevas observaciones.
 
-$$conf(A \Rightarrow B) = \frac{supp(A \cup B)}{supp(A)}$$
+```{webr-r}
+## separar datos
+set.seed(123)
+train_idx <- sample(1:nrow(datos_scaled), 0.7*nrow(datos_scaled))
 
-**Cobertura (Coverage):** Número de veces que aparece el **antecedente (LHS)** en las transacciones.  Representa el soporte del ítem que origina la regla.
+## datos de entrenamiento
+train_x <- datos_scaled[train_idx, 1:6]
 
-**Lift (Elevación):** Evalúa la fuerza de la relación entre productos, comparando la frecuencia observada con la esperada si fueran independientes:
+## datos de prueba
+test_x  <- datos_scaled[-train_idx, 1:6]
 
-$$lift(A \Rightarrow B) = \frac{conf(A \Rightarrow B)}{supp(B)}$$
+## variables de resultado
+train_y <- datos_scaled$aprueba[train_idx]
+test_y  <- datos_scaled$aprueba[-train_idx]
+
+## inspect data
+head(train_x)
+```
+
+## Entrenamiento del Modelo kNN
+
+En este paso aplicamos el algoritmo **k-Nearest Neighbors (kNN)** utilizando los conjuntos de entrenamiento (`train_x`, `train_y`) y de prueba (`test_x`).  El modelo se entrena con los datos conocidos (estudiantes cuyo resultado ya sabemos) y luego **clasifica los nuevos casos** según sus *vecinos más cercanos*.
+
+El parámetro **k = 5** indica que para cada observación en el conjunto de prueba, el algoritmo buscará los **5 estudiantes más similares** (en términos de distancia) dentro del conjunto de entrenamiento. Luego asignará la clase mayoritaria (*Sí* o *No*) entre esos vecinos.
+
+```{webr-r}
+## Ajustamos con k = 5 vecinos
+pred_knn <- knn(train=train_x , test=test_x , cl=train_y , k=5)
+
+## Visualizamos las primeras predicciones
+resultados <- data.frame(Real=test_y , Predicho=pred_knn)
+head(resultados , 20)
+```
+
+## Matriz de confusión
+
+La matriz de confusión compara las predicciones del modelo con los valores reales y permite visualizar los aciertos y errores de clasificación.
+
+```{webr-r}
+## obtener matrix
+conf_matrix <- table(Predicho = pred_knn, Real = test_y)
+conf_matrix
+```
+
+Interpretación de los resultados:
+
+	•	Verdaderos positivos (VP): el modelo predice aprobar y el estudiante aprueba.
+	•	Verdaderos negativos (VN): el modelo predice reprobar y el estudiante reprueba.
+	•	Falsos positivos (FP): el modelo predice aprobar pero el estudiante reprueba.
+	•	Falsos negativos (FN): el modelo predice reprobar pero el estudiante aprueba.
+
+## Curva ROC y AUC
+
+La curva ROC muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1 - especificidad) para distintos umbrales de decisión.
+
+El Área Bajo la Curva (AUC) mide el desempeño general del modelo:
+
+	•	AUC = 0.5 → el modelo no discrimina (como lanzar una moneda).
+	•	AUC = 1 → el modelo clasifica perfectamente.
+
+```{webr-r}
+## Calcular la curva ROC y el AUC
+roc_obj <- roc(test_y , as.numeric(pred_knn))
+
+## Mostrar AUC
+auc(roc_obj)
+
+## Graficar la curva ROC
+plot(roc_obj, col = "blue", lwd = 2, main = "Curva ROC — Modelo Logit")
+abline(a = 0, b = 1, lty = 2, col = "gray")
+```
 
 ::: callout-note
-**Interpretación:** $lift > 1$: asociación positiva (la compra de A aumenta la probabilidad de comprar B). $lift = 1$: independencia. $lift < 1$: asociación negativa (la compra de A reduce la probabilidad de comprar B).
+Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras que valores superiores a 0.9 suelen considerarse excelentes. Si el AUC está cerca de 0.5, el modelo no está capturando patrones útiles.
 :::
 
-**Count:** Número total de transacciones que cumplen la regla. 
+## Evaluación con distintos valores de k
 
-### Obtener las métricas
+El parámetro **k** es el elemento central del algoritmo *k-Nearest Neighbors*, ya que determina **cuántos vecinos** se consideran al clasificar una nueva observación. Valores de *k* pequeños hacen que el modelo sea **más sensible al ruido** (puede sobreajustarse), mientras que valores grandes lo vuelven **más general** (puede subajustarse).
 
-La función `apriori()` utiliza una lista de parámetros para controlar cómo se generan las reglas. Estos parámetros se definen dentro de `parameter = list()`.
-
-**Support:** Umbral mínimo de soporte. Es la proporción mínima de transacciones en las que debe aparecer una combinación de productos. `supp = 0.1` solo se considerarán combinaciones de productos que aparezcan en al menos 10 % de las transacciones (en este caso, 10 de las 100 compras).
-
-**Confidence:** Nivel mínimo de confianza. Es la probabilidad de que el consecuente ocurra dado el antecedente. `conf = 0.3` las reglas deben cumplirse al menos en el 30 % de los casos en que se cumple el antecedente.
-
-**Minimum length:** Longitud mínima de la regla (número de ítems involucrados). `minlen = 2` evita reglas triviales con un solo producto, asegurando que las reglas tengan al menos un antecedente y un consecuente.
+En esta sección exploramos cómo cambia la **precisión del modelo (accuracy)** al variar el número de vecinos considerados.  
+Para ello, probamos distintos valores impares de *k* —entre 1 y 21— y calculamos el porcentaje de clasificaciones correctas para cada uno.
 
 ```{webr-r}
-## Generar reglas de asociación
-reglas <- apriori(transa,
-                  parameter = list(supp=0.1 , conf=0.3 , minlen=2))
-```
-Este objeto (reglas) contiene:
+ks <- seq(1, 21, 2)  # valores impares de k
+accuracy <- map_dbl(ks, function(k) {
+                    pred <- knn(train = train_x, test = test_x, cl = train_y, k = k)
+                    mean(pred == test_y)
+                  })
 
-	•	Los ítems involucrados.
-	•	Las métricas (support, confidence, lift, count, etc.).
-	•	El formato necesario para exploración y visualización.
-
-Este resultado significa que:
-
-	•	El algoritmo analizó 100 compras que incluyen 10 productos diferentes.
-	•	Aplicó los filtros definidos (soporte ≥ 0.1, confianza ≥ 0.3).
-	•	Encontró 110 combinaciones de productos que cumplen esas condiciones.
-
-### Generación de reglas más sólidas
-
-En este paso ajustamos los parámetros del algoritmo *Apriori* para obtener *reglas de asociación más precisas*, es decir, aquellas que representan relaciones fuertes y consistentes entre productos.
-
-```{webr-r}
-## Generar reglas de asociación
-reglas <- apriori(transa,
-                  parameter = list(supp=0.1 , conf=0.55 , minlen=2))
-```
-| Concepto | Valor | Interpretación |
-|-----------|--------|----------------|
-| **Número de reglas encontradas** | 3 | Solo 3 asociaciones cumplen simultáneamente los criterios de soporte ≥ 0.1 y confianza ≥ 0.6. |
-| **Soporte mínimo (`supp = 0.1`)** | 10 transacciones | Una combinación debe aparecer en al menos 10 de las 100 compras. |
-| **Confianza mínima (`conf = 0.55`)** | 55 % | Solo se conservan reglas que predicen el consecuente con al menos un 55 % de probabilidad. |
-| **Longitud mínima (`minlen = 2`)** | 2 productos | Cada regla debe tener al menos un antecedente y un consecuente. |
-
-**¿Por qué ahora hay menos reglas?:** El algoritmo *filtra más agresivamente* las combinaciones de productos: Las asociaciones débiles (con confianza < 0.6) fueron eliminadas. En otras palabras: Ahora el modelo solo muestra relaciones que ocurren con alta probabilidad cuando se cumple el antecedente.
-
-```{webr-r}
-## Inspeccionar las primeras reglas
-inspect(head(reglas))
+# Tabla resumen
+tibble(k=ks , accuracy=accuracy)
 ```
 
-`{Frutas} ⇒ {Azúcar}`  
-
-- Aparece en el **23 %** de las compras, lo que la convierte en una de las asociaciones más frecuentes.  
-- En el **57.5 %** de las ocasiones en que los clientes compran *Frutas*, también adquieren *Azúcar*.  
-- Con un **lift = 1.25**, la relación es **positiva pero moderada**: ocurre un 25 % más de lo esperado si las compras fueran independientes.  
-
-`{Mantequilla, Verduras} ⇒ {Queso}`  
-
-- Ocurre en el **10 %** de las transacciones.  
-- En el **58.8 %** de las veces que los clientes compran *Mantequilla* y *Verduras*, también se llevan *Queso*.  
-- El **lift = 1.47** indica una **asociación positiva clara**, aunque no extremadamente fuerte.  
-
-`{Frutas, Queso} ⇒ {Azúcar}`  
-
-- Aparece en el **11 %** de las transacciones.  
-- En casi el **58 %** de los casos donde se compran *Frutas* y *Queso*, también se incluye *Azúcar*.  
-- Con un **lift = 1.26**, la asociación es **ligeramente superior a lo esperado por azar**.  
-	
-### Reglas redundantes
-
-Al generar reglas de asociación con `apriori()`, es común que aparezcan **reglas redundantes**, es decir, reglas que **no aportan nueva información** porque describen un patrón ya representado por otra más general o equivalente.
-
-Por ejemplo:  
-
-- `{Frutas, Azúcar} ⇒ {Queso}`  
-- `{Frutas, Azúcar, Mantequilla} ⇒ {Queso}`  
-
-La segunda regla incluye la primera dentro de su antecedente, pero no mejora las métricas (soporte, confianza, lift).  
-En estos casos, la segunda es **redundante** y puede eliminarse.
-
-**Identificación de reglas redundantes:** Podemos detectar y visualizar qué reglas son redundantes usando la función `is.redundant()`:
+El siguiente gráfico muestra cómo varía la exactitud del modelo conforme aumenta el número de vecinos k. Este tipo de análisis es útil para identificar el valor de k que ofrece un equilibrio entre precisión y estabilidad.
 
 ```{webr-r}
-## Identificar reglas redundantes
-reglas.reduntantes <- is.redundant(reglas)
-
-## Mostrar las reglas redundantes detectadas
-inspect(reglas[reglas.reduntantes])
-```
-
-Una vez identificadas, eliminamos las redundantes y conservamos únicamente las reglas más informativas:
-	  
-```{webr-r}
-## Eliminar reglas redundantes
-reglas <- reglas[!reglas.reduntantes]
-inspect(reglas)
-```
-
-Ahora reglas contiene solo las reglas no redundantes, lo que mejora la claridad del análisis y evita repeticiones.
-
-### Plotear las reglas
-
-Una vez generadas las reglas y revisadas sus métricas, es útil *visualizar los resultados* para identificar rápidamente *qué asociaciones son más fuertes y frecuentes*.  
-
-El paquete *arulesViz* permite crear distintos tipos de gráficos interactivos.  
-En este caso, utilizaremos un *diagrama de dispersión (scatterplot)* que representa cada regla en función de sus medidas principales:
-
-- **Eje X:** Soporte (frecuencia con que ocurre la regla).  
-- **Eje Y:** Confianza (probabilidad de que ocurra el consecuente).  
-- **Color (sombreado):** Valor del *lift*, que mide la fuerza de la asociación.
-
-De esta forma, podremos observar visualmente *qué reglas combinan alta frecuencia, alta confianza y alta fuerza de relación*.
-
-```{webr-r}
-## Ver resumen de reglas
-plot(reglas, measure = c("support", "confidence"), shading = "lift")
+# Gráfico de precisión según k
+tibble(k = ks, accuracy = accuracy) %>%
+ggplot(aes(x = k, y = accuracy)) +
+geom_line(color = "steelblue") +
+geom_point(size = 2) +
+labs(title = "Precisión del modelo según número de vecinos (k)",
+     x = "Número de vecinos (k)", y = "Exactitud (Accuracy)") +
+theme_minimal()
 ```
 
 # Actividad en Clase
 
 ## Instrucciones:
 
-1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).
-2. Observe los resultados obtenidos, especialmente las reglas de asociación generadas y sus métricas (soporte, confianza y lift).
-3. Genere un documento en **Word (.docx)** donde:
-   - Copie las preguntas que aparecen a continuación.
-   - Redacte sus interpretaciones y conclusiones con base en los resultados.
-   - **No copie el código ni las tablas**, solo redacte sus respuestas.
-4. Suba su documento a la plataforma **Intu**.
+1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).  
+2. Observe los resultados obtenidos en cada sección.  
+3. Genere un documento en **Word (.docx)** donde:  
+   - Copie las preguntas que aparecen al final.  
+   - Redacte sus interpretaciones y conclusiones con base en los resultados.  
+   - **No copie el código**, solo redacte sus respuestas.  
+4. Suba su documento y su **script en R** a la plataforma **Intu**, en la actividad correspondiente a la **Semana 14 — Modelo kNN (Predicción de Retiro)**.
+
+## Estimación del modelo kNN
+
+Ejecute el siguiente código para estimar un modelo **k-Nearest Neighbors (kNN)** que prediga la **probabilidad de que un estudiante se retire del curso**, usando las variables explicativas relacionadas con esfuerzo y participación.  ⚠️ No incluya la variable `aprueba` en el modelo.
 
 ```{webr-r}
-## Cargar datos
-source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-12/data/week-12.r")
+##==: 1. Preparar Entorno
 
-## Crear objeto transaccional
-transa <- as(ventas, "transactions")
+## Limpiar el entorno de trabajo
+rm(list = ls())
 
-## Generar reglas de asociación con umbrales iniciales
-reglas <- apriori(transa,
-                  parameter = list(supp = 0.10, conf = 0.55, minlen = 2))
+## Instalar paquetes (solo si es necesario)
+if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
 
-## Inspeccionar las primeras reglas encontradas
-inspect(head(reglas))
+## Cargar librerías
+p_load(tidyverse)  # Manipulación y visualización de datos
+p_load(class)      # Implementación del algoritmo kNN
+p_load(caret)      # Métricas y matriz de confusión
+p_load(pROC)       # Calcular la curva ROC y el AUC
+
+##==: 2. Ingesta de Datos
+
+## Leer datos
+source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r")
+
+## Preparar los datos
+vars <- select(datos, horas_estudio:afinidad_estadistica)
+datos_scaled <- as.data.frame(scale(vars))
+datos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c("No", "Sí"))
+
+## Ver datos 
+head(datos_scaled)
+``` 
+
+```{webr-r}
+##==: 3. Modelar para K=5
+
+## Modelo kNN con k = 5
+pred_knn_5 <- knn(train = datos_scaled[, 1:6],
+                  test  = datos_scaled[, 1:6],
+                  cl = datos_scaled$retira,
+                  k = 5)
+
+## Matriz de confusión
+conf_5 <- table(Predicho = pred_knn_5, Real = datos_scaled$retira)
+conf_5
+
+## Exactitud del modelo con k = 5
+VP <- conf_5["Sí", "Sí"]
+VN <- conf_5["No", "No"]
+FP <- conf_5["Sí", "No"]
+FN <- conf_5["No", "Sí"]
+
+## Accuracy
+accuracy_5 <- (VP + VN) / sum(conf_5)
+accuracy_5
+
+## Curva ROC y el AUC
+roc_5 <- roc(datos_scaled$retira, as.numeric(pred_knn_5))
+auc(roc_5)
+
+plot(roc_5, col = "blue", lwd = 2, main = "Curva ROC — k = 5")
 ```
 
-## Preguntas de interpretación:
+## Preguntas para el informe
 
-### Interpretación de resultados: Con base en las primeras reglas obtenidas mediante el código anterior:
-	•	¿Cuál de las reglas observadas consideras más relevante para el supermercado y por qué?
-	•	Interpreta en tus propias palabras la siguiente regla: `{Frutas} ⇒ {Azúcar}`
-	•	¿Qué nos dice sobre el comportamiento del consumidor?
-	•	¿Cómo podrías aprovechar esta información para proponer una promoción o disposición de góndolas?
+**1. Comparación entre modelos:**
 
-### Evaluación de la fuerza de asociación:
-	•	La regla {Mantequilla, Verduras} ⇒ {Queso} tiene una confianza del 0.588 y un lift de 1.47.
-	•	¿Cómo interpretarías esta relación?
-	•	¿Qué tan fuerte consideras la asociación?
-	•	¿Qué acción comercial podría sugerirse?
+•	¿Cómo cambia la matriz de confusión al pasar de k = 5 a k = 10 y k = 20?
 
-### Análisis crítico:
-	•	Si el análisis se basara únicamente en datos de un mes de ventas, ¿qué limitaciones tendría la interpretación?
-	•	¿Qué otros factores o variables te gustaría incluir para obtener reglas más informativas (por ejemplo, tipo de cliente, día de la semana, temporada)?
-	•	Menciona un caso fuera del comercio minorista donde el análisis de reglas de asociación pueda ser útil (por ejemplo, en banca, educación o salud).
+**2. Evaluación de desempeño:**
+
+•	Calcule la exactitud (accuracy) para cada modelo (k = 5, k = 10, k = 20).
+
+•	¿Cuál de los tres modelos presenta la mayor exactitud?
+
+**3. Curva ROC y poder discriminatorio**
+
+•	¿Qué valor de AUC obtuvo para k = 5?
+
+•	¿Qué indica este valor sobre la capacidad del modelo para distinguir entre estudiantes que se retiran y los que no?
+
+•	¿Esperarías que el AUC mejore, empeore o se mantenga al aumentar k? ¿Por qué?
+
+**4. Reflexión final:** Si tuvieras que elegir uno de los tres modelos, ¿cuál seleccionarías y por qué?
 
 ::: callout-tip
-💡 Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 12 — Reglas de Asociación.
+💡 Entrega: Suba su documento con las respuestas a la plataforma Intu, en la actividad correspondiente a la Semana 14 — Modelo kNN (Predicción de Retiro). Y suba el script con el que realizó el procedimiento. Recuerde que se evaluará la claridad de sus interpretaciones, la consistencia con los resultados del modelo y su capacidad para proponer acciones basadas en los hallazgos.
 :::
-
-
-
-
-
 

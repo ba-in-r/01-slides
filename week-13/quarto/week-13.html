@@ -1632,12 +1632,18 @@ window.Quarto = {
   <ul>
   <li><a href="#qué-es-un-problema-de-clasificación" id="toc-qué-es-un-problema-de-clasificación" class="nav-link active" data-scroll-target="#qué-es-un-problema-de-clasificación"><span class="header-section-number">1</span> ¿Qué es un problema de clasificación?</a>
   <ul class="collapse">
-  <li><a href="#limitaciones-del-modelo-lineal-clásico" id="toc-limitaciones-del-modelo-lineal-clásico" class="nav-link" data-scroll-target="#limitaciones-del-modelo-lineal-clásico"><span class="header-section-number">1.1</span> Limitaciones del modelo lineal clásico</a></li>
-  <li><a href="#el-modelo-logit" id="toc-el-modelo-logit" class="nav-link" data-scroll-target="#el-modelo-logit"><span class="header-section-number">1.2</span> El Modelo Logit</a></li>
-  <li><a href="#odds-y-log-odds-intuición-práctica" id="toc-odds-y-log-odds-intuición-práctica" class="nav-link" data-scroll-target="#odds-y-log-odds-intuición-práctica"><span class="header-section-number">1.3</span> Odds y log-odds: intuición práctica</a></li>
-  <li><a href="#interpretación-de-los-coeficientes" id="toc-interpretación-de-los-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-los-coeficientes"><span class="header-section-number">1.4</span> Interpretación de los coeficientes</a></li>
-  <li><a href="#evaluación-del-modelo" id="toc-evaluación-del-modelo" class="nav-link" data-scroll-target="#evaluación-del-modelo"><span class="header-section-number">1.5</span> Evaluación del modelo</a></li>
-  <li><a href="#aplicaciones-en-business-analytics" id="toc-aplicaciones-en-business-analytics" class="nav-link" data-scroll-target="#aplicaciones-en-business-analytics"><span class="header-section-number">1.6</span> Aplicaciones en Business Analytics</a></li>
+  <li><a href="#modelación" id="toc-modelación" class="nav-link" data-scroll-target="#modelación"><span class="header-section-number">1.1</span> Modelación</a>
+  <ul class="collapse">
+  <li><a href="#el-modelo-logit" id="toc-el-modelo-logit" class="nav-link" data-scroll-target="#el-modelo-logit"><span class="header-section-number">1.1.1</span> El Modelo Logit</a></li>
+  <li><a href="#interpretación-matemática-y-empírica" id="toc-interpretación-matemática-y-empírica" class="nav-link" data-scroll-target="#interpretación-matemática-y-empírica"><span class="header-section-number">1.1.2</span> Interpretación matemática y empírica</a></li>
+  <li><a href="#odds-y-log-odds-intuición-práctica" id="toc-odds-y-log-odds-intuición-práctica" class="nav-link" data-scroll-target="#odds-y-log-odds-intuición-práctica"><span class="header-section-number">1.1.3</span> Odds y log-odds: intuición práctica</a></li>
+  <li><a href="#interpretación-de-los-coeficientes" id="toc-interpretación-de-los-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-los-coeficientes"><span class="header-section-number">1.1.4</span> Interpretación de los coeficientes</a></li>
+  <li><a href="#comportamiento-no-lineal-del-logit" id="toc-comportamiento-no-lineal-del-logit" class="nav-link" data-scroll-target="#comportamiento-no-lineal-del-logit"><span class="header-section-number">1.1.5</span> Comportamiento no lineal del Logit</a></li>
+  </ul></li>
+  <li><a href="#evaluación-del-modelo" id="toc-evaluación-del-modelo" class="nav-link" data-scroll-target="#evaluación-del-modelo"><span class="header-section-number">1.2</span> Evaluación del modelo</a>
+  <ul class="collapse">
+  <li><a href="#interpretación-estratégica" id="toc-interpretación-estratégica" class="nav-link" data-scroll-target="#interpretación-estratégica"><span class="header-section-number">1.2.1</span> Interpretación estratégica</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2</span> Aplicación en R</a>
   <ul class="collapse">
@@ -1645,9 +1651,10 @@ window.Quarto = {
   <li><a href="#ingesta-de-datos" id="toc-ingesta-de-datos" class="nav-link" data-scroll-target="#ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</a></li>
   <li><a href="#estimación-del-modelo-logit" id="toc-estimación-del-modelo-logit" class="nav-link" data-scroll-target="#estimación-del-modelo-logit"><span class="header-section-number">2.3</span> Estimación del Modelo Logit</a>
   <ul class="collapse">
-  <li><a href="#formulación-del-modelo" id="toc-formulación-del-modelo" class="nav-link" data-scroll-target="#formulación-del-modelo"><span class="header-section-number">2.3.1</span> Formulación del modelo</a></li>
-  <li><a href="#estimación-en-r" id="toc-estimación-en-r" class="nav-link" data-scroll-target="#estimación-en-r"><span class="header-section-number">2.3.2</span> Estimación en R</a></li>
-  <li><a href="#interpretación-de-coeficientes" id="toc-interpretación-de-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-coeficientes"><span class="header-section-number">2.3.3</span> Interpretación de coeficientes</a></li>
+  <li><a href="#cómo-se-formula-el-modelo" id="toc-cómo-se-formula-el-modelo" class="nav-link" data-scroll-target="#cómo-se-formula-el-modelo"><span class="header-section-number">2.3.1</span> ¿Cómo se formula el modelo?</a></li>
+  <li><a href="#qué-significa-cada-parte" id="toc-qué-significa-cada-parte" class="nav-link" data-scroll-target="#qué-significa-cada-parte"><span class="header-section-number">2.3.2</span> ¿Qué significa cada parte?</a></li>
+  <li><a href="#estimación-en-r" id="toc-estimación-en-r" class="nav-link" data-scroll-target="#estimación-en-r"><span class="header-section-number">2.3.3</span> Estimación en R</a></li>
+  <li><a href="#interpretación-de-coeficientes" id="toc-interpretación-de-coeficientes" class="nav-link" data-scroll-target="#interpretación-de-coeficientes"><span class="header-section-number">2.3.4</span> Interpretación de coeficientes</a></li>
   </ul></li>
   <li><a href="#evaluación-del-modelo-logit" id="toc-evaluación-del-modelo-logit" class="nav-link" data-scroll-target="#evaluación-del-modelo-logit"><span class="header-section-number">2.4</span> Evaluación del Modelo Logit</a>
   <ul class="collapse">
@@ -1663,9 +1670,9 @@ window.Quarto = {
   <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</a>
   <ul class="collapse">
   <li><a href="#estimación-del-modelo-logit-1" id="toc-estimación-del-modelo-logit-1" class="nav-link" data-scroll-target="#estimación-del-modelo-logit-1"><span class="header-section-number">3.1.1</span> Estimación del modelo Logit</a></li>
-  <li><a href="#evaluación-del-modelo-logit-1" id="toc-evaluación-del-modelo-logit-1" class="nav-link" data-scroll-target="#evaluación-del-modelo-logit-1"><span class="header-section-number">3.1.2</span> Evaluación del Modelo Logit</a></li>
   </ul></li>
-  <li><a href="#preguntas-para-el-informe" id="toc-preguntas-para-el-informe" class="nav-link" data-scroll-target="#preguntas-para-el-informe"><span class="header-section-number">3.2</span> Preguntas para el informe</a></li>
+  <li><a href="#evaluación-del-modelo-logit-1" id="toc-evaluación-del-modelo-logit-1" class="nav-link" data-scroll-target="#evaluación-del-modelo-logit-1"><span class="header-section-number">3.2</span> Evaluación del Modelo Logit</a></li>
+  <li><a href="#preguntas-para-el-informe" id="toc-preguntas-para-el-informe" class="nav-link" data-scroll-target="#preguntas-para-el-informe"><span class="header-section-number">3.3</span> Preguntas para el informe</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -2001,33 +2008,33 @@ El objetivo es <strong>asignar observaciones a categorías</strong> con base en 
 </li>
 <li>Clasificar correos en “spam” o “no spam”.</li>
 </ul>
-<section id="limitaciones-del-modelo-lineal-clásico" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="limitaciones-del-modelo-lineal-clásico"><span class="header-section-number">1.1</span> Limitaciones del modelo lineal clásico</h2>
-<p>La <strong>regresión lineal</strong> no es apropiada para variables dicotómicas porque:</p>
+<section id="modelación" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="modelación"><span class="header-section-number">1.1</span> Modelación</h2>
+<section id="el-modelo-logit" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="el-modelo-logit"><span class="header-section-number">1.1.1</span> El Modelo Logit</h3>
+<p>En el contexto de <strong>Business Analytics</strong>, cuando la variable de interés es dicotómica (por ejemplo, <em>comprar/no comprar</em>, <em>aprobar/reprobar</em>, <em>renovar/no renovar</em>), necesitamos un modelo que relacione las características observadas (X) con la <strong>probabilidad de éxito</strong> (P(Y=1)).</p>
+<p>El modelo <strong>Logit</strong> propone una relación no lineal entre estas variables mediante la <strong>función logística</strong>:</p>
+<p><span class="math inline">\(P(Y=1|X) = \frac{1}{1 + e^{-(\beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k)}}\)</span></p>
+<p>Esta transformación convierte una combinación lineal de predictores (<span class="math inline">\(\beta_0 + \beta_1 X_1 + \cdots\)</span>) en un valor comprendido entre <strong>0 y 1</strong>, es decir, una probabilidad válida.</p>
+<p>📈 <strong>Idea clave:</strong> Mientras que la regresión lineal puede producir predicciones fuera del rango [0,1], el modelo Logit <strong>comprime la escala</strong> y captura relaciones no lineales entre las variables explicativas y la probabilidad del evento.</p>
+</section>
+<section id="interpretación-matemática-y-empírica" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="interpretación-matemática-y-empírica"><span class="header-section-number">1.1.2</span> Interpretación matemática y empírica</h3>
+<p>En lugar de modelar directamente la probabilidad, el modelo Logit transforma la relación a través del <strong>logaritmo de las odds (razón de probabilidades)</strong>, definido como:</p>
+<p><span class="math inline">\(\log\left(\frac{P(Y=1)}{1 - P(Y=1)}\right) = \beta_0 + \beta_1 X_1 + \cdots + \beta_k X_k\)</span></p>
+<p>Esta ecuación implica que los <strong>log-odds</strong> cambian linealmente con los valores de (X), aunque la probabilidad (P(Y=1)) lo haga de manera no lineal. De este modo, el Logit puede modelar relaciones complejas, donde los efectos marginales de cada variable disminuyen a medida que la probabilidad se acerca a 0 o 1.</p>
+<p>En la práctica, este comportamiento <strong>“en S” o sigmoide</strong> refleja situaciones reales de decisión:</p>
 <ul>
-<li>Predice valores continuos fuera del rango [0,1].<br>
-</li>
-<li>Asume una relación lineal entre las variables explicativas y la probabilidad.<br>
-</li>
-<li>Viola la homocedasticidad y la normalidad de los errores.</li>
+<li>Un aumento en las horas de estudio tiene un fuerte impacto cuando un estudiante está indeciso (probabilidad ≈ 0.5),<br>
+pero un efecto mucho menor si ya tiene una probabilidad muy alta o muy baja de aprobar.</li>
 </ul>
-<p><strong>Solución:</strong> usar un modelo que prediga directamente <strong>probabilidades entre 0 y 1</strong>: el <strong>Modelo Logit</strong>.</p>
 </section>
-<section id="el-modelo-logit" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="el-modelo-logit"><span class="header-section-number">1.2</span> El Modelo Logit</h2>
-<p>El modelo Logit relaciona las variables explicativas con la <strong>probabilidad de éxito</strong> ( P(Y=1) ) mediante una función no lineal llamada <strong>función logística</strong>:</p>
-<p>[ P(Y=1|X) = ]</p>
-<p>Esta transformación garantiza que las probabilidades estén siempre entre 0 y 1.</p>
-<p><strong>Interpretación:</strong> En lugar de modelar la probabilidad directamente, el Logit modela el <strong>logaritmo de las odds (razón de probabilidades):</strong></p>
-<p>[ () = _0 + _1 X_1 + + _k X_k ]</p>
-<p>Cada coeficiente (_j) indica cómo cambia el <strong>log-odds</strong> de éxito cuando (X_j) aumenta en una unidad.</p>
-</section>
-<section id="odds-y-log-odds-intuición-práctica" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="odds-y-log-odds-intuición-práctica"><span class="header-section-number">1.3</span> Odds y log-odds: intuición práctica</h2>
+<section id="odds-y-log-odds-intuición-práctica" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="odds-y-log-odds-intuición-práctica"><span class="header-section-number">1.1.3</span> Odds y log-odds: intuición práctica</h3>
+<p><strong>Odds (razón de probabilidades):</strong> <span class="math inline">\(\text{odds} = \frac{P(Y=1)}{1 - P(Y=1)}\)</span></p>
+<p>Ejemplo: si <span class="math inline">\(P=0.8\)</span>, las odds son 4 a 1 (es decir, cuatro veces más probable que ocurra el evento que que no ocurra).</p>
 <ul>
-<li><p><strong>Odds (razón de probabilidades):</strong> [ = ] Ejemplo: si (P=0.8), las odds son 4 a 1.</p></li>
-<li><p><strong>Log-odds:</strong> logaritmo natural de las odds.<br>
-El modelo Logit asume que estas log-odds varían linealmente con las variables explicativas.</p></li>
+<li><strong>Log-odds:</strong> Es el logaritmo natural de las <em>odds</em>. Este paso permite que la relación entre las variables y el resultado sea lineal, facilitando la estimación con métodos de regresión.</li>
 </ul>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2039,21 +2046,21 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Nota:</strong><br>
-Las <em>odds</em> comparan la probabilidad de éxito frente a la de fracaso.<br>
-El logaritmo convierte esta razón en una escala continua, lo que permite aplicar un modelo lineal.</p>
+<p><strong>Nota:</strong> La escala de log-odds no tiene una interpretación inmediata en porcentajes, pero al exponenciar los coeficientes (<span class="math inline">\(e^{\beta\_j}\)</span>) recuperamos una medida interpretable: el <strong>odds ratio</strong>, que indica cuánto se multiplican las probabilidades relativas del evento cuando una variable cambia en una unidad.</p>
 </div>
 </div>
 </section>
-<section id="interpretación-de-los-coeficientes" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="interpretación-de-los-coeficientes"><span class="header-section-number">1.4</span> Interpretación de los coeficientes</h2>
-<p>Cada parámetro (_j) se interpreta como el cambio en el log-odds de éxito por un aumento unitario en (X_j).</p>
+<section id="interpretación-de-los-coeficientes" class="level3" data-number="1.1.4">
+<h3 data-number="1.1.4" class="anchored" data-anchor-id="interpretación-de-los-coeficientes"><span class="header-section-number">1.1.4</span> Interpretación de los coeficientes</h3>
+<p>Cada parámetro <span class="math inline">\(\beta\_j\)</span> representa el <strong>efecto parcial</strong> de la variable <span class="math inline">\(X_j\)</span> sobre el logaritmo de las odds del evento, manteniendo las demás constantes:</p>
 <ul>
-<li>Si ( _j &gt; 0 ): (X_j) aumenta la probabilidad de éxito.<br>
+<li>Si <span class="math inline">\(\beta_j &gt; 0\)</span>: el aumento en<span class="math inline">\(X_j\)</span> incrementa la probabilidad de éxito.<br>
 </li>
-<li>Si ( _j &lt; 0 ): (X_j) reduce la probabilidad de éxito.</li>
+<li>Si <span class="math inline">\(\beta_j &lt; 0\)</span>: el aumento en <span class="math inline">\(X_j\)</span> reduce la probabilidad de éxito.</li>
 </ul>
-<p>Para una interpretación más intuitiva se usa el **odds ratio (e^{_j})<strong>, que indica </strong>cuánto se multiplican las odds** al aumentar (X_j) en una unidad.</p>
+<p>Sin embargo, dado que los coeficientes se expresan en log-odds, solemos transformarlos a <strong>odds ratios</strong>:</p>
+<p><span class="math inline">\(\text{odds ratio} = e^{\beta_j}\)</span></p>
+<p>Esta medida es más intuitiva, ya que describe un cambio multiplicativo en las odds:</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2064,49 +2071,96 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Ejemplo interpretativo:</strong><br>
-Si (e^{_1} = 1.5), un aumento de una unidad en (X_1) incrementa las probabilidades de éxito en un <strong>50 %</strong>.</p>
+<p><strong>Ejemplo interpretativo:</strong> Si <span class="math inline">\(e^{\beta_{\text{horas\_estudio}}} = 1.5\)</span>, entonces cada hora adicional de estudio aumenta en un <strong>50 %</strong> las probabilidades relativas de aprobar, manteniendo las demás variables constantes.</p>
 </div>
 </div>
 </section>
-<section id="evaluación-del-modelo" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="evaluación-del-modelo"><span class="header-section-number">1.5</span> Evaluación del modelo</h2>
-<p>Las métricas más comunes para evaluar modelos de clasificación incluyen:</p>
+<section id="comportamiento-no-lineal-del-logit" class="level3" data-number="1.1.5">
+<h3 data-number="1.1.5" class="anchored" data-anchor-id="comportamiento-no-lineal-del-logit"><span class="header-section-number">1.1.5</span> Comportamiento no lineal del Logit</h3>
+<p>El modelo Logit captura <strong>efectos decrecientes</strong> a medida que la probabilidad se acerca a los extremos.<br>
+Gráficamente, su forma sigmoide muestra tres zonas:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 41%">
-<col style="width: 58%">
+<col style="width: 16%">
+<col style="width: 40%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Zona</th>
+<th>Probabilidad</th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Inferior (P≈0)</strong></td>
+<td>Evento muy improbable</td>
+<td>Cambios en X apenas afectan la probabilidad</td>
+</tr>
+<tr class="even">
+<td><strong>Central (P≈0.5)</strong></td>
+<td>Región de máxima sensibilidad</td>
+<td>Pequeños cambios en X producen grandes cambios en P</td>
+</tr>
+<tr class="odd">
+<td><strong>Superior (P≈1)</strong></td>
+<td>Evento casi seguro</td>
+<td>Cambios en X tienen poco efecto adicional</td>
+</tr>
+</tbody>
+</table>
+<p>Esta propiedad hace del Logit una herramienta potente para <strong>problemas de decisión</strong>,<br>
+donde la respuesta no cambia de forma constante, sino en umbrales o zonas críticas.</p>
+<p>📘 <strong>En resumen:</strong> El modelo Logit combina <strong>rigor estadístico</strong> con <strong>interpretabilidad económica</strong>, lo que lo convierte en una de las técnicas más utilizadas en Business Analytics. Permite traducir información observable en probabilidades, evaluar qué variables influyen en un resultado y apoyar decisiones basadas en datos y riesgo.</p>
+</section>
+</section>
+<section id="evaluación-del-modelo" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="evaluación-del-modelo"><span class="header-section-number">1.2</span> Evaluación del modelo</h2>
+<p>Evaluar un modelo de clasificación no solo consiste en verificar cuántas predicciones fueron correctas, sino en <strong>entender cómo y dónde el modelo acierta o se equivoca</strong>. Las métricas permiten medir su desempeño bajo diferentes perspectivas: precisión, cobertura y capacidad de discriminación entre clases. Las métricas más comunes incluyen:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 51%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Métrica</th>
 <th>Descripción</th>
+<th>Interpretación práctica</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>Exactitud (Accuracy)</strong></td>
 <td>Proporción de predicciones correctas sobre el total.</td>
+<td>Mide el desempeño global del modelo, pero puede ser engañosa si las clases están desbalanceadas.</td>
 </tr>
 <tr class="even">
-<td><strong>Sensibilidad (Recall)</strong></td>
+<td><strong>Sensibilidad (Recall o Tasa de Verdaderos Positivos)</strong></td>
 <td>Capacidad del modelo para identificar correctamente los casos positivos.</td>
+<td>Indica qué tan bien detecta el modelo a quienes realmente presentan el evento.</td>
 </tr>
 <tr class="odd">
 <td><strong>Especificidad</strong></td>
 <td>Capacidad del modelo para identificar correctamente los casos negativos.</td>
+<td>Evalúa la habilidad para no confundir casos negativos con positivos.</td>
 </tr>
 <tr class="even">
 <td><strong>Precisión (Precision)</strong></td>
 <td>Proporción de verdaderos positivos entre todos los positivos predichos.</td>
+<td>Indica cuántas de las predicciones positivas son realmente correctas.</td>
 </tr>
 <tr class="odd">
 <td><strong>F1-Score</strong></td>
 <td>Media armónica entre precisión y sensibilidad.</td>
+<td>Balancea los errores tipo I y II; útil cuando las clases son desiguales.</td>
 </tr>
 <tr class="even">
 <td><strong>AUC-ROC</strong></td>
-<td>Evalúa la capacidad del modelo para distinguir entre clases.</td>
+<td>Área bajo la curva ROC (Receiver Operating Characteristic).</td>
+<td>Evalúa la capacidad general del modelo para distinguir entre clases. Cuanto más cerca de 1, mejor.</td>
 </tr>
 </tbody>
 </table>
@@ -2120,26 +2174,47 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Matriz de confusión:</strong><br>
-Muestra cómo el modelo clasifica los casos reales en comparación con los predichos.<br>
-Permite calcular todas las métricas anteriores.</p>
+<p><strong>Matriz de confusión:</strong> Es la herramienta base para calcular todas las métricas anteriores. Muestra los aciertos (predicciones correctas) y errores (predicciones incorrectas) del modelo:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 37%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><strong>Real Positivo (1)</strong></th>
+<th><strong>Real Negativo (0)</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Predicho Positivo (1)</strong></td>
+<td>Verdaderos Positivos (VP)</td>
+<td>Falsos Positivos (FP)</td>
+</tr>
+<tr class="even">
+<td><strong>Predicho Negativo (0)</strong></td>
+<td>Falsos Negativos (FN)</td>
+<td>Verdaderos Negativos (VN)</td>
+</tr>
+</tbody>
+</table>
+<p>Esta tabla permite diagnosticar el tipo de error predominante: si el modelo <strong>no detecta casos verdaderos</strong> (alta tasa de FN) o si <strong>etiqueta erróneamente casos negativos como positivos</strong> (alta tasa de FP).</p>
 </div>
 </div>
-</section>
-<section id="aplicaciones-en-business-analytics" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="aplicaciones-en-business-analytics"><span class="header-section-number">1.6</span> Aplicaciones en Business Analytics</h2>
+<section id="interpretación-estratégica" class="level3" data-number="1.2.1">
+<h3 data-number="1.2.1" class="anchored" data-anchor-id="interpretación-estratégica"><span class="header-section-number">1.2.1</span> Interpretación estratégica</h3>
+<p>Cada métrica tiene un significado <strong>operativo</strong> según el contexto de negocio:</p>
 <ul>
-<li><strong>Banca y microfinanzas:</strong> modelos de <em>credit scoring</em> (probabilidad de incumplimiento).<br>
+<li>En <strong>riesgo crediticio</strong>, un falso negativo (no identificar un cliente riesgoso) puede ser costoso.<br>
 </li>
-<li><strong>Marketing:</strong> predicción de cancelaciones o <em>churn</em>.<br>
+<li>En <strong>salud</strong>, un falso positivo (diagnóstico incorrecto de enfermedad) puede generar tratamientos innecesarios.<br>
 </li>
-<li><strong>Salud:</strong> diagnóstico temprano (presencia o ausencia de enfermedad).<br>
-</li>
-<li><strong>Recursos Humanos:</strong> predicción de rotación laboral o desempeño.</li>
+<li>En <strong>educación</strong>, un modelo que predice mal quién está en riesgo de retirarse podría afectar la asignación de tutorías o becas.<br>
+Por ello, <strong>no existe una única métrica “mejor”</strong>; el análisis debe centrarse en la métrica que maximiza el valor para la decisión.</li>
 </ul>
-<p><strong>Idea clave:</strong></p>
-<p>El modelo Logit permite traducir características observables en <strong>probabilidades de ocurrencia de un evento</strong>,<br>
-facilitando la <strong>toma de decisiones basada en riesgo</strong>.</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2150,11 +2225,11 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Resumen:</strong><br>
-El modelo Logit es el punto de partida de la analítica predictiva moderna. Permite estimar probabilidades y clasificar observaciones en grupos, combinando interpretabilidad y rigor estadístico.</p>
+<p><strong>Resumen:</strong> El modelo Logit es el punto de partida de la analítica predictiva moderna. Permite <strong>clasificar observaciones</strong>, <strong>estimar probabilidades</strong> y <strong>analizar la influencia de cada variable</strong>, combinando interpretabilidad estadística con valor práctico para la gestión y la estrategia empresarial.</p>
 </div>
 </div>
 <hr>
+</section>
 </section>
 </section>
 <section id="aplicación-en-r" class="level1" data-number="2">
@@ -2222,23 +2297,25 @@ Note
 </section>
 <section id="estimación-del-modelo-logit" class="level2" data-number="2.3">
 <h2 data-number="2.3" class="anchored" data-anchor-id="estimación-del-modelo-logit"><span class="header-section-number">2.3</span> Estimación del Modelo Logit</h2>
-<p>En esta sección estimaremos un <strong>modelo Logit</strong> para predecir la probabilidad de que un estudiante <strong>apruebe el curso</strong>, utilizando las variables explicativas incluidas en la base de datos.</p>
-<p>El objetivo es cuantificar cómo influyen factores como las horas de estudio, la asistencia, la participación en clase o la afinidad con la estadística sobre la probabilidad de aprobar.</p>
-<section id="formulación-del-modelo" class="level3" data-number="2.3.1">
-<h3 data-number="2.3.1" class="anchored" data-anchor-id="formulación-del-modelo"><span class="header-section-number">2.3.1</span> Formulación del modelo</h3>
-<p>El modelo Logit se puede expresar como:</p>
-<p><span class="math inline">\(\log\left(\frac{P(\text{aprueba}=1)}{1 - P(\text{aprueba}=1)}\right) =\)</span></p>
-<p><span class="math inline">\(f(\text{horas\_estudio},\text{asistencia},\text{participacion},\text{uso\_de\_R},\text{trabajos\_entregados},\text{afinidad\_estadistica})\)</span></p>
-<p>Donde:</p>
-<ul>
-<li>El término del lado izquierdo representa el <strong>logaritmo de las odds</strong> de aprobar.<br>
-</li>
-<li>Los coeficientes (_j) indican cómo cambia el log-odds de aprobar ante un cambio unitario en cada variable.</li>
-</ul>
+<p>Ahora sí, pasemos a la parte práctica: vamos a <strong>estimar un modelo Logit</strong> que nos ayude a predecir la probabilidad de que un estudiante <strong>apruebe el curso</strong>. La idea es bastante simple: queremos entender qué factores —como las horas de estudio, la asistencia, la participación en clase o el gusto por la estadística— están realmente asociados con aprobar o no. Podríamos pensar en esto como tratar de responder preguntas del tipo:</p>
+<p>“¿Qué tanto influye estudiar más o asistir con regularidad en la probabilidad de aprobar?”<br>
+“¿Tiene impacto que el estudiante use más R o entregue más trabajos?”</p>
+<p>El modelo Logit nos permite cuantificar esas relaciones de forma probabilística.</p>
+<section id="cómo-se-formula-el-modelo" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="cómo-se-formula-el-modelo"><span class="header-section-number">2.3.1</span> ¿Cómo se formula el modelo?</h3>
+<p>En pocas palabras, el Logit relaciona las variables explicativas con la <strong>probabilidad de aprobar</strong> a través de una función no lineal llamada <em>función logística</em>. Matemáticamente, el modelo se puede escribir así:</p>
+<p><span class="math inline">\(\log\left(\frac{P(\text{aprueba}=1)}{1 - P(\text{aprueba}=1)}\right) =\)</span> <span class="math inline">\(\beta_0 + \beta_1(\text{horas\_estudio}) + ... + \beta_6(\text{afinidad\_estadistica})\)</span></p>
+<p>Dónde las variables explicativas son: <span class="math inline">\(\text{horas\_estudio}\)</span> + <span class="math inline">\(\text{asistencia}\)</span> + <span class="math inline">\(\text{participacion}\)</span> + <span class="math inline">\(\text{uso\_de\_R}\)</span> + <span class="math inline">\(\text{trabajos\_entregados}\)</span> + <span class="math inline">\(\text{afinidad\_estadistica}\)</span>. Lo que hace este modelo es algo muy interesante: en lugar de predecir directamente una probabilidad (que siempre debe estar entre 0 y 1), predice el <strong>logaritmo de las odds</strong> o razones de probabilidad. Esto permite usar una relación lineal en el “fondo” del modelo, pero que al transformarse con la función logística se mantiene siempre dentro del rango válido.</p>
 </section>
-<section id="estimación-en-r" class="level3" data-number="2.3.2">
-<h3 data-number="2.3.2" class="anchored" data-anchor-id="estimación-en-r"><span class="header-section-number">2.3.2</span> Estimación en R</h3>
-<p>Usaremos la función <code>glm()</code> (Generalized Linear Model) especificando <code>family = binomial(link = "logit")</code> para estimar el modelo logístico.</p>
+<section id="qué-significa-cada-parte" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="qué-significa-cada-parte"><span class="header-section-number">2.3.2</span> ¿Qué significa cada parte?</h3>
+<p>El término del lado izquierdo, <span class="math inline">\(\log\left(\frac{P(Y=1)}{1 - P(Y=1)}\right)\)</span> es el <strong>logaritmo de las odds</strong>, es decir, cómo cambian las probabilidades relativas de aprobar frente a reprobar.</p>
+<p>Los coeficientes <span class="math inline">\(\beta_j\)</span>) nos dicen <strong>cuánto cambia esa razón</strong> cuando una variable cambia en una unidad, manteniendo las demás constantes. Por ejemplo, si el coeficiente de <code>horas_estudio</code> es positivo, significa que estudiar más está asociado con una mayor probabilidad de aprobar.</p>
+<p>En resumen, el modelo nos permite <em>traducir datos en probabilidades</em>. A partir de los valores observados de las variables, podemos estimar qué tan probable es que un estudiante apruebe, y además entender <strong>qué factores son los que realmente mueven la aguja</strong>.</p>
+</section>
+<section id="estimación-en-r" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="estimación-en-r"><span class="header-section-number">2.3.3</span> Estimación en R</h3>
+<p>Usaremos la función <code>glm()</code> (Generalized Linear Model) especificando <code>family = binomial(link = "logit")</code> para estimar el modelo logístico. Esta función ajusta un modelo de regresión que predice la probabilidad de que un estudiante <strong>apruebe el curso</strong>, dada su combinación de características.</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2255,10 +2332,10 @@ Note
 </div>
 </div>
 </section>
-<section id="interpretación-de-coeficientes" class="level3" data-number="2.3.3">
-<h3 data-number="2.3.3" class="anchored" data-anchor-id="interpretación-de-coeficientes"><span class="header-section-number">2.3.3</span> Interpretación de coeficientes</h3>
+<section id="interpretación-de-coeficientes" class="level3" data-number="2.3.4">
+<h3 data-number="2.3.4" class="anchored" data-anchor-id="interpretación-de-coeficientes"><span class="header-section-number">2.3.4</span> Interpretación de coeficientes</h3>
 <p>Para obtener una interpretación más intuitiva, transformamos los coeficientes mediante la exponenciación:</p>
-<p> = e^{_j}</p>
+<p><span class="math inline">\(\text{odds ratio} = e^{\beta_j}\)</span></p>
 <p>Un odds ratio mayor a 1 indica que un aumento en la variable incrementa la probabilidad de aprobar, mientras que un valor menor a 1 indica que la reduce.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
@@ -2306,18 +2383,59 @@ Note
 </section>
 <section id="matriz-de-confusión" class="level3" data-number="2.4.2">
 <h3 data-number="2.4.2" class="anchored" data-anchor-id="matriz-de-confusión"><span class="header-section-number">2.4.2</span> Matriz de confusión</h3>
-<p>La matriz de confusión compara las predicciones del modelo con los valores reales y permite visualizar los aciertos y errores de clasificación.</p>
+<p>Una vez que el modelo ha hecho sus predicciones, el siguiente paso es <strong>evaluar qué tan bien lo hizo</strong>. Para eso usamos una herramienta clásica en clasificación: la <strong>matriz de confusión</strong>. Esta matriz no es más que una tabla de doble entrada que compara, para cada observación, lo que el modelo <strong>predijo</strong> frente a lo que <strong>realmente ocurrió</strong>. Es decir, muestra los aciertos y errores del modelo de una forma muy clara.</p>
 <div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Interpretación de los resultados:</p>
-<pre><code>•   Verdaderos positivos (VP): el modelo predice aprobar y el estudiante aprueba.
-•   Verdaderos negativos (VN): el modelo predice reprobar y el estudiante reprueba.
-•   Falsos positivos (FP): el modelo predice aprobar pero el estudiante reprueba.
-•   Falsos negativos (FN): el modelo predice reprobar pero el estudiante aprueba.</code></pre>
+<p>Esta matriz no es más que una tabla de doble entrada que compara, para cada observación, lo que el modelo <strong>predijo</strong> frente a lo que <strong>realmente ocurrió</strong>. Es decir, muestra los aciertos y errores del modelo de una forma muy clara. Cuando ejecutes el comando para crear la matriz, obtendrás una tabla similar a:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th>Real = 0</th>
+<th>Real = 1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Predicho = 0</strong></td>
+<td>176</td>
+<td>122</td>
+</tr>
+<tr class="even">
+<td><strong>Predicho = 1</strong></td>
+<td>418</td>
+<td>1284</td>
+</tr>
+</tbody>
+</table>
+<p>Cada celda te está contando <strong>cuántos estudiantes</strong> cayeron en cada situación posible. Veamos qué significa cada una:</p>
+<ul>
+<li><strong>Verdaderos positivos (VP):</strong> el modelo predijo que el estudiante aprobaría, y efectivamente aprobó.<br>
+</li>
+<li><strong>Verdaderos negativos (VN):</strong> el modelo predijo que el estudiante reprobaría, y así fue.<br>
+</li>
+<li><strong>Falsos positivos (FP):</strong> el modelo predijo que aprobaría, pero en realidad reprobó.<br>
+</li>
+<li><strong>Falsos negativos (FN):</strong> el modelo predijo que reprobaría, pero el estudiante aprobó.</li>
+</ul>
+<section id="por-qué-se-llama-confusión" class="level4" data-number="2.4.2.1">
+<h4 data-number="2.4.2.1" class="anchored" data-anchor-id="por-qué-se-llama-confusión"><span class="header-section-number">2.4.2.1</span> ¿Por qué se llama “confusión”?</h4>
+<p>Porque literalmente nos muestra <strong>en qué se confunde el modelo</strong> 😅.<br>
+Idealmente quisiéramos una matriz donde solo existan VP y VN (es decir, el modelo no se equivoca nunca).<br>
+Pero en la práctica eso rara vez ocurre: siempre hay un equilibrio entre los errores de tipo <strong>FP</strong> y <strong>FN</strong>,<br>
+y depende del contexto cuál de ellos es más costoso.</p>
+<p><strong>Ejemplo aplicado:</strong></p>
+<ul>
+<li>En un curso, un <strong>falso negativo</strong> (el modelo predice que el estudiante no aprobará, pero sí lo hace) puede no ser tan grave, porque el estudiante tuvo un buen resultado.<br>
+</li>
+<li>En cambio, un <strong>falso positivo</strong> (el modelo predice que aprobará, pero no lo hace) podría significar que el sistema subestimó el riesgo académico y el estudiante no recibió la ayuda que necesitaba.</li>
+</ul>
+<p>Por eso, <strong>interpretar la matriz de confusión va más allá de contar aciertos</strong>: nos ayuda a entender <strong>qué tipo de error comete el modelo</strong> y <strong>qué tan grave puede ser</strong> en el contexto real.</p>
+</section>
 </section>
 <section id="métricas-de-desempeño" class="level3" data-number="2.4.3">
 <h3 data-number="2.4.3" class="anchored" data-anchor-id="métricas-de-desempeño"><span class="header-section-number">2.4.3</span> Métricas de desempeño</h3>
-<p>A partir de la matriz de confusión calculamos las métricas más comunes para evaluar un modelo de clasificación:</p>
+<p>A partir de esta matriz, podemos calcular todas las métricas de desempeño del modelo: la <strong>exactitud (accuracy)</strong>, la <strong>sensibilidad (recall)</strong>, la <strong>especificidad</strong> y la <strong>precisión (precision)</strong>. Cada una de ellas utiliza una combinación de estos cuatro valores (VP, VN, FP, FN) para describir un aspecto distinto del rendimiento del modelo.</p>
 <p><span class="math inline">\(\text{Accuracy} = \frac{VP + VN}{VP + VN + FP + FN}\)</span></p>
 <p><span class="math inline">\(\text{Sensibilidad (Recall)} = \frac{VP}{VP + FN}\)</span></p>
 <p><span class="math inline">\(\text{Especificidad} = \frac{VN}{VN + FP}\)</span></p>
@@ -2340,10 +2458,77 @@ Tip
 </section>
 <section id="curva-roc-y-auc" class="level3" data-number="2.4.4">
 <h3 data-number="2.4.4" class="anchored" data-anchor-id="curva-roc-y-auc"><span class="header-section-number">2.4.4</span> Curva ROC y AUC</h3>
-<p>La curva ROC muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1 - especificidad) para distintos umbrales de decisión.</p>
-<p>El Área Bajo la Curva (AUC) mide el desempeño general del modelo:</p>
-<pre><code>•   AUC = 0.5 → el modelo no discrimina (como lanzar una moneda).
-•   AUC = 1 → el modelo clasifica perfectamente.</code></pre>
+<p>Hasta este punto ya sabemos cuántas predicciones acierta o se equivoca nuestro modelo. Pero todavía no hemos respondido algo importante: <strong>¿Qué tan bien distingue el modelo entre quienes aprueban y quienes no?</strong></p>
+<p>Ahí es donde entra en juego la <strong>curva ROC</strong>, una de las herramientas más potentes y visuales para evaluar modelos de clasificación.</p>
+<section id="qué-representa-la-curva-roc" class="level4" data-number="2.4.4.1">
+<h4 data-number="2.4.4.1" class="anchored" data-anchor-id="qué-representa-la-curva-roc"><span class="header-section-number">2.4.4.1</span> ¿Qué representa la curva ROC?</h4>
+<p>La curva ROC (Receiver Operating Characteristic) muestra la relación entre dos tasas calculadas a partir de la matriz de confusión:</p>
+<ul>
+<li><strong>Eje Y:</strong> la tasa de verdaderos positivos (Sensibilidad o Recall) → qué tan bien el modelo detecta correctamente los casos positivos.<br>
+</li>
+<li><strong>Eje X:</strong> la tasa de falsos positivos (1 - Especificidad) → cuántos negativos fueron clasificados erróneamente como positivos.</li>
+</ul>
+<p>Cada punto de la curva representa un umbral de decisión distinto. Por ejemplo: - Si el umbral es <strong>0.5</strong>, el modelo predice “aprueba” cuando la probabilidad es mayor a 0.5.<br>
+- Si bajamos el umbral a <strong>0.3</strong>, el modelo será más “generoso” y clasificará más estudiantes como aprobados (mayor sensibilidad, pero más falsos positivos).<br>
+- Si lo subimos a <strong>0.7</strong>, el modelo será más estricto (menos falsos positivos, pero también más falsos negativos).</p>
+<p>Por eso, la curva ROC <strong>resume el comportamiento del modelo a través de todos los posibles umbrales</strong>.</p>
+</section>
+<section id="el-área-bajo-la-curva-auc" class="level4" data-number="2.4.4.2">
+<h4 data-number="2.4.4.2" class="anchored" data-anchor-id="el-área-bajo-la-curva-auc"><span class="header-section-number">2.4.4.2</span> El Área Bajo la Curva (AUC)</h4>
+<p>El <strong>Área Bajo la Curva (AUC)</strong> es una medida global de desempeño que resume la capacidad del modelo para separar las dos clases. Su valor oscila entre 0 y 1:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 35%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Valor de AUC</th>
+<th>Interpretación</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>0.5</strong></td>
+<td>Sin poder discriminatorio</td>
+<td>El modelo predice al azar (como lanzar una moneda).</td>
+</tr>
+<tr class="even">
+<td><strong>0.6 – 0.7</strong></td>
+<td>Discriminación pobre</td>
+<td>El modelo distingue las clases, pero con bajo rendimiento.</td>
+</tr>
+<tr class="odd">
+<td><strong>0.7 – 0.9</strong></td>
+<td>Buen modelo</td>
+<td>El modelo separa adecuadamente las clases.</td>
+</tr>
+<tr class="even">
+<td><strong>&gt; 0.9</strong></td>
+<td>Excelente modelo</td>
+<td>El modelo casi clasifica perfectamente.</td>
+</tr>
+<tr class="odd">
+<td><strong>1.0</strong></td>
+<td>Clasificación perfecta</td>
+<td>Ideal (pero rara vez alcanzable en la práctica).</td>
+</tr>
+</tbody>
+</table>
+<p>💡 En pocas palabras: Cuanto mayor sea el AUC, <strong>mejor capacidad tiene el modelo para diferenciar entre aprobados y no aprobados</strong>, sin importar qué umbral usemos.</p>
+</section>
+<section id="cómo-se-interpreta-visualmente" class="level4" data-number="2.4.4.3">
+<h4 data-number="2.4.4.3" class="anchored" data-anchor-id="cómo-se-interpreta-visualmente"><span class="header-section-number">2.4.4.3</span> ¿Cómo se interpreta visualmente?</h4>
+<ul>
+<li>Una <strong>curva ROC “más arriba y más a la izquierda”</strong> indica un mejor modelo: logra una alta sensibilidad con pocos falsos positivos.<br>
+</li>
+<li>Una <strong>curva cercana a la diagonal (AUC ≈ 0.5)</strong> indica un modelo que no tiene valor predictivo.<br>
+</li>
+<li>Una <strong>curva casi perfecta</strong> se pega a los bordes del gráfico (AUC cercano a 1), lo cual indica una excelente separación entre clases.</li>
+</ul>
+<p>En el caso del modelo Logit, la curva suele ser suave y continua, ya que trabaja con probabilidades estimadas de manera gradual.</p>
 <div id="qwebr-insertion-location-10"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2359,6 +2544,7 @@ Note
 <p>Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras que valores superiores a 0.9 suelen considerarse excelentes. Si el AUC está cerca de 0.5, el modelo no está capturando patrones útiles.</p>
 </div>
 </div>
+</section>
 </section>
 <section id="visualización-de-resultados" class="level3" data-number="2.4.5">
 <h3 data-number="2.4.5" class="anchored" data-anchor-id="visualización-de-resultados"><span class="header-section-number">2.4.5</span> Visualización de resultados</h3>
@@ -2396,7 +2582,7 @@ Tip
 </li>
 <li>Redacte sus interpretaciones y conclusiones con base en los resultados.<br>
 </li>
-<li><strong>No copie el código ni las tablas</strong>, solo redacte sus respuestas.<br>
+<li><strong>No copie el código</strong>, solo las tablas y redacte sus respuestas.<br>
 </li>
 </ul></li>
 <li>Suba su documento a la plataforma <strong>Intu</strong>, en la actividad correspondiente a la <strong>Semana 13 — Modelo Logit (Predicción de Retiro)</strong>.</li>
@@ -2408,24 +2594,48 @@ Tip
 <div id="qwebr-insertion-location-12"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="evaluación-del-modelo-logit-1" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="evaluación-del-modelo-logit-1"><span class="header-section-number">3.1.2</span> Evaluación del Modelo Logit</h3>
-<p>Una vez estimado el modelo, evalúe su capacidad predictiva. A partir de los resultados, analice qué tan bien el modelo distingue entre los estudiantes que se retiran y los que no.</p>
+</section>
+<section id="evaluación-del-modelo-logit-1" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="evaluación-del-modelo-logit-1"><span class="header-section-number">3.2</span> Evaluación del Modelo Logit</h2>
+<p>Una vez que hayas estimado tu modelo Logit, el siguiente paso es <strong>evaluar qué tan bien funciona</strong>. En esta parte debes comprobar la capacidad predictiva del modelo, es decir, qué tan bien distingue entre los estudiantes que <strong>se retiran</strong> y los que <strong>no se retiran</strong> del curso. Para esta evaluación debes <strong>usar exactamente el mismo código que vimos en clase</strong>, adaptándolo al modelo que acabas de estimar (<code>modelo_logit</code>). No necesitas escribir nuevas funciones ni cambiar el procedimiento. Simplemente ejecuta paso a paso los bloques de código que ya exploramos para:</p>
+<ol type="1">
+<li><strong>Generar las predicciones</strong> del modelo (<code>predict()</code>):
 <ul>
-<li>Predicciones del modelo: Genere las probabilidades predichas y clasifique a cada estudiante según un umbral de 0.5.</li>
-<li>Genere la matriz de confusión para comparar las predicciones con los valores reales.</li>
-<li>Calcule las métricas básicas del modelo: exactitud, sensibilidad, especificidad y precisión.</li>
-<li>Calcule el Área Bajo la Curva (AUC) para medir el poder discriminatorio del modelo.</li>
-<li>Visualice la relación entre la probabilidad predicha de retiro y una variable explicativa (por ejemplo, las horas de estudio).</li>
-</ul>
+<li>Calcula la probabilidad estimada de retiro (<code>prob_predicha</code>).<br>
+</li>
+<li>Clasifica a cada estudiante como retirado (<code>1</code>) o no retirado (<code>0</code>) según un umbral de 0.5.</li>
+</ul></li>
+<li><strong>Construir la matriz de confusión:</strong>
+<ul>
+<li>Compara las predicciones con los valores reales de <code>retira</code>.<br>
+</li>
+<li>Identifica los verdaderos positivos (VP), falsos positivos (FP), verdaderos negativos (VN) y falsos negativos (FN).</li>
+</ul></li>
+<li><strong>Calcular las métricas de desempeño:</strong>
+<ul>
+<li>Usa el mismo conjunto de operaciones visto en clase para obtener:
+<ul>
+<li><strong>Exactitud (Accuracy)</strong> → proporción de predicciones correctas.<br>
+</li>
+<li><strong>Sensibilidad (Recall)</strong> → qué tan bien detecta a quienes se retiran.<br>
+</li>
+<li><strong>Especificidad</strong> → qué tan bien detecta a quienes permanecen.<br>
+</li>
+<li><strong>Precisión (Precision)</strong> → cuántas predicciones de retiro fueron correctas.</li>
+</ul></li>
+</ul></li>
+<li><strong>Analizar la curva ROC y el AUC:</strong>
+<ul>
+<li>Calcula el Área Bajo la Curva (AUC) usando <code>roc()</code> y <code>auc()</code> del paquete <code>pROC</code>.</li>
+</ul></li>
+</ol>
 </section>
-</section>
-<section id="preguntas-para-el-informe" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="preguntas-para-el-informe"><span class="header-section-number">3.2</span> Preguntas para el informe</h2>
+<section id="preguntas-para-el-informe" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="preguntas-para-el-informe"><span class="header-section-number">3.3</span> Preguntas para el informe</h2>
 <ol type="1">
 <li><p>Interpretación general • ¿Qué variables parecen tener mayor influencia en la probabilidad de retiro según el resumen del modelo (summary(modelo_logit))? • ¿Cuál es el signo del coeficiente asociado a horas_estudio y cómo lo interpretarías?</p></li>
-<li><p>Evaluación del desempeño • ¿Qué tan bien clasifica el modelo según las métricas de desempeño calculadas? • Si la exactitud (accuracy) es del 75 %, ¿cómo interpretarías este resultado en un contexto académico? • ¿El modelo tiende a cometer más falsos positivos o falsos negativos? ¿Qué implicaciones tendría eso?</p></li>
-<li><p>Curva ROC y visualización • ¿Qué valor obtuvo el AUC y qué indica sobre el poder predictivo del modelo? • ¿Cómo se interpreta la relación entre las horas de estudio y la probabilidad de retiro en el gráfico final? • ¿Qué estrategias institucionales podrían derivarse de estos resultados?</p></li>
+<li><p>Evaluación del desempeño • ¿Qué tan bien clasifica el modelo según las métricas de desempeño calculadas? • Si la exactitud (accuracy) es del 75 %, ¿cómo interpretarías este resultado en este contexto? • ¿El modelo tiende a cometer más falsos positivos o falsos negativos? ¿Qué implicaciones tendría eso?</p></li>
+<li><p>Curva ROC y visualización • ¿Qué valor obtuvo el AUC y qué indica sobre el poder predictivo del modelo? • ¿Cómo se interpreta la relación entre las horas de estudio y la probabilidad de retiro en el gráfico final?</p></li>
 </ol>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
