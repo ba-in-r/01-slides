@@ -16,7 +16,7 @@ filters:
   - webr
 
 webr:
-    packages: [tidyverse , caret , class , pROC]
+    packages: [tidyverse , outliers , EnvStats , univOutl]
 
 
 

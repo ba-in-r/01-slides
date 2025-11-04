@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n \n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## chuequear objeto\nnames(datos)\nhead(datos)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## Seleccionamos solo las variables numéricas\nvars <- select(datos, horas_estudio:afinidad_estadistica)\n\n## Escalamos (centrar y escalar)\ndatos_scaled <- as.data.frame(scale(vars))\n\n## Combinamos nuevamente con la variable objetivo\ndatos_scaled$aprueba <- datos$aprueba\n\n## check datos\nhead(datos_scaled)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## separar datos\nset.seed(123)\ntrain_idx <- sample(1:nrow(datos_scaled), 0.7*nrow(datos_scaled))\n\n## datos de entrenamiento\ntrain_x <- datos_scaled[train_idx, 1:6]\n\n## datos de prueba\ntest_x  <- datos_scaled[-train_idx, 1:6]\n\n## variables de resultado\ntrain_y <- datos_scaled$aprueba[train_idx]\ntest_y  <- datos_scaled$aprueba[-train_idx]\n\n## inspect data\nhead(train_x)","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ajustamos con k = 5 vecinos\npred_knn <- knn(train=train_x , test=test_x , cl=train_y , k=5)\n\n## Visualizamos las primeras predicciones\nresultados <- data.frame(Real=test_y , Predicho=pred_knn)\nhead(resultados , 20)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## obtener matrix\nconf_matrix <- table(Predicho = pred_knn, Real = test_y)\nconf_matrix","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Calcular la curva ROC y el AUC\nroc_obj <- roc(test_y , as.numeric(pred_knn))\n\n## Mostrar AUC\nauc(roc_obj)\n\n## Graficar la curva ROC\nplot(roc_obj, col = \"blue\", lwd = 2, main = \"Curva ROC — Modelo Logit\")\nabline(a = 0, b = 1, lty = 2, col = \"gray\")","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"ks <- seq(1, 21, 2)  # valores impares de k\naccuracy <- map_dbl(ks, function(k) {\n                    pred <- knn(train = train_x, test = test_x, cl = train_y, k = k)\n                    mean(pred == test_y)\n                  })\n\n# Tabla resumen\ntibble(k=ks , accuracy=accuracy)","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Gráfico de precisión según k\ntibble(k = ks, accuracy = accuracy) %>%\nggplot(aes(x = k, y = accuracy)) +\ngeom_line(color = \"steelblue\") +\ngeom_point(size = 2) +\nlabs(title = \"Precisión del modelo según número de vecinos (k)\",\n     x = \"Número de vecinos (k)\", y = \"Exactitud (Accuracy)\") +\ntheme_minimal()","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 1. Preparar Entorno\n\n## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n\n##==: 2. Ingesta de Datos\n\n## Leer datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## Preparar los datos\nvars <- select(datos, horas_estudio:afinidad_estadistica)\ndatos_scaled <- as.data.frame(scale(vars))\ndatos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c(\"No\", \"Sí\"))\n\n## Ver datos \nhead(datos_scaled)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 3. Modelar para K=5\n\n## Modelo kNN con k = 5\npred_knn_5 <- knn(train = datos_scaled[, 1:6],\n                  test  = datos_scaled[, 1:6],\n                  cl = datos_scaled$retira,\n                  k = 5)\n\n## Matriz de confusión\nconf_5 <- table(Predicho = pred_knn_5, Real = datos_scaled$retira)\nconf_5\n\n## Exactitud del modelo con k = 5\nVP <- conf_5[\"Sí\", \"Sí\"]\nVN <- conf_5[\"No\", \"No\"]\nFP <- conf_5[\"Sí\", \"No\"]\nFN <- conf_5[\"No\", \"Sí\"]\n\n## Accuracy\naccuracy_5 <- (VP + VN) / sum(conf_5)\naccuracy_5\n\n## Curva ROC y el AUC\nroc_5 <- roc(datos_scaled$retira, as.numeric(pred_knn_5))\nauc(roc_5)\n\nplot(roc_5, col = \"blue\", lwd = 2, main = \"Curva ROC — k = 5\")","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(outliers), \np_load(EnvStats, \np_load(robustbase, \np_load(univOutl)\np_load(funModeling)\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/week-15.r\")\n\n## chuequear objeto\nnames(datos)\nhead(datos)","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"# Histograma del promedio final\nggplot(notas, aes(x = promedio)) +\ngeom_histogram(bins = 15, fill = \"steelblue\", color = \"black\", alpha = 0.7) +\ntheme_bw()","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Boxplot general de notas\nggplot(notas, aes(y = promedio)) +\ngeom_boxplot(fill = \"purple\", color = \"black\", alpha = 0.5, outlier.color = \"red\") +\ntheme_bw()","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 1. Preparar Entorno\n\n## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n\n##==: 2. Ingesta de Datos\n\n## Leer datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## Preparar los datos\nvars <- select(datos, horas_estudio:afinidad_estadistica)\ndatos_scaled <- as.data.frame(scale(vars))\ndatos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c(\"No\", \"Sí\"))\n\n## Ver datos \nhead(datos_scaled)","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1605,33 +1605,25 @@ globalThis.qwebrExecuteCode = async function (
   <ul class="collapse">
   <li><a href="#tipos-de-anomalías" id="toc-tipos-de-anomalías" class="nav-link" data-scroll-target="#tipos-de-anomalías"><span class="header-section-number">1.1</span> Tipos de anomalías</a></li>
   </ul></li>
-  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda"><span class="header-section-number">2</span> Exploratory Data Analysis (EDA)</a>
+  <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2</span> Aplicación en R</a>
   <ul class="collapse">
-  <li><a href="#objetivos-del-eda" id="toc-objetivos-del-eda" class="nav-link" data-scroll-target="#objetivos-del-eda"><span class="header-section-number">2.1</span> Objetivos del EDA</a></li>
-  <li><a href="#aplicación-en-r" id="toc-aplicación-en-r" class="nav-link" data-scroll-target="#aplicación-en-r"><span class="header-section-number">2.2</span> Aplicación en R</a>
+  <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</a></li>
+  <li><a href="#ingesta-de-datos" id="toc-ingesta-de-datos" class="nav-link" data-scroll-target="#ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</a></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda"><span class="header-section-number">2.3</span> Exploratory Data Analysis (EDA)</a>
   <ul class="collapse">
-  <li><a href="#preparación-del-entorno" id="toc-preparación-del-entorno" class="nav-link" data-scroll-target="#preparación-del-entorno"><span class="header-section-number">2.2.1</span> Preparación del entorno</a></li>
+  <li><a href="#objetivos-del-eda" id="toc-objetivos-del-eda" class="nav-link" data-scroll-target="#objetivos-del-eda"><span class="header-section-number">2.3.1</span> Objetivos del EDA</a></li>
+  <li><a href="#visualización-de-anomalías" id="toc-visualización-de-anomalías" class="nav-link" data-scroll-target="#visualización-de-anomalías"><span class="header-section-number">2.3.2</span> Visualización de anomalías</a></li>
   </ul></li>
+  <li><a href="#métodos-de-detección" id="toc-métodos-de-detección" class="nav-link" data-scroll-target="#métodos-de-detección"><span class="header-section-number">2.4</span> Métodos de detección</a></li>
+  <li><a href="#pruebas-estadísticas" id="toc-pruebas-estadísticas" class="nav-link" data-scroll-target="#pruebas-estadísticas"><span class="header-section-number">2.5</span> Pruebas estadísticas</a></li>
+  <li><a href="#verificación-de-normalidad" id="toc-verificación-de-normalidad" class="nav-link" data-scroll-target="#verificación-de-normalidad"><span class="header-section-number">2.6</span> Verificación de normalidad</a></li>
+  <li><a href="#ley-de-benford" id="toc-ley-de-benford" class="nav-link" data-scroll-target="#ley-de-benford"><span class="header-section-number">2.7</span> Ley de Benford</a></li>
   </ul></li>
-  <li><a href="#aplicación-en-r-1" id="toc-aplicación-en-r-1" class="nav-link" data-scroll-target="#aplicación-en-r-1"><span class="header-section-number">3</span> Aplicación en R</a>
+  <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">3</span> Actividad en clase</a>
   <ul class="collapse">
-  <li><a href="#preparación-del-entorno-1" id="toc-preparación-del-entorno-1" class="nav-link" data-scroll-target="#preparación-del-entorno-1"><span class="header-section-number">3.1</span> Preparación del entorno</a></li>
-  <li><a href="#ingesta-de-datos" id="toc-ingesta-de-datos" class="nav-link" data-scroll-target="#ingesta-de-datos"><span class="header-section-number">3.2</span> Ingesta de datos</a></li>
-  <li><a href="#preparación-de-los-datos" id="toc-preparación-de-los-datos" class="nav-link" data-scroll-target="#preparación-de-los-datos"><span class="header-section-number">3.3</span> Preparación de los Datos</a>
-  <ul class="collapse">
-  <li><a href="#escalar-variables" id="toc-escalar-variables" class="nav-link" data-scroll-target="#escalar-variables"><span class="header-section-number">3.3.1</span> Escalar Variables</a></li>
-  <li><a href="#división-en-entrenamiento-y-prueba" id="toc-división-en-entrenamiento-y-prueba" class="nav-link" data-scroll-target="#división-en-entrenamiento-y-prueba"><span class="header-section-number">3.3.2</span> División en entrenamiento y prueba</a></li>
-  </ul></li>
-  <li><a href="#entrenamiento-del-modelo-knn" id="toc-entrenamiento-del-modelo-knn" class="nav-link" data-scroll-target="#entrenamiento-del-modelo-knn"><span class="header-section-number">3.4</span> Entrenamiento del Modelo kNN</a></li>
-  <li><a href="#matriz-de-confusión" id="toc-matriz-de-confusión" class="nav-link" data-scroll-target="#matriz-de-confusión"><span class="header-section-number">3.5</span> Matriz de confusión</a></li>
-  <li><a href="#curva-roc-y-auc" id="toc-curva-roc-y-auc" class="nav-link" data-scroll-target="#curva-roc-y-auc"><span class="header-section-number">3.6</span> Curva ROC y AUC</a></li>
-  <li><a href="#evaluación-con-distintos-valores-de-k" id="toc-evaluación-con-distintos-valores-de-k" class="nav-link" data-scroll-target="#evaluación-con-distintos-valores-de-k"><span class="header-section-number">3.7</span> Evaluación con distintos valores de k</a></li>
-  </ul></li>
-  <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">4</span> Actividad en Clase</a>
-  <ul class="collapse">
-  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">4.1</span> Instrucciones:</a></li>
-  <li><a href="#estimación-del-modelo-knn" id="toc-estimación-del-modelo-knn" class="nav-link" data-scroll-target="#estimación-del-modelo-knn"><span class="header-section-number">4.2</span> Estimación del modelo kNN</a></li>
-  <li><a href="#preguntas-para-el-informe" id="toc-preguntas-para-el-informe" class="nav-link" data-scroll-target="#preguntas-para-el-informe"><span class="header-section-number">4.3</span> Preguntas para el informe</a></li>
+  <li><a href="#instrucciones" id="toc-instrucciones" class="nav-link" data-scroll-target="#instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</a></li>
+  <li><a href="#estimación-del-modelo-knn" id="toc-estimación-del-modelo-knn" class="nav-link" data-scroll-target="#estimación-del-modelo-knn"><span class="header-section-number">3.2</span> Estimación del modelo kNN</a></li>
+  <li><a href="#preguntas-para-el-informe" id="toc-preguntas-para-el-informe" class="nav-link" data-scroll-target="#preguntas-para-el-informe"><span class="header-section-number">3.3</span> Preguntas para el informe</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1974,51 +1966,26 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p>En esta clase nos centraremos en las anomalías univariadas, aquellas que pueden identificarse analizando cada variable individualmente.</p>
 </section>
 </section>
-<section id="exploratory-data-analysis-eda" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Exploratory Data Analysis (EDA)</h1>
-<p>Antes de aplicar pruebas estadísticas, el primer paso es <strong>visualizar</strong> y <strong>resumir</strong> los datos. Esto nos permite entender la distribución de una variable y detectar visualmente valores atípicos.</p>
-<section id="objetivos-del-eda" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="objetivos-del-eda"><span class="header-section-number">2.1</span> Objetivos del EDA</h2>
-<ul>
-<li>Explorar la <strong>forma</strong> de la distribución.<br>
-</li>
-<li>Identificar <strong>asimetrías</strong>, <strong>colas largas</strong> o <strong>valores extremos</strong>.<br>
-</li>
-<li>Calcular estadísticas descriptivas básicas:
-<ul>
-<li>Medidas de <strong>tendencia central</strong> (media, mediana).</li>
-<li>Medidas de <strong>dispersión</strong> (rango, desviación estándar, IQR).</li>
-<li>Medidas de <strong>forma</strong> (asimetría y curtosis).</li>
-</ul></li>
-</ul>
-</section>
-<section id="aplicación-en-r" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="aplicación-en-r"><span class="header-section-number">2.2</span> Aplicación en R</h2>
-<p>Trabajaremos con una base de datos que contiene información sobre solicitudes de crédito de clientes bancarios (<code>datos_credito.RData</code>)<br>
-y una segunda base con montos de transacciones (<code>datosBenford.txt</code>) para aplicar la <strong>Ley de Benford</strong> en la detección de fraudes.</p>
-<section id="preparación-del-entorno" class="level3" data-number="2.2.1">
-<h3 data-number="2.2.1" class="anchored" data-anchor-id="preparación-del-entorno"><span class="header-section-number">2.2.1</span> Preparación del entorno</h3>
-</section>
-</section>
-</section>
-<section id="aplicación-en-r-1" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Aplicación en R</h1>
-<p>Para ilustrar el uso de los <strong>modelos de clasificación no paramétricos</strong>, trabajaremos con una base sintética que representa a <strong>estudiantes inscritos en un curso universitario</strong>. Cada registro contiene información sobre el comportamiento académico y el desempeño del estudiante a lo largo del semestre, lo que nos permitirá <strong>predecir si un estudiante aprobará o no el curso</strong> utilizando el modelo <strong>k-Nearest Neighbors (kNN)</strong>.</p>
+<section id="aplicación-en-r" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Aplicación en R</h1>
+<p>En este ejercicio aplicaremos técnicas de detección de anomalías sobre una base de datos que simula el comportamiento académico de un grupo de estudiantes. Cada observación representa a un estudiante inscrito en un curso, e incluye variables relacionadas con su desempeño y participación a lo largo del semestre.</p>
 <p>En este contexto:</p>
 <ul>
-<li>Cada <strong>observación</strong> corresponde a un estudiante.<br>
+<li>Cada <strong>estudiante</strong> es una observación.<br>
 </li>
-<li>La <strong>variable dependiente</strong> es categórica (<code>aprueba</code>: <em>Sí</em> / <em>No</em>).<br>
+<li>Las <strong>variables numéricas</strong> incluyen indicadores como asistencia, participación, trabajos, quizzes y proyecto final.<br>
 </li>
-<li>Las <strong>variables explicativas</strong> describen aspectos como las horas de estudio, asistencia, participación, uso de R, trabajos entregados y afinidad con la estadística.</li>
+<li>El <strong>promedio final</strong> refleja el desempeño global del estudiante.<br>
+</li>
+<li>Algunas observaciones presentan <strong>valores atípicos o inconsistentes</strong>, como notas negativas, valores mayores a 5 o combinaciones poco realistas (por ejemplo, alta asistencia pero promedio bajo).</li>
 </ul>
-<p>El objetivo de este ejercicio es aplicar el algoritmo kNN para responder preguntas como:</p>
+<p>El objetivo es aplicar un <strong>análisis exploratorio y estadístico</strong> que nos permita:</p>
 <ul>
-<li>¿Podemos predecir si un estudiante aprobará el curso a partir de su perfil académico?<br>
+<li>Identificar visual y numéricamente <strong>valores extremos</strong>.<br>
 </li>
-<li>¿Qué tan precisa es la clasificación según el número de vecinos (<em>k</em>) considerados?<br>
+<li>Comparar diferentes <strong>métodos de detección de outliers</strong> (gráficos, robustos y estadísticos).<br>
 </li>
-<li>¿Cómo cambia la calidad de las predicciones al variar <em>k</em> o al escalar las variables?</li>
+<li>Reflexionar sobre cómo estas anomalías pueden afectar la interpretación y calidad de los datos académicos.</li>
 </ul>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -2030,14 +1997,22 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>💡 <strong>Cómo usar este material:</strong><br>
-Puedes ejecutar los <em>chunks</em> de R directamente en el navegador gracias a <strong>webR</strong>, sin necesidad de instalar nada localmente.</p>
+<p>Este ejercicio replica una situación real en la que un profesor detecta irregularidades en las calificaciones de su grupo.<br>
+A partir de las herramientas estadísticas vistas en clase, aprenderemos cómo diagnosticar y documentar esos casos de manera objetiva.</p>
 </div>
 </div>
-<section id="preparación-del-entorno-1" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="preparación-del-entorno-1"><span class="header-section-number">3.1</span> Preparación del entorno</h2>
-<p>El propósito de este bloque es asegurar un entorno limpio, reproducible y funcional antes de iniciar el análisis.<br>
-Primero, eliminamos cualquier objeto previo que pueda interferir con la sesión actual. Luego, instalamos (si es necesario) y cargamos los paquetes requeridos para la manipulación de datos, la implementación del algoritmo k-Nearest Neighbors (kNN), la evaluación del modelo y la visualización de resultados. Con esto, dejamos el entorno preparado para comenzar el análisis aplicado de clasificación no paramétrica.</p>
+<section id="preparación-del-entorno" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="preparación-del-entorno"><span class="header-section-number">2.1</span> Preparación del entorno</h2>
+<p>Antes de comenzar, es importante asegurar que el entorno de trabajo esté limpio, reproducible y con todas las librerías necesarias cargadas.</p>
+<ol type="1">
+<li><strong>Limpiamos</strong> el entorno para evitar conflictos con objetos previos.<br>
+</li>
+<li><strong>Instalamos</strong> (si es necesario) y <strong>cargamos</strong> los paquetes requeridos para la manipulación, visualización y detección de anomalías.<br>
+</li>
+<li><strong>Importamos</strong> la base de datos simulada de notas estudiantiles, que contiene observaciones normales y algunas “notas raras” generadas intencionalmente.<br>
+</li>
+<li>Exploramos la estructura y primeras filas de la base para familiarizarnos con su contenido.</li>
+</ol>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2054,8 +2029,8 @@ Note
 </div>
 </div>
 </section>
-<section id="ingesta-de-datos" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="ingesta-de-datos"><span class="header-section-number">3.2</span> Ingesta de datos</h2>
+<section id="ingesta-de-datos" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="ingesta-de-datos"><span class="header-section-number">2.2</span> Ingesta de datos</h2>
 <p>En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo KNN. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.</p>
 <p>La estructura de los datos es la siguiente:</p>
 <pre><code>•   horas_estudio: promedio semanal de horas dedicadas al curso.
@@ -2070,97 +2045,67 @@ Note
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="preparación-de-los-datos" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="preparación-de-los-datos"><span class="header-section-number">3.3</span> Preparación de los Datos</h2>
-<p>Antes de aplicar el modelo <strong>k-Nearest Neighbors (kNN)</strong>, es fundamental preparar adecuadamente los datos.</p>
-<section id="escalar-variables" class="level3" data-number="3.3.1">
-<h3 data-number="3.3.1" class="anchored" data-anchor-id="escalar-variables"><span class="header-section-number">3.3.1</span> Escalar Variables</h3>
-<p>A diferencia de la regresión logística, donde las variables se utilizan directamente dentro de una función matemática, el kNN <strong>se basa en distancias entre observaciones</strong>. Por esta razón, las variables deben estar en una <strong>misma escala</strong> para que ninguna domine el cálculo de distancia. Por ejemplo, si una variable se mide en porcentajes (0–100) y otra en horas (0–10), la de mayor rango influirá desproporcionadamente en la predicción. Para evitarlo, aplicamos un proceso de <strong>escalamiento y centrado</strong>, que transforma todas las variables numéricas de manera que tengan <strong>media 0 y desviación estándar 1</strong>. A continuación seleccionamos las variables numéricas relevantes. Posteriormente aplicamos el escalamiento con <code>scale()</code> y finalmente volvemos a unir la variable objetivo (<code>aprueba</code>) para mantener la estructura original de la base.</p>
+<section id="exploratory-data-analysis-eda" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="exploratory-data-analysis-eda"><span class="header-section-number">2.3</span> Exploratory Data Analysis (EDA)</h2>
+<p>Antes de aplicar pruebas estadísticas, el primer paso es <strong>visualizar</strong> y <strong>resumir</strong> los datos. Esto nos permite entender la distribución de una variable y detectar visualmente valores atípicos.</p>
+<section id="objetivos-del-eda" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="objetivos-del-eda"><span class="header-section-number">2.3.1</span> Objetivos del EDA</h3>
+<ul>
+<li>Explorar la <strong>forma</strong> de la distribución.<br>
+</li>
+<li>Identificar <strong>asimetrías</strong>, <strong>colas largas</strong> o <strong>valores extremos</strong>.<br>
+</li>
+<li>Calcular estadísticas descriptivas básicas:
+<ul>
+<li>Medidas de <strong>tendencia central</strong> (media, mediana).</li>
+<li>Medidas de <strong>dispersión</strong> (rango, desviación estándar, IQR).</li>
+<li>Medidas de <strong>forma</strong> (asimetría y curtosis).</li>
+</ul></li>
+</ul>
+</section>
+<section id="visualización-de-anomalías" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="visualización-de-anomalías"><span class="header-section-number">2.3.2</span> Visualización de anomalías</h3>
+<p>El análisis gráfico es el punto de partida. Para empezar, utilizaremos histogramas y boxplots que nos ayuden a visualizar la dispersión de las notas y detectar gráficamente los posibles valores atípicos.</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><strong>Importancia del escalamiento:</strong> El kNN calcula distancias entre observaciones (por defecto, euclidianas). Si las variables no se escalan, las que tienen rangos mayores (por ejemplo, asistencia = 0–100) dominarán el cálculo, distorsionando la noción de “vecindad”. El escalamiento garantiza que todas las variables contribuyan de manera equilibrada al proceso de clasificación.</p>
-</div>
-</div>
-</section>
-<section id="división-en-entrenamiento-y-prueba" class="level3" data-number="3.3.2">
-<h3 data-number="3.3.2" class="anchored" data-anchor-id="división-en-entrenamiento-y-prueba"><span class="header-section-number">3.3.2</span> División en entrenamiento y prueba</h3>
-<p>Antes de entrenar el modelo, dividimos la base de datos en dos subconjuntos: uno para <strong>entrenamiento</strong> y otro para <strong>prueba</strong>. Esta separación es fundamental en el aprendizaje supervisado, ya que permite <strong>evaluar la capacidad de generalización del modelo</strong> —es decir, qué tan bien predice sobre casos nuevos que no ha “visto” durante el entrenamiento.</p>
-<ul>
-<li>El conjunto de <strong>entrenamiento</strong> se usa para ajustar el modelo (70% de las observaciones).<br>
-</li>
-<li>El conjunto de <strong>prueba</strong> se utiliza para evaluar su desempeño (30% restante).</li>
-</ul>
-<p>Esta práctica evita el <strong>sobreajuste (overfitting)</strong>, que ocurre cuando el modelo aprende demasiado bien los datos de entrenamiento, pero falla al aplicarse a nuevas observaciones.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 </section>
-<section id="entrenamiento-del-modelo-knn" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="entrenamiento-del-modelo-knn"><span class="header-section-number">3.4</span> Entrenamiento del Modelo kNN</h2>
-<p>En este paso aplicamos el algoritmo <strong>k-Nearest Neighbors (kNN)</strong> utilizando los conjuntos de entrenamiento (<code>train_x</code>, <code>train_y</code>) y de prueba (<code>test_x</code>). El modelo se entrena con los datos conocidos (estudiantes cuyo resultado ya sabemos) y luego <strong>clasifica los nuevos casos</strong> según sus <em>vecinos más cercanos</em>.</p>
-<p>El parámetro <strong>k = 5</strong> indica que para cada observación en el conjunto de prueba, el algoritmo buscará los <strong>5 estudiantes más similares</strong> (en términos de distancia) dentro del conjunto de entrenamiento. Luego asignará la clase mayoritaria (<em>Sí</em> o <em>No</em>) entre esos vecinos.</p>
-<div id="qwebr-insertion-location-5"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<section id="métodos-de-detección" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="métodos-de-detección"><span class="header-section-number">2.4</span> Métodos de detección</h2>
+<p>Aplica e interpreta: • Percentiles (p.&nbsp;ej. 1% y 99%) • Z-Score (|Z| &gt; 3) • Rango intercuartílico (IQR) • MAD / Hampel • RRMS (varianza robusta)</p>
 </section>
-<section id="matriz-de-confusión" class="level2" data-number="3.5">
-<h2 data-number="3.5" class="anchored" data-anchor-id="matriz-de-confusión"><span class="header-section-number">3.5</span> Matriz de confusión</h2>
-<p>La matriz de confusión compara las predicciones del modelo con los valores reales y permite visualizar los aciertos y errores de clasificación.</p>
-<div id="qwebr-insertion-location-6"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Interpretación de los resultados:</p>
-<pre><code>•   Verdaderos positivos (VP): el modelo predice aprobar y el estudiante aprueba.
-•   Verdaderos negativos (VN): el modelo predice reprobar y el estudiante reprueba.
-•   Falsos positivos (FP): el modelo predice aprobar pero el estudiante reprueba.
-•   Falsos negativos (FN): el modelo predice reprobar pero el estudiante aprueba.</code></pre>
+<section id="pruebas-estadísticas" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="pruebas-estadísticas"><span class="header-section-number">2.5</span> Pruebas estadísticas</h2>
+<pre><code>•   Grubbs test: un outlier.
+•   Dixon test: muestra pequeña.
+•   Rosner test: múltiples outliers.</code></pre>
+<p>Explica las hipótesis y el sentido del p-value.</p>
 </section>
-<section id="curva-roc-y-auc" class="level2" data-number="3.6">
-<h2 data-number="3.6" class="anchored" data-anchor-id="curva-roc-y-auc"><span class="header-section-number">3.6</span> Curva ROC y AUC</h2>
-<p>La curva ROC muestra la relación entre la tasa de verdaderos positivos (sensibilidad) y la tasa de falsos positivos (1 - especificidad) para distintos umbrales de decisión.</p>
-<p>El Área Bajo la Curva (AUC) mide el desempeño general del modelo:</p>
-<pre><code>•   AUC = 0.5 → el modelo no discrimina (como lanzar una moneda).
-•   AUC = 1 → el modelo clasifica perfectamente.</code></pre>
-<div id="qwebr-insertion-location-7"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Un valor de AUC entre 0.7 y 0.9 indica un buen poder discriminatorio, mientras que valores superiores a 0.9 suelen considerarse excelentes. Si el AUC está cerca de 0.5, el modelo no está capturando patrones útiles.</p>
-</div>
-</div>
+<section id="verificación-de-normalidad" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="verificación-de-normalidad"><span class="header-section-number">2.6</span> Verificación de normalidad</h2>
+<pre><code>•   Usa Q-Q plots (qqplotr).
+•   Explica por qué es necesario para algunas pruebas.
+•   Compara distribuciones normales vs. no normales.</code></pre>
 </section>
-<section id="evaluación-con-distintos-valores-de-k" class="level2" data-number="3.7">
-<h2 data-number="3.7" class="anchored" data-anchor-id="evaluación-con-distintos-valores-de-k"><span class="header-section-number">3.7</span> Evaluación con distintos valores de k</h2>
-<p>El parámetro <strong>k</strong> es el elemento central del algoritmo <em>k-Nearest Neighbors</em>, ya que determina <strong>cuántos vecinos</strong> se consideran al clasificar una nueva observación. Valores de <em>k</em> pequeños hacen que el modelo sea <strong>más sensible al ruido</strong> (puede sobreajustarse), mientras que valores grandes lo vuelven <strong>más general</strong> (puede subajustarse).</p>
-<p>En esta sección exploramos cómo cambia la <strong>precisión del modelo (accuracy)</strong> al variar el número de vecinos considerados.<br>
-Para ello, probamos distintos valores impares de <em>k</em> —entre 1 y 21— y calculamos el porcentaje de clasificaciones correctas para cada uno.</p>
-<div id="qwebr-insertion-location-8"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>El siguiente gráfico muestra cómo varía la exactitud del modelo conforme aumenta el número de vecinos k. Este tipo de análisis es útil para identificar el valor de k que ofrece un equilibrio entre precisión y estabilidad.</p>
-<div id="qwebr-insertion-location-9"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<section id="ley-de-benford" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="ley-de-benford"><span class="header-section-number">2.7</span> Ley de Benford</h2>
+<pre><code>•   Introduce el concepto del primer dígito.
+•   Verifica condiciones: variable numérica positiva, sin límites, con magnitud amplia.
+•   Calcula OOM y ROM.
+•   Aplica benford() y grafica resultados.
+•   Revisa suspectsTable() y duplicatesTable().
+•   Discute implicaciones en auditoría.</code></pre>
 </section>
 </section>
-<section id="actividad-en-clase" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Actividad en Clase</h1>
-<section id="instrucciones" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">4.1</span> Instrucciones:</h2>
+<section id="actividad-en-clase" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Actividad en clase</h1>
+<pre><code>•   En grupos, aplicar tres métodos de detección a una variable.
+•   Comparar resultados y discutir cuál método es más confiable.
+•   Relacionar resultados con casos reales (fraude, errores de captura, comportamiento anómalo).</code></pre>
+<section id="instrucciones" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="instrucciones"><span class="header-section-number">3.1</span> Instrucciones:</h2>
 <ol type="1">
 <li>Ejecute los <em>chunks</em> de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).<br>
 </li>
@@ -2178,16 +2123,14 @@ Para ello, probamos distintos valores impares de <em>k</em> —entre 1 y 21— y
 <li>Suba su documento y su <strong>script en R</strong> a la plataforma <strong>Intu</strong>, en la actividad correspondiente a la <strong>Semana 14 — Modelo kNN (Predicción de Retiro)</strong>.</li>
 </ol>
 </section>
-<section id="estimación-del-modelo-knn" class="level2" data-number="4.2">
-<h2 data-number="4.2" class="anchored" data-anchor-id="estimación-del-modelo-knn"><span class="header-section-number">4.2</span> Estimación del modelo kNN</h2>
+<section id="estimación-del-modelo-knn" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="estimación-del-modelo-knn"><span class="header-section-number">3.2</span> Estimación del modelo kNN</h2>
 <p>Ejecute el siguiente código para estimar un modelo <strong>k-Nearest Neighbors (kNN)</strong> que prediga la <strong>probabilidad de que un estudiante se retire del curso</strong>, usando las variables explicativas relacionadas con esfuerzo y participación. ⚠️ No incluya la variable <code>aprueba</code> en el modelo.</p>
-<div id="qwebr-insertion-location-10"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div id="qwebr-insertion-location-11"></div>
+<div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="preguntas-para-el-informe" class="level2" data-number="4.3">
-<h2 data-number="4.3" class="anchored" data-anchor-id="preguntas-para-el-informe"><span class="header-section-number">4.3</span> Preguntas para el informe</h2>
+<section id="preguntas-para-el-informe" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="preguntas-para-el-informe"><span class="header-section-number">3.3</span> Preguntas para el informe</h2>
 <p><strong>1. Comparación entre modelos:</strong></p>
 <p>• ¿Cómo cambia la matriz de confusión al pasar de k = 5 a k = 10 y k = 20?</p>
 <p><strong>2. Evaluación de desempeño:</strong></p>

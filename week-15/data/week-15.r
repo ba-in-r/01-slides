@@ -53,10 +53,6 @@ notas[idx_perfectos, 4:9] <- 5
 idx_na <- sample(1:n, 3)
 notas$quiz_2[idx_na] <- NA
 
-# Guardar la base
-export(notas, "notas_sinteticas.xlsx")
-
-# Vista previa
-glimpse(notas)
-summary(notas)
+## 
+rm("idx_alta_asistencia","idx_na","idx_perfectos","n")
 

@@ -78,12 +78,10 @@ rm(list = ls())
 if (!require("pacman")) {install.packages("pacman") ; require("pacman")}
 
 ## Cargar librerías
-p_load(tidyverse)  # Manipulación y visualización de datos
-p_load(outliers), 
-p_load(EnvStats, 
-p_load(robustbase, 
-p_load(univOutl)
-p_load(funModeling)
+p_load(tidyverse) # Manipulación y visualización de datos
+p_load(outliers)  # Pruebas Grubbs y Dixon
+p_load(EnvStats)  # Test de Rosner
+p_load(univOutl)  # Funciones integradas para IQR/MAD
 
 ## Fijar semilla para reproducibilidad
 set.seed(123)
@@ -120,9 +118,9 @@ Nuestro objetivo será estimar cómo cada una de estas variables influye en la p
 ## generar los datos
 source("https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/week-15.r")
 
-## chuequear objeto
-names(datos)
-head(datos)
+## Vista previa
+glimpse(notas)
+summary(notas)
 ```
 
 ## Exploratory Data Analysis (EDA)
@@ -140,21 +138,21 @@ Antes de aplicar pruebas estadísticas, el primer paso es **visualizar** y **res
   
 ### Visualización de anomalías
 
-El análisis gráfico es el punto de partida. Comenzamos observando la variable monto.credito, para la cual generaremos tres visualizaciones:
-
-	1.	Histograma — para ver la forma general de la distribución.
-	2.	Boxplot clásico — para identificar outliers.
-	3.	Boxplot ajustado — que corrige el sesgo en distribuciones asimétricas.
+El análisis gráfico es el punto de partida. Para empezar, utilizaremos histogramas y boxplots que nos ayuden a visualizar la dispersión de las notas y detectar gráficamente los posibles valores atípicos.
 
 ```{webr-r}
-ggplot(datos23, aes(x = monto.credito)) +
-  geom_histogram(bins = round(sqrt(length(datos23$monto.credito))), 
-                 fill = "purple", col = "black", alpha = 0.7) +
-  labs(title = "Distribución de los Montos de los Créditos",
-       x = "Monto de Crédito", 
-       y = "Número de Clientes", 
-       caption = "Fuente: Elaboración Propia") +
-  theme_bw()
+# Histograma del promedio final
+ggplot(notas, aes(x = promedio)) +
+geom_histogram(bins = 15, fill = "steelblue", color = "black", alpha = 0.7) +
+theme_bw()
+```
+
+
+```{webr-r}
+# Boxplot general de notas
+ggplot(notas, aes(y = promedio)) +
+geom_boxplot(fill = "purple", color = "black", alpha = 0.5, outlier.color = "red") +
+theme_bw()
 ```
   
   
