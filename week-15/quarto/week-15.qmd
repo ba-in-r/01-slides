@@ -88,14 +88,13 @@ set.seed(123)
 ```
 
 ::: callout-note
-**Descripción de los paquetes utilizados:**
 `tidyverse`: Conjunto de paquetes diseñados para la manipulación, transformación y visualización de datos en R.  
 
 `outliers`: Implementa pruebas estadísticas clásicas para detección de valores atípicos, como *Grubbs* y *Dixon*, que permiten identificar observaciones extremas en una sola variable numérica.
 
-`EnvStats`: Proporciona métodos avanzados de análisis estadístico, incluyendo la prueba de Rosner, ideal para detectar *múltiples outliers simultáneamente* en una muestra grande.
+`EnvStats`: Proporciona métodos avanzados de análisis estadístico, incluyendo la prueba de Rosner, ideal para detectar *múltiples outliers simultáneamente en una muestra grande.
 
-`univOutl`: Ofrece funciones integradas para aplicar distintos métodos robustos de detección de outliers univariados, como el *IQR*, *MAD* o *boxplots ajustados* (`LocScaleB`, `boxB`), facilitando la comparación entre técnicas.
+`univOutl`: Ofrece funciones integradas para aplicar distintos métodos robustos de detección de outliers univariados, como el *IQR*, *MAD* o boxplots ajustados (`LocScaleB`, `boxB`), facilitando la comparación entre técnicas.
 :::
 
 ## Ingesta de datos 
@@ -151,6 +150,7 @@ geom_histogram(bins = 15, fill = "steelblue", color = "black", alpha = 0.7) +
 theme_bw()
 ```
 
+El histograma permite observar la forma de la distribución de las notas: si es simétrica, sesgada o multimodal. En contextos educativos, una ligera asimetría positiva (muchos aprobados, pocos reprobados) es común. Las barras aisladas en los extremos pueden representar notas atípicas o errores de registro (por ejemplo, valores negativos o mayores que 5).
 
 ```{webr-r}
 # Boxplot general de notas
@@ -158,40 +158,187 @@ ggplot(notas, aes(y = promedio)) +
 geom_boxplot(fill = "purple", color = "black", alpha = 0.5, outlier.color = "red") +
 theme_bw()
 ```
+
+La caja representa el rango intercuartílico (IQR), donde se concentra el 50 % central de las notas. La línea central dentro de la caja indica la mediana (valor típico o más frecuente). Los puntos rojos marcan las observaciones que se encuentran fuera de los límites esperados (outliers). En este caso, corresponden a estudiantes con un desempeño excepcionalmente bajo o alto, o posiblemente a errores en el registro.
   
-  
-  
-
-
-
-
-
 ## Métodos de detección
-Aplica e interpreta:
-	•	Percentiles (p. ej. 1% y 99%)
-	•	Z-Score (|Z| > 3)
-	•	Rango intercuartílico (IQR)
-	•	MAD / Hampel
-	•	RRMS (varianza robusta)
+
+Una vez explorada la distribución de los datos, pasamos a la detección sistemática de anomalías mediante diferentes enfoques. Cada método tiene supuestos y ventajas distintas: algunos se basan en reglas estadísticas, otros en medidas robustas que resisten la influencia de outliers. En esta sección aplicaremos cinco estrategias complementarias para detectar valores atípicos en la variable `promedio`.
+
+### Percentiles
+
+Una forma simple de detectar valores extremos es comparar los datos con umbrales percentilares, por ejemplo, el **1%** y el **99%**. Las observaciones fuera de ese rango se consideran inusuales.
+
+```{webr-r}
+## Percentiles 1% y 99%
+quantiles <- quantile(notas$promedio, probs = c(0.01, 0.99), na.rm = TRUE)
+quantiles
+
+## Filtrar posibles outliers
+notas_q <- filter(notas , promedio < quantiles[1] | promedio > quantiles[2])
+summary(notas_q)
+```
+
+### Z-Score
+
+El Z-Score mide cuántas desviaciones estándar se encuentra cada valor respecto a la media. Por convención, se consideran atípicos los valores con (|Z| > 3).
+  
+```{webr-r}
+## Calcular Z-Score 
+notas <- mutate(notas , z_score = scale(promedio))
+
+## Filtrar valores extremos
+notas_z <- filter(notas , abs(z_score) > 3)
+summary(notas_z)
+```
+
+::: callout-note
+El método Z-Score funciona bien cuando la variable tiene una distribución aproximadamente normal. En distribuciones sesgadas (como suele ocurrir en notas o ingresos), puede marcar falsos positivos.
+:::
+
+###  Rango intercuartílico (IQR)
+
+El método del rango intercuartílico (IQR) es una versión robusta del boxplot tradicional. Define umbrales con base en los cuartiles ($Q_1$) y ($Q_3$): $\text{Límite inferior} = Q_1 - 1.5 \times IQR \quad ; \quad \text{Límite superior} = Q_3 + 1.5 \times IQR$
+
+```{webr-r}
+## Detectar outliers con IQR
+boxB(notas$promedio, method = "resistant")
+```
+
+::: callout-note
+El IQR es menos sensible a la forma de la distribución y se usa ampliamente en entornos de negocio y educación. Sin embargo, su desempeño disminuye si la variable es altamente asimétrica.
+:::
+
+###  MAD / Método de Hampel
+
+El MAD (Median Absolute Deviation) calcula la desviación absoluta respecto a la mediana, y el método de Hampel lo utiliza para establecer límites de detección. Este enfoque es robusto y muy eficaz en datos con colas pesadas o valores extremos localizados.
+
+```{webr-r}
+## Detección de outliers mediante MAD
+LocScaleB(notas$promedio, method = "MAD")
+```
+
+::: callout-note
+El MAD se considera uno de los métodos más estables frente a outliers severos. diferencia del Z-Score, no asume normalidad y es adecuado para variables como notas, ingresos o montos financieros.
+:::
+
+###  RRMS (Varianza robusta)
+
+El método RRMS (Robust Root Mean Square) utiliza estimadores robustos de varianza para identificar observaciones que se alejan significativamente del centro de la distribución, considerando tanto colas superiores como inferiores.
+
+```{webr-r}
+## Detección robusta con RRMS
+out_RRMS <- hotspots::outliers(notas$promedio, tail = "both")
+summary(out_RRMS)
+plot(out_RRMS)
+```
+
+::: callout-note
+El RRMS combina la precisión estadística del Z-Score con la resistencia del MAD. Es útil cuando queremos una detección automática que mantenga consistencia en diferentes variables.
+:::
+
+### Comparación de métodos
+
+Cada método de detección de anomalías parte de una **lógica distinta** sobre qué significa ser “inusual”. Algunos se basan en medidas clásicas (media y desviación estándar), otros en estimadores robustos (mediana y MAD) que son menos sensibles a valores extremos. La siguiente tabla resume las características más importantes de los principales métodos vistos en clase:
+
+| **Método**        | **Supuesto principal**              | **Robustez** | **Cuándo usar** |
+|--------------------|------------------------------------|---------------|------------------|
+| **Percentiles**    | Ninguno                            | Media         | Exploración inicial o cribado rápido. |
+| **Z-Score**        | Normalidad de los datos            | Baja          | Datos simétricos y previamente escalados. |
+| **IQR (Tukey)**    | Cuartiles representativos          | Media         | Distribuciones moderadamente asimétricas. |
+| **MAD / Hampel**   | Mediana estable y colas largas     | Alta          | Datos con colas pesadas o presencia de outliers fuertes. |
+| **RRMS**           | Estimador robusto de varianza      | Alta          | Identificación automática de extremos en grandes muestras. |
+
 
 ## Pruebas estadísticas
-	•	Grubbs test: un outlier.
-	•	Dixon test: muestra pequeña.
-	•	Rosner test: múltiples outliers.
-Explica las hipótesis y el sentido del p-value.
 
-## Verificación de normalidad
-	•	Usa Q-Q plots (qqplotr).
-	•	Explica por qué es necesario para algunas pruebas.
-	•	Compara distribuciones normales vs. no normales.
+Hasta ahora hemos explorado métodos descriptivos y robustos para identificar posibles outliers. Sin embargo, en algunos contextos —por ejemplo, auditorías, evaluación de calidad o estudios científicos— se requiere una validación estadística formal que determine si un valor extremo es significativamente distinto al resto de los datos. Para ello utilizamos pruebas estadísticas que formulan hipótesis y se basan en el cálculo de un **p-value**:
+
+| **Prueba** | **Uso principal** | **Tamaño de muestra** | **Outliers detectables** |
+|-------------|------------------|------------------------|---------------------------|
+| **Grubbs test** | Detección de un solo outlier en muestras grandes. | n > 25 | 1 |
+| **Dixon test** | Detección de un outlier en muestras pequeñas. | 3 ≤ n ≤ 25 | 1 |
+| **Rosner test** | Detección simultánea de múltiples outliers. | n ≥ 25 | k (varios) |
+
+### Grubbs Test
+
+La **prueba de Grubbs** evalúa si el valor más extremo (máximo o mínimo) de la muestra se diferencia significativamente del resto. 
+
+**Hipótesis:** 
+
+- $H_0: \text{No hay outliers en la muestra}$ 
+- $H_A: \text{El valor más extremo es un outlier}$
+
+**Interpretación del p-value:** Si `p-value < 0.05`, se **rechaza H₀** → el valor extremo se considera un *outlier* estadísticamente significativo. Si `p-value ≥ 0.05`, no hay evidencia suficiente para considerarlo atípico.
+
+```{webr-r}
+## Ejemplo de prueba de Grubbs sobre las notas promedio
+grubbs.test(notas$promedio)
+```
+
+### Dixon Test
+
+La prueba de Dixon también busca detectar un único valor atípico, pero está diseñada para muestras pequeñas (3–25 observaciones). Compara la diferencia entre el valor más extremo y su vecino más cercano con el rango total.
+
+**Hipótesis:** 
+
+- $H_0: \text{Todos los valores provienen de la misma población.}$ 
+- $H_A: \text{Existe un valor atípico (el más alto o el más bajo).}$
+
+**Interpretación del p-value:** Si `p-value < 0.05`, el valor extremo se considera outlier. Si `p-value ≥ 0.05`, no se considera significativamente diferente.
+
+```{webr-r}
+## Ejemplo de aplicación con una muestra pequeña
+dixon.test(sample(notas$promedio, 20))
+```
+
+### Rosner Test
+
+La prueba de Rosner permite detectar varios outliers al mismo tiempo. A diferencia de las anteriores, esta prueba es iterativa: elimina los valores extremos uno por uno, recalculando la media y la desviación estándar tras cada iteración.
+
+**Hipótesis:** 
+
+- $H_0: \text{No hay outliers en la muestra.}$ 
+
+- $H_A: H_A: \text{Hasta } k \text{ observaciones son outliers.}$
+
+Interpretación:
+
+	•	La prueba calcula un conjunto de estadísticos ( $R_i$ ) y valores críticos ( $\lambda_i$ ).
+	•	Si ( $R_i$ > $\lambda_i$), la observación correspondiente se clasifica como outlier.
+	•	El número final de outliers detectados dependerá del parámetro $k$ (cantidad máxima a evaluar).
+
+```{webr-r}
+## Ejemplo con detección múltiple
+rosnerTest(notas$promedio, k = 5, alpha = 0.05)
+```
+
+::: callout-tip
+El p-value mide la evidencia contra la hipótesis nula ($H_0$). Un valor pequeño (por debajo de 0.05) indica que el valor extremo es poco probable bajo el patrón normal de los datos. En otras palabras, mientras menor el p-value, más probable es que la observación sea realmente un outlier.
+:::
 
 ## Ley de Benford
-	•	Introduce el concepto del primer dígito.
-	•	Verifica condiciones: variable numérica positiva, sin límites, con magnitud amplia.
-	•	Calcula OOM y ROM.
-	•	Aplica benford() y grafica resultados.
-	•	Revisa suspectsTable() y duplicatesTable().
-	•	Discute implicaciones en auditoría.
+
+La Ley de Benford, también conocida como la Ley del Primer Dígito, describe un patrón sorprendente en muchos conjuntos de datos reales: los números que comienzan con dígitos pequeños (1, 2 o 3) aparecen con mucha más frecuencia que los que comienzan con 8 o 9. En lugar de una distribución uniforme (donde cada dígito tendría 11,1 % de probabilidad), la Ley de Benford predice que el dígito 1 aparecerá aproximadamente el 30 % de las veces, el 2 un 17 %, y así sucesivamente, decreciendo logarítmicamente.
+
+$P(d) = \log_{10}(1 + \frac{1}{d})$
+
+### ¿Por qué es útil?
+
+Este patrón se cumple en datos naturales, financieros o económicos que no han sido manipulados manualmente. Por ello, la Ley de Benford se utiliza ampliamente en: auditoría y detección de fraudes financieros; Verificación de integridad de bases de datos; Análisis de reportes contables y registros públicos. Cuando los datos se desvían significativamente de la ley, puede indicar errores de registro o manipulación intencional.
+
+### Condiciones para aplicar la Ley de Benford
+
+Antes de aplicar la ley, la variable debe cumplir ciertas condiciones:
+
+1. Ser numérica y positiva.  
+2. No tener límites fijos (por ejemplo, 0–100 o 1–5).  
+3. Presentar varios órdenes de magnitud (es decir, amplitud suficiente entre el valor mínimo y el máximo).  
+4. No estar redondeada artificialmente o expresada en porcentajes.  
+
+### Evaluación previa de magnitud
+
+El primer paso es verificar si la variable cumple con los criterios de magnitud. Para esto se calculan dos indicadores: `OOM` (Order of Magnitude): logaritmo de la razón entre el valor máximo y el mínimo. `ROM` (Robust Order of Magnitude): logaritmo de la razón entre los percentiles 99 y 1. Si ambos son mayores que 3, la Ley de Benford puede aplicarse de manera confiable.
 
 # Actividad en clase
 
@@ -203,7 +350,7 @@ Explica las hipótesis y el sentido del p-value.
 
 1. Ejecute los *chunks* de código proporcionados en R (puede hacerlo directamente en el navegador o en RStudio).  
 2. Observe los resultados obtenidos en cada sección.  
-3. Genere un documento en **Word (.docx)** donde:  
+3. Genere un documento en Word (.docx) donde:  
    - Copie las preguntas que aparecen al final.  
    - Redacte sus interpretaciones y conclusiones con base en los resultados.  
    - **No copie el código**, solo redacte sus respuestas.  

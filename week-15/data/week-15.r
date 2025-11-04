@@ -6,8 +6,8 @@ rm(list = ls())
 ## ==========================================================
 
 # Paquetes
-require("pacman")
-p_load(tidyverse, janitor, rio)
+require(pacman)
+p_load(tidyverse, janitor)
 
 # Fijar semilla para reproducibilidad
 set.seed(2025)

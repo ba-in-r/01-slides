@@ -313,7 +313,7 @@ iframe.qwebr-output-code-browse {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['tidyverse', 'outliers', 'EnvStats', 'univOutl'];
+globalThis.qwebrInstallRPackagesList = ['tidyverse', 'outliers', 'EnvStats', 'univOutl', 'janitor'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -335,7 +335,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse) # Manipulación y visualización de datos\np_load(outliers)  # Pruebas Grubbs y Dixon\np_load(EnvStats)  # Test de Rosner\np_load(univOutl)  # Funciones integradas para IQR/MAD\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/week-15.r\")\n\n## check data\nprint(\"listo\")","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## Vista previa\nglimpse(notas)\nsummary(notas)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Histograma del promedio final\nggplot(notas, aes(x = promedio)) +\ngeom_histogram(bins = 15, fill = \"steelblue\", color = \"black\", alpha = 0.7) +\ntheme_bw()","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Boxplot general de notas\nggplot(notas, aes(y = promedio)) +\ngeom_boxplot(fill = \"purple\", color = \"black\", alpha = 0.5, outlier.color = \"red\") +\ntheme_bw()","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 1. Preparar Entorno\n\n## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n\n##==: 2. Ingesta de Datos\n\n## Leer datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## Preparar los datos\nvars <- select(datos, horas_estudio:afinidad_estadistica)\ndatos_scaled <- as.data.frame(scale(vars))\ndatos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c(\"No\", \"Sí\"))\n\n## Ver datos \nhead(datos_scaled)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
+globalThis.qwebrCellDetails = [{"code":"## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse) # Manipulación y visualización de datos\np_load(outliers)  # Pruebas Grubbs y Dixon\np_load(EnvStats)  # Test de Rosner\np_load(univOutl)  # Funciones integradas para IQR/MAD\n\n## Fijar semilla para reproducibilidad\nset.seed(123)","id":1,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-1","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## generar los datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-15/data/week-15.r\")\n\n## check data\nprint(\"listo\")","id":2,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-2","message":"false","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"false"}},{"code":"## Vista previa\nglimpse(notas)\nsummary(notas)","id":3,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-3","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Histograma del promedio final\nggplot(notas, aes(x = promedio)) +\ngeom_histogram(bins = 15, fill = \"steelblue\", color = \"black\", alpha = 0.7) +\ntheme_bw()","id":4,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-4","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"# Boxplot general de notas\nggplot(notas, aes(y = promedio)) +\ngeom_boxplot(fill = \"purple\", color = \"black\", alpha = 0.5, outlier.color = \"red\") +\ntheme_bw()","id":5,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-5","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Percentiles 1% y 99%\nquantiles <- quantile(notas$promedio, probs = c(0.01, 0.99), na.rm = TRUE)\nquantiles\n\n## Filtrar posibles outliers\nnotas_q <- filter(notas , promedio < quantiles[1] | promedio > quantiles[2])\nsummary(notas_q)","id":6,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-6","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Calcular Z-Score \nnotas <- mutate(notas , z_score = scale(promedio))\n\n## Filtrar valores extremos\nnotas_z <- filter(notas , abs(z_score) > 3)\nsummary(notas_z)","id":7,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-7","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Detectar outliers con IQR\nboxB(notas$promedio, method = \"resistant\")","id":8,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-8","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Detección de outliers mediante MAD\nLocScaleB(notas$promedio, method = \"MAD\")","id":9,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-9","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Detección robusta con RRMS\nout_RRMS <- hotspots::outliers(notas$promedio, tail = \"both\")\nsummary(out_RRMS)\nplot(out_RRMS)","id":10,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-10","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ejemplo de prueba de Grubbs sobre las notas promedio\ngrubbs.test(notas$promedio)","id":11,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-11","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ejemplo de aplicación con una muestra pequeña\ndixon.test(sample(notas$promedio, 20))","id":12,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-12","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"## Ejemplo con detección múltiple\nrosnerTest(notas$promedio, k = 5, alpha = 0.05)","id":13,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-13","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}},{"code":"##==: 1. Preparar Entorno\n\n## Limpiar el entorno de trabajo\nrm(list = ls())\n\n## Instalar paquetes (solo si es necesario)\nif (!require(\"pacman\")) {install.packages(\"pacman\") ; require(\"pacman\")}\n\n## Cargar librerías\np_load(tidyverse)  # Manipulación y visualización de datos\np_load(class)      # Implementación del algoritmo kNN\np_load(caret)      # Métricas y matriz de confusión\np_load(pROC)       # Calcular la curva ROC y el AUC\n\n##==: 2. Ingesta de Datos\n\n## Leer datos\nsource(\"https://raw.githubusercontent.com/ba-in-r/01-slides/main/week-13/data/week-13.r\")\n\n## Preparar los datos\nvars <- select(datos, horas_estudio:afinidad_estadistica)\ndatos_scaled <- as.data.frame(scale(vars))\ndatos_scaled$retira <- factor(datos$retira, levels = c(0, 1), labels = c(\"No\", \"Sí\"))\n\n## Ver datos \nhead(datos_scaled)","id":14,"options":{"autorun":"false","classes":"","comment":"","context":"interactive","dpi":72,"editor-font-scale":"1","editor-max-height":"","editor-quick-suggestions":"false","editor-word-wrap":"true","fig-cap":"","fig-height":5,"fig-width":7,"label":"unnamed-chunk-14","message":"true","out-height":"","out-width":"700px","output":"true","read-only":"false","results":"markup","warning":"true"}}];
 
 </script>
 <script type="module">
@@ -1589,6 +1589,35 @@ globalThis.qwebrExecuteCode = async function (
 
 </script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -1613,10 +1642,27 @@ globalThis.qwebrExecuteCode = async function (
   <ul class="collapse">
   <li><a href="#visualización-de-anomalías" id="toc-visualización-de-anomalías" class="nav-link" data-scroll-target="#visualización-de-anomalías"><span class="header-section-number">2.3.1</span> Visualización de anomalías</a></li>
   </ul></li>
-  <li><a href="#métodos-de-detección" id="toc-métodos-de-detección" class="nav-link" data-scroll-target="#métodos-de-detección"><span class="header-section-number">2.4</span> Métodos de detección</a></li>
-  <li><a href="#pruebas-estadísticas" id="toc-pruebas-estadísticas" class="nav-link" data-scroll-target="#pruebas-estadísticas"><span class="header-section-number">2.5</span> Pruebas estadísticas</a></li>
-  <li><a href="#verificación-de-normalidad" id="toc-verificación-de-normalidad" class="nav-link" data-scroll-target="#verificación-de-normalidad"><span class="header-section-number">2.6</span> Verificación de normalidad</a></li>
-  <li><a href="#ley-de-benford" id="toc-ley-de-benford" class="nav-link" data-scroll-target="#ley-de-benford"><span class="header-section-number">2.7</span> Ley de Benford</a></li>
+  <li><a href="#métodos-de-detección" id="toc-métodos-de-detección" class="nav-link" data-scroll-target="#métodos-de-detección"><span class="header-section-number">2.4</span> Métodos de detección</a>
+  <ul class="collapse">
+  <li><a href="#percentiles" id="toc-percentiles" class="nav-link" data-scroll-target="#percentiles"><span class="header-section-number">2.4.1</span> Percentiles</a></li>
+  <li><a href="#z-score" id="toc-z-score" class="nav-link" data-scroll-target="#z-score"><span class="header-section-number">2.4.2</span> Z-Score</a></li>
+  <li><a href="#rango-intercuartílico-iqr" id="toc-rango-intercuartílico-iqr" class="nav-link" data-scroll-target="#rango-intercuartílico-iqr"><span class="header-section-number">2.4.3</span> Rango intercuartílico (IQR)</a></li>
+  <li><a href="#mad-método-de-hampel" id="toc-mad-método-de-hampel" class="nav-link" data-scroll-target="#mad-método-de-hampel"><span class="header-section-number">2.4.4</span> MAD / Método de Hampel</a></li>
+  <li><a href="#rrms-varianza-robusta" id="toc-rrms-varianza-robusta" class="nav-link" data-scroll-target="#rrms-varianza-robusta"><span class="header-section-number">2.4.5</span> RRMS (Varianza robusta)</a></li>
+  <li><a href="#comparación-de-métodos" id="toc-comparación-de-métodos" class="nav-link" data-scroll-target="#comparación-de-métodos"><span class="header-section-number">2.4.6</span> Comparación de métodos</a></li>
+  </ul></li>
+  <li><a href="#pruebas-estadísticas" id="toc-pruebas-estadísticas" class="nav-link" data-scroll-target="#pruebas-estadísticas"><span class="header-section-number">2.5</span> Pruebas estadísticas</a>
+  <ul class="collapse">
+  <li><a href="#grubbs-test" id="toc-grubbs-test" class="nav-link" data-scroll-target="#grubbs-test"><span class="header-section-number">2.5.1</span> Grubbs Test</a></li>
+  <li><a href="#dixon-test" id="toc-dixon-test" class="nav-link" data-scroll-target="#dixon-test"><span class="header-section-number">2.5.2</span> Dixon Test</a></li>
+  <li><a href="#rosner-test" id="toc-rosner-test" class="nav-link" data-scroll-target="#rosner-test"><span class="header-section-number">2.5.3</span> Rosner Test</a></li>
+  </ul></li>
+  <li><a href="#ley-de-benford" id="toc-ley-de-benford" class="nav-link" data-scroll-target="#ley-de-benford"><span class="header-section-number">2.6</span> Ley de Benford</a>
+  <ul class="collapse">
+  <li><a href="#por-qué-es-útil" id="toc-por-qué-es-útil" class="nav-link" data-scroll-target="#por-qué-es-útil"><span class="header-section-number">2.6.1</span> ¿Por qué es útil?</a></li>
+  <li><a href="#condiciones-para-aplicar-la-ley-de-benford" id="toc-condiciones-para-aplicar-la-ley-de-benford" class="nav-link" data-scroll-target="#condiciones-para-aplicar-la-ley-de-benford"><span class="header-section-number">2.6.2</span> Condiciones para aplicar la Ley de Benford</a></li>
+  <li><a href="#evaluación-previa-de-magnitud" id="toc-evaluación-previa-de-magnitud" class="nav-link" data-scroll-target="#evaluación-previa-de-magnitud"><span class="header-section-number">2.6.3</span> Evaluación previa de magnitud</a></li>
+  </ul></li>
   </ul></li>
   <li><a href="#actividad-en-clase" id="toc-actividad-en-clase" class="nav-link" data-scroll-target="#actividad-en-clase"><span class="header-section-number">3</span> Actividad en clase</a>
   <ul class="collapse">
@@ -2024,10 +2070,10 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Descripción de los paquetes utilizados:</strong> <code>tidyverse</code>: Conjunto de paquetes diseñados para la manipulación, transformación y visualización de datos en R.</p>
+<p><code>tidyverse</code>: Conjunto de paquetes diseñados para la manipulación, transformación y visualización de datos en R.</p>
 <p><code>outliers</code>: Implementa pruebas estadísticas clásicas para detección de valores atípicos, como <em>Grubbs</em> y <em>Dixon</em>, que permiten identificar observaciones extremas en una sola variable numérica.</p>
-<p><code>EnvStats</code>: Proporciona métodos avanzados de análisis estadístico, incluyendo la prueba de Rosner, ideal para detectar <em>múltiples outliers simultáneamente</em> en una muestra grande.</p>
-<p><code>univOutl</code>: Ofrece funciones integradas para aplicar distintos métodos robustos de detección de outliers univariados, como el <em>IQR</em>, <em>MAD</em> o <em>boxplots ajustados</em> (<code>LocScaleB</code>, <code>boxB</code>), facilitando la comparación entre técnicas.</p>
+<p><code>EnvStats</code>: Proporciona métodos avanzados de análisis estadístico, incluyendo la prueba de Rosner, ideal para detectar *múltiples outliers simultáneamente en una muestra grande.</p>
+<p><code>univOutl</code>: Ofrece funciones integradas para aplicar distintos métodos robustos de detección de outliers univariados, como el <em>IQR</em>, <em>MAD</em> o boxplots ajustados (<code>LocScaleB</code>, <code>boxB</code>), facilitando la comparación entre técnicas.</p>
 </div>
 </div>
 </section>
@@ -2073,35 +2119,267 @@ Note
 <p>El análisis gráfico es el punto de partida. Para empezar, utilizaremos histogramas y boxplots que nos ayuden a visualizar la dispersión de las notas y detectar gráficamente los posibles valores atípicos.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>El histograma permite observar la forma de la distribución de las notas: si es simétrica, sesgada o multimodal. En contextos educativos, una ligera asimetría positiva (muchos aprobados, pocos reprobados) es común. Las barras aisladas en los extremos pueden representar notas atípicas o errores de registro (por ejemplo, valores negativos o mayores que 5).</p>
 <div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>La caja representa el rango intercuartílico (IQR), donde se concentra el 50 % central de las notas. La línea central dentro de la caja indica la mediana (valor típico o más frecuente). Los puntos rojos marcan las observaciones que se encuentran fuera de los límites esperados (outliers). En este caso, corresponden a estudiantes con un desempeño excepcionalmente bajo o alto, o posiblemente a errores en el registro.</p>
 </section>
 </section>
 <section id="métodos-de-detección" class="level2" data-number="2.4">
 <h2 data-number="2.4" class="anchored" data-anchor-id="métodos-de-detección"><span class="header-section-number">2.4</span> Métodos de detección</h2>
-<p>Aplica e interpreta: • Percentiles (p.&nbsp;ej. 1% y 99%) • Z-Score (|Z| &gt; 3) • Rango intercuartílico (IQR) • MAD / Hampel • RRMS (varianza robusta)</p>
+<p>Una vez explorada la distribución de los datos, pasamos a la detección sistemática de anomalías mediante diferentes enfoques. Cada método tiene supuestos y ventajas distintas: algunos se basan en reglas estadísticas, otros en medidas robustas que resisten la influencia de outliers. En esta sección aplicaremos cinco estrategias complementarias para detectar valores atípicos en la variable <code>promedio</code>.</p>
+<section id="percentiles" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="percentiles"><span class="header-section-number">2.4.1</span> Percentiles</h3>
+<p>Una forma simple de detectar valores extremos es comparar los datos con umbrales percentilares, por ejemplo, el <strong>1%</strong> y el <strong>99%</strong>. Las observaciones fuera de ese rango se consideran inusuales.</p>
+<div id="qwebr-insertion-location-6"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="z-score" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="z-score"><span class="header-section-number">2.4.2</span> Z-Score</h3>
+<p>El Z-Score mide cuántas desviaciones estándar se encuentra cada valor respecto a la media. Por convención, se consideran atípicos los valores con (|Z| &gt; 3).</p>
+<div id="qwebr-insertion-location-7"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El método Z-Score funciona bien cuando la variable tiene una distribución aproximadamente normal. En distribuciones sesgadas (como suele ocurrir en notas o ingresos), puede marcar falsos positivos.</p>
+</div>
+</div>
+</section>
+<section id="rango-intercuartílico-iqr" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="rango-intercuartílico-iqr"><span class="header-section-number">2.4.3</span> Rango intercuartílico (IQR)</h3>
+<p>El método del rango intercuartílico (IQR) es una versión robusta del boxplot tradicional. Define umbrales con base en los cuartiles (<span class="math inline">\(Q_1\)</span>) y (<span class="math inline">\(Q_3\)</span>): <span class="math inline">\(\text{Límite inferior} = Q_1 - 1.5 \times IQR \quad ; \quad \text{Límite superior} = Q_3 + 1.5 \times IQR\)</span></p>
+<div id="qwebr-insertion-location-8"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El IQR es menos sensible a la forma de la distribución y se usa ampliamente en entornos de negocio y educación. Sin embargo, su desempeño disminuye si la variable es altamente asimétrica.</p>
+</div>
+</div>
+</section>
+<section id="mad-método-de-hampel" class="level3" data-number="2.4.4">
+<h3 data-number="2.4.4" class="anchored" data-anchor-id="mad-método-de-hampel"><span class="header-section-number">2.4.4</span> MAD / Método de Hampel</h3>
+<p>El MAD (Median Absolute Deviation) calcula la desviación absoluta respecto a la mediana, y el método de Hampel lo utiliza para establecer límites de detección. Este enfoque es robusto y muy eficaz en datos con colas pesadas o valores extremos localizados.</p>
+<div id="qwebr-insertion-location-9"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El MAD se considera uno de los métodos más estables frente a outliers severos. diferencia del Z-Score, no asume normalidad y es adecuado para variables como notas, ingresos o montos financieros.</p>
+</div>
+</div>
+</section>
+<section id="rrms-varianza-robusta" class="level3" data-number="2.4.5">
+<h3 data-number="2.4.5" class="anchored" data-anchor-id="rrms-varianza-robusta"><span class="header-section-number">2.4.5</span> RRMS (Varianza robusta)</h3>
+<p>El método RRMS (Robust Root Mean Square) utiliza estimadores robustos de varianza para identificar observaciones que se alejan significativamente del centro de la distribución, considerando tanto colas superiores como inferiores.</p>
+<div id="qwebr-insertion-location-10"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El RRMS combina la precisión estadística del Z-Score con la resistencia del MAD. Es útil cuando queremos una detección automática que mantenga consistencia en diferentes variables.</p>
+</div>
+</div>
+</section>
+<section id="comparación-de-métodos" class="level3" data-number="2.4.6">
+<h3 data-number="2.4.6" class="anchored" data-anchor-id="comparación-de-métodos"><span class="header-section-number">2.4.6</span> Comparación de métodos</h3>
+<p>Cada método de detección de anomalías parte de una <strong>lógica distinta</strong> sobre qué significa ser “inusual”. Algunos se basan en medidas clásicas (media y desviación estándar), otros en estimadores robustos (mediana y MAD) que son menos sensibles a valores extremos. La siguiente tabla resume las características más importantes de los principales métodos vistos en clase:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 40%">
+<col style="width: 16%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Método</strong></th>
+<th><strong>Supuesto principal</strong></th>
+<th><strong>Robustez</strong></th>
+<th><strong>Cuándo usar</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Percentiles</strong></td>
+<td>Ninguno</td>
+<td>Media</td>
+<td>Exploración inicial o cribado rápido.</td>
+</tr>
+<tr class="even">
+<td><strong>Z-Score</strong></td>
+<td>Normalidad de los datos</td>
+<td>Baja</td>
+<td>Datos simétricos y previamente escalados.</td>
+</tr>
+<tr class="odd">
+<td><strong>IQR (Tukey)</strong></td>
+<td>Cuartiles representativos</td>
+<td>Media</td>
+<td>Distribuciones moderadamente asimétricas.</td>
+</tr>
+<tr class="even">
+<td><strong>MAD / Hampel</strong></td>
+<td>Mediana estable y colas largas</td>
+<td>Alta</td>
+<td>Datos con colas pesadas o presencia de outliers fuertes.</td>
+</tr>
+<tr class="odd">
+<td><strong>RRMS</strong></td>
+<td>Estimador robusto de varianza</td>
+<td>Alta</td>
+<td>Identificación automática de extremos en grandes muestras.</td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="pruebas-estadísticas" class="level2" data-number="2.5">
 <h2 data-number="2.5" class="anchored" data-anchor-id="pruebas-estadísticas"><span class="header-section-number">2.5</span> Pruebas estadísticas</h2>
-<pre><code>•   Grubbs test: un outlier.
-•   Dixon test: muestra pequeña.
-•   Rosner test: múltiples outliers.</code></pre>
-<p>Explica las hipótesis y el sentido del p-value.</p>
+<p>Hasta ahora hemos explorado métodos descriptivos y robustos para identificar posibles outliers. Sin embargo, en algunos contextos —por ejemplo, auditorías, evaluación de calidad o estudios científicos— se requiere una validación estadística formal que determine si un valor extremo es significativamente distinto al resto de los datos. Para ello utilizamos pruebas estadísticas que formulan hipótesis y se basan en el cálculo de un <strong>p-value</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 29%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Prueba</strong></th>
+<th><strong>Uso principal</strong></th>
+<th><strong>Tamaño de muestra</strong></th>
+<th><strong>Outliers detectables</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Grubbs test</strong></td>
+<td>Detección de un solo outlier en muestras grandes.</td>
+<td>n &gt; 25</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td><strong>Dixon test</strong></td>
+<td>Detección de un outlier en muestras pequeñas.</td>
+<td>3 ≤ n ≤ 25</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td><strong>Rosner test</strong></td>
+<td>Detección simultánea de múltiples outliers.</td>
+<td>n ≥ 25</td>
+<td>k (varios)</td>
+</tr>
+</tbody>
+</table>
+<section id="grubbs-test" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="grubbs-test"><span class="header-section-number">2.5.1</span> Grubbs Test</h3>
+<p>La <strong>prueba de Grubbs</strong> evalúa si el valor más extremo (máximo o mínimo) de la muestra se diferencia significativamente del resto.</p>
+<p><strong>Hipótesis:</strong></p>
+<ul>
+<li><span class="math inline">\(H_0: \text{No hay outliers en la muestra}\)</span></li>
+<li><span class="math inline">\(H_A: \text{El valor más extremo es un outlier}\)</span></li>
+</ul>
+<p><strong>Interpretación del p-value:</strong> Si <code>p-value &lt; 0.05</code>, se <strong>rechaza H₀</strong> → el valor extremo se considera un <em>outlier</em> estadísticamente significativo. Si <code>p-value ≥ 0.05</code>, no hay evidencia suficiente para considerarlo atípico.</p>
+<div id="qwebr-insertion-location-11"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="verificación-de-normalidad" class="level2" data-number="2.6">
-<h2 data-number="2.6" class="anchored" data-anchor-id="verificación-de-normalidad"><span class="header-section-number">2.6</span> Verificación de normalidad</h2>
-<pre><code>•   Usa Q-Q plots (qqplotr).
-•   Explica por qué es necesario para algunas pruebas.
-•   Compara distribuciones normales vs. no normales.</code></pre>
+<section id="dixon-test" class="level3" data-number="2.5.2">
+<h3 data-number="2.5.2" class="anchored" data-anchor-id="dixon-test"><span class="header-section-number">2.5.2</span> Dixon Test</h3>
+<p>La prueba de Dixon también busca detectar un único valor atípico, pero está diseñada para muestras pequeñas (3–25 observaciones). Compara la diferencia entre el valor más extremo y su vecino más cercano con el rango total.</p>
+<p><strong>Hipótesis:</strong></p>
+<ul>
+<li><span class="math inline">\(H_0: \text{Todos los valores provienen de la misma población.}\)</span></li>
+<li><span class="math inline">\(H_A: \text{Existe un valor atípico (el más alto o el más bajo).}\)</span></li>
+</ul>
+<p><strong>Interpretación del p-value:</strong> Si <code>p-value &lt; 0.05</code>, el valor extremo se considera outlier. Si <code>p-value ≥ 0.05</code>, no se considera significativamente diferente.</p>
+<div id="qwebr-insertion-location-12"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
-<section id="ley-de-benford" class="level2" data-number="2.7">
-<h2 data-number="2.7" class="anchored" data-anchor-id="ley-de-benford"><span class="header-section-number">2.7</span> Ley de Benford</h2>
-<pre><code>•   Introduce el concepto del primer dígito.
-•   Verifica condiciones: variable numérica positiva, sin límites, con magnitud amplia.
-•   Calcula OOM y ROM.
-•   Aplica benford() y grafica resultados.
-•   Revisa suspectsTable() y duplicatesTable().
-•   Discute implicaciones en auditoría.</code></pre>
+<section id="rosner-test" class="level3" data-number="2.5.3">
+<h3 data-number="2.5.3" class="anchored" data-anchor-id="rosner-test"><span class="header-section-number">2.5.3</span> Rosner Test</h3>
+<p>La prueba de Rosner permite detectar varios outliers al mismo tiempo. A diferencia de las anteriores, esta prueba es iterativa: elimina los valores extremos uno por uno, recalculando la media y la desviación estándar tras cada iteración.</p>
+<p><strong>Hipótesis:</strong></p>
+<ul>
+<li><p><span class="math inline">\(H_0: \text{No hay outliers en la muestra.}\)</span></p></li>
+<li><p><span class="math inline">\(H_A: H_A: \text{Hasta } k \text{ observaciones son outliers.}\)</span></p></li>
+</ul>
+<p>Interpretación:</p>
+<pre><code>•   La prueba calcula un conjunto de estadísticos ( $R_i$ ) y valores críticos ( $\lambda_i$ ).
+•   Si ( $R_i$ &gt; $\lambda_i$), la observación correspondiente se clasifica como outlier.
+•   El número final de outliers detectados dependerá del parámetro $k$ (cantidad máxima a evaluar).</code></pre>
+<div id="qwebr-insertion-location-13"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>El p-value mide la evidencia contra la hipótesis nula (<span class="math inline">\(H_0\)</span>). Un valor pequeño (por debajo de 0.05) indica que el valor extremo es poco probable bajo el patrón normal de los datos. En otras palabras, mientras menor el p-value, más probable es que la observación sea realmente un outlier.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="ley-de-benford" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="ley-de-benford"><span class="header-section-number">2.6</span> Ley de Benford</h2>
+<p>La Ley de Benford, también conocida como la Ley del Primer Dígito, describe un patrón sorprendente en muchos conjuntos de datos reales: los números que comienzan con dígitos pequeños (1, 2 o 3) aparecen con mucha más frecuencia que los que comienzan con 8 o 9. En lugar de una distribución uniforme (donde cada dígito tendría 11,1 % de probabilidad), la Ley de Benford predice que el dígito 1 aparecerá aproximadamente el 30 % de las veces, el 2 un 17 %, y así sucesivamente, decreciendo logarítmicamente.</p>
+<p><span class="math inline">\(P(d) = \log_{10}(1 + \frac{1}{d})\)</span></p>
+<section id="por-qué-es-útil" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="por-qué-es-útil"><span class="header-section-number">2.6.1</span> ¿Por qué es útil?</h3>
+<p>Este patrón se cumple en datos naturales, financieros o económicos que no han sido manipulados manualmente. Por ello, la Ley de Benford se utiliza ampliamente en: auditoría y detección de fraudes financieros; Verificación de integridad de bases de datos; Análisis de reportes contables y registros públicos. Cuando los datos se desvían significativamente de la ley, puede indicar errores de registro o manipulación intencional.</p>
+</section>
+<section id="condiciones-para-aplicar-la-ley-de-benford" class="level3" data-number="2.6.2">
+<h3 data-number="2.6.2" class="anchored" data-anchor-id="condiciones-para-aplicar-la-ley-de-benford"><span class="header-section-number">2.6.2</span> Condiciones para aplicar la Ley de Benford</h3>
+<p>Antes de aplicar la ley, la variable debe cumplir ciertas condiciones:</p>
+<ol type="1">
+<li>Ser numérica y positiva.<br>
+</li>
+<li>No tener límites fijos (por ejemplo, 0–100 o 1–5).<br>
+</li>
+<li>Presentar varios órdenes de magnitud (es decir, amplitud suficiente entre el valor mínimo y el máximo).<br>
+</li>
+<li>No estar redondeada artificialmente o expresada en porcentajes.</li>
+</ol>
+</section>
+<section id="evaluación-previa-de-magnitud" class="level3" data-number="2.6.3">
+<h3 data-number="2.6.3" class="anchored" data-anchor-id="evaluación-previa-de-magnitud"><span class="header-section-number">2.6.3</span> Evaluación previa de magnitud</h3>
+<p>El primer paso es verificar si la variable cumple con los criterios de magnitud. Para esto se calculan dos indicadores: <code>OOM</code> (Order of Magnitude): logaritmo de la razón entre el valor máximo y el mínimo. <code>ROM</code> (Robust Order of Magnitude): logaritmo de la razón entre los percentiles 99 y 1. Si ambos son mayores que 3, la Ley de Benford puede aplicarse de manera confiable.</p>
+</section>
 </section>
 </section>
 <section id="actividad-en-clase" class="level1" data-number="3">
@@ -2116,7 +2394,7 @@ Note
 </li>
 <li>Observe los resultados obtenidos en cada sección.<br>
 </li>
-<li>Genere un documento en <strong>Word (.docx)</strong> donde:
+<li>Genere un documento en Word (.docx) donde:
 <ul>
 <li>Copie las preguntas que aparecen al final.<br>
 </li>
@@ -2131,7 +2409,7 @@ Note
 <section id="estimación-del-modelo-knn" class="level2" data-number="3.2">
 <h2 data-number="3.2" class="anchored" data-anchor-id="estimación-del-modelo-knn"><span class="header-section-number">3.2</span> Estimación del modelo kNN</h2>
 <p>Ejecute el siguiente código para estimar un modelo <strong>k-Nearest Neighbors (kNN)</strong> que prediga la <strong>probabilidad de que un estudiante se retire del curso</strong>, usando las variables explicativas relacionadas con esfuerzo y participación. ⚠️ No incluya la variable <code>aprueba</code> en el modelo.</p>
-<div id="qwebr-insertion-location-6"></div>
+<div id="qwebr-insertion-location-14"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="preguntas-para-el-informe" class="level2" data-number="3.3">
