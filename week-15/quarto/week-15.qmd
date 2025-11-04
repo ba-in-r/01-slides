@@ -88,28 +88,32 @@ set.seed(123)
 ```
 
 ::: callout-note
-`tidyverse`: facilita la transformación, manipulación y visualización de datos.
-`class`: contiene la función `knn()` que implementa el algoritmo k-Nearest Neighbors.
-`caret`: permite calcular métricas de desempeño, generar matrices de confusión y realizar validaciones cruzadas.
-`pROC`: se emplea para evaluar el poder discriminatorio del modelo mediante la curva ROC y el área bajo la curva (AUC).
+**Descripción de los paquetes utilizados:**
+`tidyverse`: Conjunto de paquetes diseñados para la manipulación, transformación y visualización de datos en R.  
+
+`outliers`: Implementa pruebas estadísticas clásicas para detección de valores atípicos, como *Grubbs* y *Dixon*, que permiten identificar observaciones extremas en una sola variable numérica.
+
+`EnvStats`: Proporciona métodos avanzados de análisis estadístico, incluyendo la prueba de Rosner, ideal para detectar *múltiples outliers simultáneamente* en una muestra grande.
+
+`univOutl`: Ofrece funciones integradas para aplicar distintos métodos robustos de detección de outliers univariados, como el *IQR*, *MAD* o *boxplots ajustados* (`LocScaleB`, `boxB`), facilitando la comparación entre técnicas.
 :::
 
 ## Ingesta de datos 
 
-En esta sección realizamos la ingesta de datos, es decir, el proceso de generar o cargar la base que utilizaremos para estimar el modelo KNN. Cada registro representa a un estudiante, con variables relacionadas con su esfuerzo, participación y rendimiento a lo largo del semestre.
+En esta sección realizamos la ingesta de datos. En este caso, trabajaremos con una base sintética llamada **`notas`**, que representa el rendimiento académico de un grupo de estudiantes a lo largo del semestre. Cada registro corresponde a un estudiante e incluye variables relacionadas con su desempeño, participación y hábitos de estudio. Algunos registros fueron generados con valores anómalos intencionalmente (notas imposibles, inconsistencias o valores fuera de rango), con el fin de practicar su identificación.
 
-La estructura de los datos es la siguiente:
+La estructura de las variables es la siguiente:
 
-	•	horas_estudio: promedio semanal de horas dedicadas al curso.
-	•	asistencia: porcentaje de asistencia a clase.
-	•	participacion: nivel de participación en clase (0–100).
-	•	uso_de_R: nivel de dominio de R (1–5).
-	•	trabajos_entregados: cantidad de trabajos entregados (0–5).
-	•	afinidad_estadistica: gusto por la estadística (0–100).
-	•	aprueba: resultado final (1 = aprueba, 0 = reprueba).
-	•	retira: indica si el estudiante se retiró del curso antes de finalizar (1 = sí, 0 = no).
+- **`asistencia`** → proporción de clases asistidas (0–1).  
+- **`participacion`** → nivel de participación en clase (0–5).  
+- **`trabajos`** → promedio de calificaciones en trabajos entregados (0–5).  
+- **`quiz_1`, `quiz_2`** → notas obtenidas en los dos quizzes del curso (0–5).  
+- **`proyecto_final`** → nota final del proyecto (0–5).  
+- **`promedio`** → calificación global del estudiante (ponderación de los componentes anteriores).  
+- **`grupo`** → día o cohorte al que pertenece el estudiante (por ejemplo, “Viernes” o “Martes”).  
+- **`id_estudiante`** → identificador único de cada estudiante.
 
-Nuestro objetivo será estimar cómo cada una de estas variables influye en la probabilidad de aprobar el curso.
+Nuestro objetivo será **identificar observaciones que se desvíen del patrón general**, como: notas fuera del rango esperado (menores que 0 o mayores que 5); comportamientos incoherentes (alta asistencia con bajo promedio); casos extremos que podrían reflejar errores de registro o comportamientos atípicos reales.
 
 ```{webr-r}
 #| warning: false
